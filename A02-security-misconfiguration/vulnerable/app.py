@@ -65,7 +65,7 @@ def verbose_error(exc):
 # МИСКОНФИГ №4: нет защитных заголовков, лишний баннер с версиями
 @app.after_request
 def add_banner(resp):
-    resp.headers["X-Powered-By"] = "Flask 3.0.3 / Python 3.11"
+    resp.headers["X-Powered-By"] = "Flask 3.1.3 / Python 3.11"
     return resp
 
 
