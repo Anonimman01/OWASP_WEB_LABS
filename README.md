@@ -17,7 +17,7 @@
 | A03 | [A03-software-supply-chain-failures](./A03-software-supply-chain-failures) | Сбои в цепочке поставок ПО | 8021 / 8022 | ✅ готово |
 | A04 | [A04-cryptographic-failures](./A04-cryptographic-failures) | Криптографические сбои | 8031 / 8032 | ✅ готово |
 | A05 | [A05-injection](./A05-injection) | Инъекции (SQLi, XSS и др.) | 8041 / 8042 | ✅ готово |
-| A06 | [A06-insecure-design](./A06-insecure-design) | Небезопасная архитектура | — | 🕓 запланировано |
+| A06 | [A06-insecure-design](./A06-insecure-design) | Небезопасная архитектура | 8051 / 8052 | ✅ готово |
 | A07 | [A07-authentication-failures](./A07-authentication-failures) | Сбои аутентификации | — | 🕓 запланировано |
 | A08 | [A08-software-or-data-integrity-failures](./A08-software-or-data-integrity-failures) | Нарушения целостности ПО и данных | — | 🕓 запланировано |
 | A09 | [A09-logging-and-alerting-failures](./A09-logging-and-alerting-failures) | Сбои логирования и оповещений | — | 🕓 запланировано |
