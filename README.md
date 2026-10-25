@@ -145,7 +145,7 @@ Some labs have extra files: for example `wordlist.txt` in A04, `backup.sql` in A
 
 - **This README** is available in English (`README.md`), Russian (`README.ru.md`) and Uzbek (`README.uz.md`). Each file has a language switcher on its first line.
 - **Lab documentation** (A01–A10) is available in Russian (`README.md`, `SOLUTION.md`) and Uzbek, Latin script (`README.uz.md`, `SOLUTION.uz.md`). English translations of the lab documents are not available yet.
-- **The `/ui` page** of every lab has a **RU / UZ** switcher in the top right corner. The choice is remembered in the browser, and it can also be set in the address bar by appending `?lang=uz` (if the address ends with `/ui`) or `/ui?lang=uz` (if it does not), for example `http://127.0.0.1:8041/ui?lang=uz`. A browser with an Uzbek locale opens the Uzbek version right away.
+- **The `/ui` page** of every lab is available in English (the default), Russian and Uzbek, with an **EN / RU / UZ** switcher in the top right corner. The choice is remembered in the browser, and it can also be set in the address bar by appending `?lang=ru` or `?lang=uz` (if the address ends with `/ui`) or `/ui?lang=ru` / `/ui?lang=uz` (if it does not), for example `http://127.0.0.1:8041/ui?lang=uz`. A browser with an Uzbek locale opens the Uzbek version right away.
 - Only the interface shell is translated (headings, buttons, hints, examples). The applications' own responses (note texts, product names, error messages) are left as they are so that they match `SOLUTION`. Code comments (`# ДЕФЕКТ N` / `# FIX N`) stay in Russian.
 
 ## Solutions and spoilers

@@ -236,7 +236,10 @@ register_ui(app, "A09 Logging and Alerting Failures — vulnerable",
                 "presets": {
                     "POST /feedback": [("fikr", {"name": "Ali", "message": "Hammasi yaxshi"})],
                     "POST /_lab/tamper": [("1-qatorni oʻchirish", {"index": 1, "text": None})],
-                }})
+                }},
+            en={'notes': 'Accounts: alice / alice123, bob / bob123. Find the admin password yourself.',
+             'presets': {'POST /feedback': [['feedback', {'name': 'Anna', 'message': 'All good'}]],
+                         'POST /_lab/tamper': [['delete line 1', {'index': 1, 'text': None}]]}})
 
 
 if __name__ == "__main__":

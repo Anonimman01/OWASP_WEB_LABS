@@ -62,7 +62,14 @@ def html_page(body):
 # FIX: запрещаем выполнение скриптов на страницах (защита в глубину поверх экранирования)
 @app.after_request
 def security_headers(resp):
-    resp.headers["Content-Security-Policy"] = "default-src 'none'; style-src 'unsafe-inline'; base-uri 'none'"
+    # Только учебной странице /ui (не часть уязвимости) разрешены свои inline-скрипты
+    # и запросы на свой адрес; на остальных страницах скрипты по-прежнему запрещены.
+    if request.path == "/ui":
+        resp.headers["Content-Security-Policy"] = (
+            "default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; "
+            "connect-src 'self'; base-uri 'none'")
+    else:
+        resp.headers["Content-Security-Policy"] = "default-src 'none'; style-src 'unsafe-inline'; base-uri 'none'"
     resp.headers["X-Content-Type-Options"] = "nosniff"
     return resp
 
@@ -129,7 +136,10 @@ def guestbook():
 from labui import register_ui  # noqa: E402
 register_ui(app, 'A05 Injection — fixed', notes='Аккаунт: alice / alice123',
             presets={'POST /login': [('alice', {'username': 'alice', 'password': 'alice123'})], 'GET /products': [('q=a', '?q=a')], 'GET /search': [('q=привет', '?q=привет')], 'POST /guestbook': [('запись', {'name': 'Аня', 'message': 'Привет!'})]},
-            uz={'notes': 'Akkaunt: alice / alice123', 'presets': {'GET /search': [('q=salom', '?q=salom')], 'POST /guestbook': [('yozuv', {'name': 'Ali', 'message': 'Salom!'})]}})
+            uz={'notes': 'Akkaunt: alice / alice123', 'presets': {'GET /search': [('q=salom', '?q=salom')], 'POST /guestbook': [('yozuv', {'name': 'Ali', 'message': 'Salom!'})]}},
+            en={'notes': 'Account: alice / alice123',
+             'presets': {'GET /search': [['q=hello', '?q=hello']],
+                         'POST /guestbook': [['entry', {'name': 'Anna', 'message': 'Hello!'}]]}})
 
 
 if __name__ == "__main__":

@@ -291,7 +291,9 @@ from labui import register_ui  # noqa: E402
 register_ui(app, 'A08 Integrity Failures — fixed', notes='Аккаунты: alice / alice123, admin / Adm1n-lab-pass',
             presets={'POST /login': [('alice', {'username': 'alice', 'password': 'alice123'})], 'POST /buy': [('тариф basic', {'plan': 'basic'})]},
             uz={'notes': 'Akkauntlar: alice / alice123, admin / Adm1n-lab-pass',
-                'presets': {'POST /buy': [('basic tarifi', {'plan': 'basic'})]}})
+                'presets': {'POST /buy': [('basic tarifi', {'plan': 'basic'})]}},
+            en={'notes': 'Accounts: alice / alice123, admin / Adm1n-lab-pass',
+             'presets': {'POST /buy': [['basic plan', {'plan': 'basic'}]]}})
 
 
 if __name__ == "__main__":

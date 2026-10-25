@@ -70,7 +70,14 @@ def safe_error(exc):
 def security_headers(resp):
     resp.headers["X-Content-Type-Options"] = "nosniff"
     resp.headers["X-Frame-Options"] = "DENY"
-    resp.headers["Content-Security-Policy"] = "default-src 'none'; frame-ancestors 'none'"
+    # Для API CSP максимально строгая. Только учебной странице /ui (она не часть
+    # уязвимости) разрешены свои inline-скрипты/стили и запросы на свой же адрес.
+    if request.path == "/ui":
+        resp.headers["Content-Security-Policy"] = (
+            "default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; "
+            "connect-src 'self'; frame-ancestors 'none'")
+    else:
+        resp.headers["Content-Security-Policy"] = "default-src 'none'; frame-ancestors 'none'"
     resp.headers["Referrer-Policy"] = "no-referrer"
     resp.headers["Cache-Control"] = "no-store"
     resp.headers["Server"] = "app"
@@ -81,7 +88,9 @@ def security_headers(resp):
 from labui import register_ui  # noqa: E402
 register_ui(app, 'A02 Security Misconfiguration — fixed', notes='Аккаунтов нет: найдите вход сами.',
             presets={'POST /login': [('неверный пароль', {'username': 'user', 'password': 'test'})], 'GET /items': [('id=1', '?id=1')], 'GET /files/<path:name>': [('public.txt', '/files/public.txt')]},
-            uz={'notes': 'Akkauntlar yoʻq: kirishni oʻzingiz toping.', 'presets': {'POST /login': [('notoʻgʻri parol', {'username': 'user', 'password': 'test'})]}})
+            uz={'notes': 'Akkauntlar yoʻq: kirishni oʻzingiz toping.', 'presets': {'POST /login': [('notoʻgʻri parol', {'username': 'user', 'password': 'test'})]}},
+            en={'notes': 'No accounts: find the way in yourself.',
+             'presets': {'POST /login': [['wrong password', {'username': 'user', 'password': 'test'}]]}})
 
 
 if __name__ == "__main__":

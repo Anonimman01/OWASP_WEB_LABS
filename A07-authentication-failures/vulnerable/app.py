@@ -196,7 +196,10 @@ from labui import register_ui  # noqa: E402
 register_ui(app, 'A07 Authentication Failures — vulnerable', notes='Аккаунты: alice / alice-Good-Pass1, bob, admin',
             presets={'POST /login': [('alice', {'username': 'alice', 'password': 'alice-Good-Pass1', 'remember': False})], 'POST /register': [('новый', {'username': 'carol', 'password': 'Str0ng-Pass-2025!'})], 'POST /change-password': [('новый пароль', {'new_password': 'New-Pass-2025!'})]},
             uz={'notes': 'Akkauntlar: alice / alice-Good-Pass1, bob, admin',
-                'presets': {'POST /register': [('yangi', {'username': 'carol', 'password': 'Str0ng-Pass-2025!'})], 'POST /change-password': [('yangi parol', {'new_password': 'New-Pass-2025!'})]}})
+                'presets': {'POST /register': [('yangi', {'username': 'carol', 'password': 'Str0ng-Pass-2025!'})], 'POST /change-password': [('yangi parol', {'new_password': 'New-Pass-2025!'})]}},
+            en={'notes': 'Accounts: alice / alice-Good-Pass1, bob, admin',
+             'presets': {'POST /register': [['new user', {'username': 'carol', 'password': 'Str0ng-Pass-2025!'}]],
+                         'POST /change-password': [['new password', {'new_password': 'New-Pass-2025!'}]]}})
 
 
 if __name__ == "__main__":

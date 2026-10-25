@@ -124,7 +124,10 @@ def guestbook():
 from labui import register_ui  # noqa: E402
 register_ui(app, 'A05 Injection — vulnerable', notes='Аккаунт: alice / alice123',
             presets={'POST /login': [('alice', {'username': 'alice', 'password': 'alice123'})], 'GET /products': [('q=a', '?q=a')], 'GET /search': [('q=привет', '?q=привет')], 'POST /guestbook': [('запись', {'name': 'Аня', 'message': 'Привет!'})]},
-            uz={'notes': 'Akkaunt: alice / alice123', 'presets': {'GET /search': [('q=salom', '?q=salom')], 'POST /guestbook': [('yozuv', {'name': 'Ali', 'message': 'Salom!'})]}})
+            uz={'notes': 'Akkaunt: alice / alice123', 'presets': {'GET /search': [('q=salom', '?q=salom')], 'POST /guestbook': [('yozuv', {'name': 'Ali', 'message': 'Salom!'})]}},
+            en={'notes': 'Account: alice / alice123',
+             'presets': {'GET /search': [['q=hello', '?q=hello']],
+                         'POST /guestbook': [['entry', {'name': 'Anna', 'message': 'Hello!'}]]}})
 
 
 if __name__ == "__main__":

@@ -166,7 +166,10 @@ def lab_dump():
 from labui import register_ui  # noqa: E402
 register_ui(app, 'A04 Cryptographic Failures — vulnerable', notes='Аккаунты: alice / sunshine, bob / qwerty',
             presets={'POST /login': [('alice', {'username': 'alice', 'password': 'sunshine'})], 'POST /register': [('новый', {'username': 'carol', 'password': 'Str0ng-pass-1'})], 'POST /cards': [('тестовая карта', {'number': '4242424242424242'})], 'POST /reset-request': [('alice', {'username': 'alice'})]},
-            uz={'notes': 'Akkauntlar: alice / sunshine, bob / qwerty', 'presets': {'POST /register': [('yangi', {'username': 'carol', 'password': 'Str0ng-pass-1'})], 'POST /cards': [('test kartasi', {'number': '4242424242424242'})]}})
+            uz={'notes': 'Akkauntlar: alice / sunshine, bob / qwerty', 'presets': {'POST /register': [('yangi', {'username': 'carol', 'password': 'Str0ng-pass-1'})], 'POST /cards': [('test kartasi', {'number': '4242424242424242'})]}},
+            en={'notes': 'Accounts: alice / sunshine, bob / qwerty',
+             'presets': {'POST /register': [['new user', {'username': 'carol', 'password': 'Str0ng-pass-1'}]],
+                         'POST /cards': [['test card', {'number': '4242424242424242'}]]}})
 
 
 if __name__ == "__main__":

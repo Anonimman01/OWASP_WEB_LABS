@@ -203,7 +203,9 @@ from labui import register_ui  # noqa: E402
 register_ui(app, 'A06 Insecure Design — vulnerable', notes='Аккаунт: alice / alice123 (баланс $100)',
             presets={'POST /login': [('alice', {'username': 'alice', 'password': 'alice123'})], 'POST /orders': [('1 кружка', {'items': [{'product_id': 1, 'quantity': 1}], 'coupons': []})], 'POST /password-reset/request': [('alice', {'username': 'alice'})]},
             uz={'notes': 'Akkaunt: alice / alice123 (balans $100)',
-                'presets': {'POST /orders': [('1 ta krujka', {'items': [{'product_id': 1, 'quantity': 1}], 'coupons': []})]}})
+                'presets': {'POST /orders': [('1 ta krujka', {'items': [{'product_id': 1, 'quantity': 1}], 'coupons': []})]}},
+            en={'notes': 'Account: alice / alice123 (balance $100)',
+             'presets': {'POST /orders': [['1 mug', {'items': [{'product_id': 1, 'quantity': 1}], 'coupons': []}]]}})
 
 
 if __name__ == "__main__":

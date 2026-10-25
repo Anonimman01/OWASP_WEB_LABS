@@ -102,7 +102,7 @@ Tuzatilgan versiyani ishga tushirish uchun `vulnerable` ni `fixed` ga (portni es
 
 ## Interfeys tili (UZ)
 
-**Interfeysni oʻzbek tilida ochish.** Barcha laboratoriyalarda brauzer sahifasi (`/ui`) ikki tilli: rus va oʻzbek. Brauzeringiz tili, masalan, rus tilida boʻlsa, sahifa avval ruscha ochiladi. Oʻzbekchaga oʻtish uchun:
+**Interfeysni oʻzbek tilida ochish.** Barcha laboratoriyalarda brauzer sahifasi (`/ui`) uch tilli: ingliz, rus va oʻzbek. Sahifa odatda inglizcha ochiladi. Oʻzbekchaga oʻtish uchun:
 
 1. Laboratoriya ochilgan brauzer oynasiga oʻting.
 2. Manzil qatorining oxiriga quyidagini yozing:
@@ -110,7 +110,7 @@ Tuzatilgan versiyani ishga tushirish uchun `vulnerable` ni `fixed` ga (portni es
    - manzil `http://127.0.0.1:8041` boʻlsa, oxiriga `/ui?lang=uz` qoʻshing.
 3. Enter bosing. Natija, masalan: `http://127.0.0.1:8041/ui?lang=uz`.
 
-Yoki sahifaning yuqori oʻng burchagidagi **UZ** tugmasini bosing. Tanlov brauzerda eslab qolinadi va keyingi laboratoriyalar ham oʻzbekcha ochiladi. Brauzeringiz tili oʻzbekcha boʻlsa, sahifa darhol oʻzbekcha ochiladi.
+Yoki sahifaning yuqori oʻng burchagidagi **UZ** tugmasini bosing (yonida **EN** va **RU** tugmalari ham bor). Tanlov brauzerda eslab qolinadi va keyingi laboratoriyalar ham oʻzbekcha ochiladi. Brauzeringiz tili oʻzbekcha boʻlsa, sahifa darhol oʻzbekcha ochiladi.
 
 Har bir laboratoriyaning portlari yuqoridagi jadvalda. Masalan, A01 uchun: `http://127.0.0.1:8001/ui?lang=uz` (vulnerable) va `http://127.0.0.1:8002/ui?lang=uz` (fixed).
 
@@ -160,7 +160,7 @@ Ayrim laboratoriyalarda qoʻshimcha fayllar bor: masalan, A04 da `wordlist.txt`,
 
 Barcha laboratoriyalar (A01–A10) hujjatlari ikki tilda mavjud: rus tilida (`README.md`, `SOLUTION.md`) va oʻzbek tilida, lotin alifbosida (`README.uz.md`, `SOLUTION.uz.md`). Ildiz README esa uch tilda: inglizcha (`README.md`), ruscha (`README.ru.md`) va oʻzbekcha (`README.uz.md`). Har bir fayl tepasida tilni almashtirish havolasi bor.
 
-Barcha laboratoriyalarda `/ui` sahifasi ham ikki tilli, oʻtish usuli [yuqorida](#interfeys-tili-uz) tushuntirilgan. Faqat qobiq tarjima qilinadi (sarlavhalar, tugmalar, maslahatlar, namunalar). Ilovalarning oʻz javoblari (qaydlar matni, mahsulot nomlari, xato xabarlari) `SOLUTION` ga mos kelishi uchun oʻzgarishsiz qoladi. Koddagi izohlar (`# ДЕФЕКТ N` / `# FIX N`) rus tilida qoladi.
+Barcha laboratoriyalarda `/ui` sahifasi ham uch tilli (inglizcha, ruscha, oʻzbekcha), oʻtish usuli [yuqorida](#interfeys-tili-uz) tushuntirilgan. Faqat qobiq tarjima qilinadi (sarlavhalar, tugmalar, maslahatlar, namunalar). Ilovalarning oʻz javoblari (qaydlar matni, mahsulot nomlari, xato xabarlari) `SOLUTION` ga mos kelishi uchun oʻzgarishsiz qoladi. Koddagi izohlar (`# ДЕФЕКТ N` / `# FIX N`) rus tilida qoladi.
 
 ## Yechimlar va spoylerlar
 

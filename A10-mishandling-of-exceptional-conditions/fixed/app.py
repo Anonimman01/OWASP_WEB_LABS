@@ -285,7 +285,10 @@ register_ui(app, "A10 Mishandling of Exceptional Conditions — fixed",
                 "presets": {
                     "GET /documents/<int:doc_id>": [("hujjat 1", "/documents/1"), ("hujjat 2", "/documents/2")],
                     "POST /orders": [("1 ta krujka", {"item_id": 1, "qty": 1})],
-                }})
+                }},
+            en={'notes': 'Accounts: alice / alice123 (level 1), bob / bob123 (level 2). Initial balance: 100.',
+             'presets': {'GET /documents/<int:doc_id>': [['document 1', '/documents/1'], ['document 2', '/documents/2']],
+                         'POST /orders': [['1 mug', {'item_id': 1, 'qty': 1}]]}})
 
 
 if __name__ == "__main__":

@@ -41,7 +41,8 @@ def deps():
 from labui import register_ui  # noqa: E402
 register_ui(app, 'A03 Software Supply Chain Failures — vulnerable', notes='Приложение показывает установленные версии зависимостей: /deps.',
             presets={},
-            uz={'notes': 'Ilova oʻrnatilgan bogʻliqliklar versiyalarini koʻrsatadi: /deps.'})
+            uz={'notes': 'Ilova oʻrnatilgan bogʻliqliklar versiyalarini koʻrsatadi: /deps.'},
+            en={'notes': 'The app shows the installed dependency versions: /deps.'})
 
 
 if __name__ == "__main__":

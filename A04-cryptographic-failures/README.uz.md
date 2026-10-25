@@ -24,7 +24,7 @@ docker compose up --build
 | vulnerable (zaif) | http://127.0.0.1:8031 |
 | fixed (tuzatilgan) | http://127.0.0.1:8032 |
 
-> 🌐 **Interfeysni oʻzbek tilida ochish.** Brauzeringiz tili, masalan, rus tilida boʻlsa, `/ui` sahifasi avval ruscha ochiladi. Oʻzbekchaga oʻtish uchun laboratoriya ochilgan brauzer oynasiga oʻting va manzil qatorining oxiriga quyidagini yozing:
+> 🌐 **Interfeysni oʻzbek tilida ochish.** `/ui` sahifasi odatda inglizcha ochiladi. Oʻzbekchaga oʻtish uchun laboratoriya ochilgan brauzer oynasiga oʻting va manzil qatorining oxiriga quyidagini yozing:
 >
 > - manzil `http://127.0.0.1:8031/ui` boʻlsa (odatda shunday: brauzer `/` dan `/ui` ga oʻzi yoʻnaltiradi), oxiriga `?lang=uz` qoʻshing;
 > - manzil `http://127.0.0.1:8031` boʻlsa, oxiriga `/ui?lang=uz` qoʻshing.

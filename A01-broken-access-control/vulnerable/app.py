@@ -84,7 +84,8 @@ def admin_users():
 from labui import register_ui  # noqa: E402
 register_ui(app, 'A01 Broken Access Control — vulnerable', notes='Аккаунты: alice / alice123, bob / bob123, admin / Adm1n-lab-pass',
             presets={'POST /login': [('alice', {'username': 'alice', 'password': 'alice123'}), ('bob', {'username': 'bob', 'password': 'bob123'})]},
-            uz={'notes': 'Akkauntlar: alice / alice123, bob / bob123, admin / Adm1n-lab-pass'})
+            uz={'notes': 'Akkauntlar: alice / alice123, bob / bob123, admin / Adm1n-lab-pass'},
+            en={'notes': 'Accounts: alice / alice123, bob / bob123, admin / Adm1n-lab-pass'})
 
 
 if __name__ == "__main__":

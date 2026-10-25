@@ -6,9 +6,10 @@
 эндпоинты в ней всегда совпадают с реальными. В браузере адрес "/"
 перенаправляет на /ui; curl/Postman получают прежний ответ "/".
 
-Языки интерфейса: русский (по умолчанию) и узбекский. Переключатель RU/UZ
-появляется только если лаба передала параметр uz в register_ui; выбор
-запоминается в браузере, его можно задать и в адресе: /ui?lang=uz.
+Языки интерфейса: английский (по умолчанию), русский и узбекский.
+Переключатель EN/RU/UZ появляется, если лаба передала параметры en и/или uz
+в register_ui; выбор запоминается в браузере, его можно задать и в адресе:
+/ui?lang=ru, /ui?lang=uz. Браузер с узбекской локалью открывает узбекский.
 Файл одинаковый во всех лабах (копируйте его целиком).
 """
 import json
@@ -38,17 +39,24 @@ def _endpoints(app, presets_by_lang):
     return out
 
 
-def register_ui(app, title, notes="", presets=None, uz=None):
+def register_ui(app, title, notes="", presets=None, uz=None, en=None):
     """presets: {"POST /login": [("alice", {"username": ...}), ...]}
     значение dict -> тело запроса; str -> добавляется к пути (или заменяет
     его, если начинается с "/").
 
-    uz (необязательно): узбекская версия данных лабы, например
-    {"notes": "...", "presets": {"POST /guestbook": [("yozuv", {...})]}}.
-    Ключи presets из uz заменяют русские списки целиком, остальные берутся
-    из presets без изменений."""
+    notes и presets, переданные напрямую, это русская версия.
+
+    uz, en (необязательно): узбекская и английская версии данных лабы,
+    например {"notes": "...", "presets": {"POST /guestbook": [("entry", {...})]}}.
+    Ключи presets из uz/en заменяют русские списки целиком, остальные берутся
+    из presets без изменений. Если передан en, он становится языком по
+    умолчанию, порядок кнопок: EN, RU, UZ."""
     presets = presets or {}
-    langs = {"ru": {"notes": notes, "presets": presets}}
+    langs = {}
+    if en:
+        langs["en"] = {"notes": en.get("notes", notes),
+                       "presets": {**presets, **en.get("presets", {})}}
+    langs["ru"] = {"notes": notes, "presets": presets}
     if uz:
         langs["uz"] = {"notes": uz.get("notes", notes),
                        "presets": {**presets, **uz.get("presets", {})}}
@@ -73,9 +81,9 @@ def register_ui(app, title, notes="", presets=None, uz=None):
 
 
 _PAGE = r"""<!doctype html>
-<html lang="ru"><head><meta charset="utf-8">
+<html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Лаба</title>
+<title>Lab</title>
 <style>
 :root{--bg:#f6f7f9;--card:#fff;--fg:#1c2330;--mut:#5f6b7a;--line:#d9dee5;
 --acc:#2457d6;--ok:#12805c;--bad:#c2362b;--code:#eef1f5}
@@ -117,7 +125,7 @@ max-height:55vh;overflow:auto}
 a{color:var(--acc)}
 </style></head><body>
 <header><div><h1 id="t"></h1><p id="n"></p></div>
-<div class="lg" id="lg" hidden><button class="s" data-l="ru">RU</button><button class="s" data-l="uz">UZ</button></div></header>
+<div class="lg" id="lg" hidden><button class="s" data-l="en">EN</button><button class="s" data-l="ru">RU</button><button class="s" data-l="uz">UZ</button></div></header>
 <main>
 <section id="eps"><h2 id="h-eps"></h2></section>
 <section id="out">
@@ -135,6 +143,13 @@ a{color:var(--acc)}
 const D2=JSON.parse(document.getElementById('d').textContent);
 const $=(i)=>document.getElementById(i);
 const S={
+en:{eps:'Endpoints',out:'Server response',send_left:'Send a request from the left.',
+ck:'Cookies of this site',cv:'name=value',set:'Set',clear:'Clear',
+ck_hint:'Only cookies without the HttpOnly flag are visible. A cookie set here is sent with the following requests.',
+empty:'(empty)',send:'Send',body_ph:'{"key": "value"}',presets:'examples',
+newtab:'open in a new tab ↗',ms:' ms',empty_body:'(empty body)',
+redir:'  ·  redirected to ',neterr:'Network error: ',helpers:'Lab helpers',
+helpers_hint:'They imitate the environment (reset, a "compromised" CDN, a mirror, etc.) and are not part of the application.'},
 ru:{eps:'Эндпоинты',out:'Ответ сервера',send_left:'Отправьте запрос слева.',
 ck:'Cookie этого сайта',cv:'имя=значение',set:'Задать',clear:'Очистить',
 ck_hint:'Видны только cookie без флага HttpOnly. Заданная здесь cookie уходит со следующими запросами.',
