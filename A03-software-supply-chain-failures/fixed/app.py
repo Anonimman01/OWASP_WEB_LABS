@@ -5,6 +5,7 @@
 """
 from importlib.metadata import PackageNotFoundError, version
 
+import os
 from flask import Flask, jsonify
 
 app = Flask(__name__)
@@ -36,5 +37,12 @@ def deps():
     return jsonify(installed_versions())
 
 
+# Учебный интерфейс /ui: не часть уязвимости, одинаков в vulnerable и fixed
+from labui import register_ui  # noqa: E402
+register_ui(app, 'A03 Software Supply Chain Failures — fixed', notes='Приложение показывает установленные версии зависимостей: /deps.',
+            presets={})
+
+
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+    app.run(host=os.environ.get("HOST", "127.0.0.1"),
+            port=int(os.environ.get("PORT", "5000")), debug=False)

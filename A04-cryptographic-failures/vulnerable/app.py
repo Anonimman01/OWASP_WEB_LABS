@@ -162,5 +162,12 @@ def lab_dump():
     )
 
 
+# Учебный интерфейс /ui: не часть уязвимости, одинаков в vulnerable и fixed
+from labui import register_ui  # noqa: E402
+register_ui(app, 'A04 Cryptographic Failures — vulnerable', notes='Аккаунты: alice / sunshine, bob / qwerty',
+            presets={'POST /login': [('alice', {'username': 'alice', 'password': 'sunshine'})], 'POST /register': [('новый', {'username': 'carol', 'password': 'Str0ng-pass-1'})], 'POST /cards': [('тестовая карта', {'number': '4242424242424242'})], 'POST /reset-request': [('alice', {'username': 'alice'})]})
+
+
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+    app.run(host=os.environ.get("HOST", "127.0.0.1"),
+            port=int(os.environ.get("PORT", "5000")), debug=False)

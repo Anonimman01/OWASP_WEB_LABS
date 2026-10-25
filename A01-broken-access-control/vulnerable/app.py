@@ -2,6 +2,7 @@
 
 Только для обучения. Не публикуйте это приложение в интернете.
 """
+import os
 from flask import Flask, jsonify, request, session
 
 app = Flask(__name__)
@@ -79,5 +80,12 @@ def admin_users():
     )
 
 
+# Учебный интерфейс /ui: не часть уязвимости, одинаков в vulnerable и fixed
+from labui import register_ui  # noqa: E402
+register_ui(app, 'A01 Broken Access Control — vulnerable', notes='Аккаунты: alice / alice123, bob / bob123, admin / Adm1n-lab-pass',
+            presets={'POST /login': [('alice', {'username': 'alice', 'password': 'alice123'}), ('bob', {'username': 'bob', 'password': 'bob123'})]})
+
+
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+    app.run(host=os.environ.get("HOST", "127.0.0.1"),
+            port=int(os.environ.get("PORT", "5000")), debug=False)

@@ -125,5 +125,12 @@ def guestbook():
     return html_page(f"<h1>Гостевая книга</h1><ul>{items}</ul>")
 
 
+# Учебный интерфейс /ui: не часть уязвимости, одинаков в vulnerable и fixed
+from labui import register_ui  # noqa: E402
+register_ui(app, 'A05 Injection — fixed', notes='Аккаунт: alice / alice123',
+            presets={'POST /login': [('alice', {'username': 'alice', 'password': 'alice123'})], 'GET /products': [('q=a', '?q=a')], 'GET /search': [('q=привет', '?q=привет')], 'POST /guestbook': [('запись', {'name': 'Аня', 'message': 'Привет!'})]})
+
+
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+    app.run(host=os.environ.get("HOST", "127.0.0.1"),
+            port=int(os.environ.get("PORT", "5000")), debug=False)

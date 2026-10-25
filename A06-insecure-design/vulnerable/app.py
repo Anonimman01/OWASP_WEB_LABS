@@ -198,6 +198,12 @@ def reset_confirm():
     return jsonify(ok=True, message="пароль изменён")
 
 
+# Учебный интерфейс /ui: не часть уязвимости, одинаков в vulnerable и fixed
+from labui import register_ui  # noqa: E402
+register_ui(app, 'A06 Insecure Design — vulnerable', notes='Аккаунт: alice / alice123 (баланс $100)',
+            presets={'POST /login': [('alice', {'username': 'alice', 'password': 'alice123'})], 'POST /orders': [('1 кружка', {'items': [{'product_id': 1, 'quantity': 1}], 'coupons': []})], 'POST /password-reset/request': [('alice', {'username': 'alice'})]})
+
+
 if __name__ == "__main__":
     app.run(host=os.environ.get("HOST", "127.0.0.1"),
             port=int(os.environ.get("PORT", "5000")), debug=False)

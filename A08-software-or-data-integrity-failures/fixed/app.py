@@ -286,6 +286,12 @@ def cdn_compromise():
     return jsonify(ok=True, note="widget.js подменён")
 
 
+# Учебный интерфейс /ui: не часть уязвимости, одинаков в vulnerable и fixed
+from labui import register_ui  # noqa: E402
+register_ui(app, 'A08 Integrity Failures — fixed', notes='Аккаунты: alice / alice123, admin / Adm1n-lab-pass',
+            presets={'POST /login': [('alice', {'username': 'alice', 'password': 'alice123'})], 'POST /buy': [('тариф basic', {'plan': 'basic'})]})
+
+
 if __name__ == "__main__":
     app.run(host=os.environ.get("HOST", "127.0.0.1"),
             port=int(os.environ.get("PORT", "5000")), debug=False)

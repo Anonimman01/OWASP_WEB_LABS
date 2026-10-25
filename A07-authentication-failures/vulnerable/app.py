@@ -191,6 +191,12 @@ def change_password(username, user):
     return jsonify(ok=True, message="пароль изменён")
 
 
+# Учебный интерфейс /ui: не часть уязвимости, одинаков в vulnerable и fixed
+from labui import register_ui  # noqa: E402
+register_ui(app, 'A07 Authentication Failures — vulnerable', notes='Аккаунты: alice / alice-Good-Pass1, bob, admin',
+            presets={'POST /login': [('alice', {'username': 'alice', 'password': 'alice-Good-Pass1', 'remember': False})], 'POST /register': [('новый', {'username': 'carol', 'password': 'Str0ng-Pass-2025!'})], 'POST /change-password': [('новый пароль', {'new_password': 'New-Pass-2025!'})]})
+
+
 if __name__ == "__main__":
     app.run(host=os.environ.get("HOST", "127.0.0.1"),
             port=int(os.environ.get("PORT", "5000")), debug=False)
