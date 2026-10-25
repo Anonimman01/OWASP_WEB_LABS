@@ -1,11 +1,11 @@
-🌐 [Русский](./README.md) · **Oʻzbekcha**
+🌐 [English](./README.md) · [Русский](./README.ru.md) · **Oʻzbekcha**
 
 # OWASP Top 10:2025 — oʻquv laboratoriyalari
 
 Har bir **[OWASP Top 10:2025](https://owasp.org/Top10/2025/0x00_2025-Introduction/)** toifasi uchun bittadan, jami oʻnta lokal laboratoriya ishi.
 Format «**buz → tuzat**»: har bir laboratoriyada bir ilovaning ikki versiyasi, zaif va tuzatilgani, bir vaqtda ishga tushadi. Siz birinchisidagi nuqsonlarni topasiz, keyin uni tuzatilgani bilan solishtirib, har bir teshik aynan nima bilan yopilganini koʻrasiz.
 
-Hujjatlar rus tilida yozilgan. Barcha laboratoriyalar (A01–A10) va shu README uchun oʻzbekcha (lotin alifbosida) tarjima ham bor. Litsenziya: MIT.
+Laboratoriyalar hujjatlarining asosiy tili rus tili; barcha laboratoriyalar (A01–A10) uchun oʻzbekcha (lotin alifbosida) tarjima ham bor. Shu README ingliz, rus va oʻzbek tillarida mavjud. Litsenziya: MIT.
 
 > ⚠️ **Muhim.** Ushbu repozitoriydagi ilovalar **ataylab zaif qilingan**.
 > - Ularni faqat lokal (`127.0.0.1`) yoki izolyatsiyalangan muhitda (Docker, virtual mashina) ishga tushiring.
@@ -158,7 +158,7 @@ Ayrim laboratoriyalarda qoʻshimcha fayllar bor: masalan, A04 da `wordlist.txt`,
 
 ## Tillar
 
-Barcha laboratoriyalar (A01–A10) hujjatlari ikki tilda mavjud: rus tilida (`README.md`, `SOLUTION.md`) va oʻzbek tilida, lotin alifbosida (`README.uz.md`, `SOLUTION.uz.md`). Har bir fayl tepasida tilni almashtirish havolasi bor. Shu README ham ikki tilda: `README.md` va `README.uz.md`.
+Barcha laboratoriyalar (A01–A10) hujjatlari ikki tilda mavjud: rus tilida (`README.md`, `SOLUTION.md`) va oʻzbek tilida, lotin alifbosida (`README.uz.md`, `SOLUTION.uz.md`). Ildiz README esa uch tilda: inglizcha (`README.md`), ruscha (`README.ru.md`) va oʻzbekcha (`README.uz.md`). Har bir fayl tepasida tilni almashtirish havolasi bor.
 
 Barcha laboratoriyalarda `/ui` sahifasi ham ikki tilli, oʻtish usuli [yuqorida](#interfeys-tili-uz) tushuntirilgan. Faqat qobiq tarjima qilinadi (sarlavhalar, tugmalar, maslahatlar, namunalar). Ilovalarning oʻz javoblari (qaydlar matni, mahsulot nomlari, xato xabarlari) `SOLUTION` ga mos kelishi uchun oʻzgarishsiz qoladi. Koddagi izohlar (`# ДЕФЕКТ N` / `# FIX N`) rus tilida qoladi.
 

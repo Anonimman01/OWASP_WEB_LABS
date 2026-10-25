@@ -1,58 +1,59 @@
-🌐 **Русский** · [Oʻzbekcha](./README.uz.md)
+🌐 **English** · [Русский](./README.ru.md) · [Oʻzbekcha](./README.uz.md)
 
-# OWASP Top 10:2025 — учебные лаборатории
+# OWASP Top 10:2025: hands-on labs
 
-Десять локальных лабораторных работ, по одной на каждую категорию **[OWASP Top 10:2025](https://owasp.org/Top10/2025/0x00_2025-Introduction/)**.
-Формат «**сломай → почини**»: в каждой лабе запускаются сразу две версии одного приложения, уязвимая и исправленная. Вы находите дефекты в первой, а потом сравниваете её с исправленной и видите, чем именно закрыта каждая дыра.
+Ten local hands-on labs, one for each category of the **[OWASP Top 10:2025](https://owasp.org/Top10/2025/0x00_2025-Introduction/)**.
+The format is **break it → fix it**: every lab starts two versions of the same application side by side, a vulnerable one and a fixed one. You find the flaws in the first, then compare it with the second to see exactly how each hole was closed.
 
-Документация написана на русском языке; для всех лаб A01–A10 и для этого README есть перевод на узбекский (латиницей). Лицензия: MIT.
+The lab documentation is written in Russian and translated into Uzbek (Latin script); this README is available in English, Russian and Uzbek (see [Languages](#languages)). License: MIT.
 
-> ⚠️ **Важно.** Приложения в этом репозитории **намеренно уязвимы**.
-> - Запускайте их только локально (`127.0.0.1`) или в изолированной среде (Docker, виртуальная машина).
-> - **Никогда не выкладывайте их в интернет.** Порты в `docker-compose.yml` привязаны к `127.0.0.1` как раз для этого.
-> - Применяйте полученные знания только на своих системах или на тех, где у вас есть явное разрешение на тестирование.
-> - Все данные в лабах вымышленные: пользователи, пароли, номера карт и секреты.
+> ⚠️ **Important.** The applications in this repository are **intentionally vulnerable**.
+> - Run them only locally (`127.0.0.1`) or in an isolated environment (Docker, a virtual machine).
+> - **Never expose them to the internet.** The ports in `docker-compose.yml` are bound to `127.0.0.1` for exactly this reason.
+> - Apply what you learn only to your own systems or to systems where you have explicit permission to test.
+> - All data in the labs is fictional: users, passwords, card numbers and secrets.
 
-## Содержание
+## Contents
 
-- [Список лаб](#список-лаб)
-- [Быстрый старт](#быстрый-старт)
-- [Как проходить лабу](#как-проходить-лабу)
-- [Как устроена каждая лаба](#как-устроена-каждая-лаба)
-- [Общие соглашения](#общие-соглашения)
-- [Языки](#языки)
-- [Решения и спойлеры](#решения-и-спойлеры)
-- [Решение проблем](#решение-проблем)
-- [Полезные ссылки](#полезные-ссылки)
+- [Lab list](#lab-list)
+- [Quick start](#quick-start)
+- [How to work through a lab](#how-to-work-through-a-lab)
+- [Structure of each lab](#structure-of-each-lab)
+- [Common conventions](#common-conventions)
+- [Languages](#languages)
+- [Solutions and spoilers](#solutions-and-spoilers)
+- [Troubleshooting](#troubleshooting)
+- [Useful links](#useful-links)
 
-## Список лаб
+## Lab list
 
-Порты указаны в порядке **vulnerable / fixed**. Все адреса вида `http://127.0.0.1:<порт>`.
+Ports are listed as **vulnerable / fixed**. All addresses look like `http://127.0.0.1:<port>`.
+Lab documentation (README and SOLUTION) is in Russian and Uzbek; the folder links below open the Russian version, and each file has a link to the Uzbek one at the top.
 
-| №   | Лаба | Категория | Что внутри | Порты |
-|-----|------|-----------|------------|-------|
-| A01 | [broken-access-control](./A01-broken-access-control) | Нарушение контроля доступа | Заметочник с ролями: сервер не проверяет, кому принадлежит ресурс и какая у пользователя роль | 8001 / 8002 |
-| A02 | [security-misconfiguration](./A02-security-misconfiguration) | Небезопасная конфигурация | Магазин (API): пароль по умолчанию, лишние открытые файлы, подробные ошибки, нет защитных заголовков | 8011 / 8012 |
-| A03 | [software-supply-chain-failures](./A03-software-supply-chain-failures) | Сбои в цепочке поставок ПО | Безобидное приложение с устаревшими закреплёнными зависимостями; в `fixed/` показан подход с `requirements.in` | 8021 / 8022 |
-| A04 | [cryptographic-failures](./A04-cryptographic-failures) | Криптографические сбои | Аккаунты и банковские карты: слабая криптография, захват аккаунта администратора | 8031 / 8032 |
-| A05 | [injection](./A05-injection) | Инъекции (SQLi, XSS и др.) | Магазин с входом, поиском и гостевой книгой; ввод попадает в SQL и HTML без обработки | 8041 / 8042 |
-| A06 | [insecure-design](./A06-insecure-design) | Небезопасная архитектура | JSON API магазина с аккуратным кодом, но сломанной бизнес-логикой | 8051 / 8052 |
-| A07 | [authentication-failures](./A07-authentication-failures) | Сбои аутентификации | Регистрация, вход, «запомнить меня», смена пароля | 8061 / 8062 |
-| A08 | [software-or-data-integrity-failures](./A08-software-or-data-integrity-failures) | Нарушения целостности ПО и данных | Неподписанные cookie, лицензия, обновление с зеркала и webhook | 8071 / 8072 |
-| A09 | [logging-and-alerting-failures](./A09-logging-and-alerting-failures) | Сбои логирования и оповещений | Атаку не видно в логах: нет записей, log injection, секреты в логе, нет алертов | 8081 / 8082 |
-| A10 | [mishandling-of-exceptional-conditions](./A10-mishandling-of-exceptional-conditions) | Неверная обработка исключительных ситуаций | Подробные ошибки, fail-open, операции без отката, отсутствие лимитов | 8091 / 8092 |
+| №   | Lab | Category | What is inside | Ports |
+|-----|-----|----------|----------------|-------|
+| A01 | [broken-access-control](./A01-broken-access-control) | Broken Access Control | A notes app with roles: the server does not check who owns a resource or what role the user has | 8001 / 8002 |
+| A02 | [security-misconfiguration](./A02-security-misconfiguration) | Security Misconfiguration | A shop (API): default password, extra exposed files, verbose errors, no security headers | 8011 / 8012 |
+| A03 | [software-supply-chain-failures](./A03-software-supply-chain-failures) | Software Supply Chain Failures | A harmless app with outdated pinned dependencies; `fixed/` shows the `requirements.in` approach | 8021 / 8022 |
+| A04 | [cryptographic-failures](./A04-cryptographic-failures) | Cryptographic Failures | Accounts and bank cards: weak cryptography, taking over the administrator account | 8031 / 8032 |
+| A05 | [injection](./A05-injection) | Injection (SQLi, XSS, etc.) | A shop with login, search and a guestbook; input reaches SQL and HTML unprocessed | 8041 / 8042 |
+| A06 | [insecure-design](./A06-insecure-design) | Insecure Design | A shop JSON API with clean code but broken business logic | 8051 / 8052 |
+| A07 | [authentication-failures](./A07-authentication-failures) | Authentication Failures | Registration, login, "remember me", password change | 8061 / 8062 |
+| A08 | [software-or-data-integrity-failures](./A08-software-or-data-integrity-failures) | Software or Data Integrity Failures | Unsigned cookie, license, mirror update and webhook | 8071 / 8072 |
+| A09 | [logging-and-alerting-failures](./A09-logging-and-alerting-failures) | Security Logging and Alerting Failures | The attack is invisible in the logs: missing records, log injection, secrets in the log, no alerts | 8081 / 8082 |
+| A10 | [mishandling-of-exceptional-conditions](./A10-mishandling-of-exceptional-conditions) | Mishandling of Exceptional Conditions | Verbose errors, fail-open, operations without rollback, no limits | 8091 / 8092 |
 
-Статус: ✅ готово для всех десяти лаб.
+Status: ✅ all ten labs are ready.
 
-## Быстрый старт
+## Quick start
 
-### Что нужно
+### What you need
 
 - Git
-- Docker с плагином Compose **или** Python 3.11+ (без Docker)
-- Для команд `curl`: в Windows используйте Git Bash, WSL или `curl.exe`. В PowerShell `curl` это псевдоним для другой команды, и примеры из лаб в нём не заработают как есть.
+- Docker with the Compose plugin **or** Python 3.11+ (without Docker)
+- For `curl` commands: on Windows use Git Bash, WSL or `curl.exe`. In PowerShell `curl` is an alias for a different command, so the examples from the labs will not work there as they are.
 
-### Запуск через Docker
+### Run with Docker
 
 Bash / Git Bash / WSL:
 
@@ -70,11 +71,11 @@ cd OWASP_WEB_LABS\A01-broken-access-control
 docker compose up --build
 ```
 
-Обе версии (уязвимая и исправленная) поднимаются одновременно на портах из таблицы выше. Остановить: `Ctrl+C`, затем `docker compose down`.
+Both versions (vulnerable and fixed) start at the same time on the ports from the table above. To stop: `Ctrl+C`, then `docker compose down`.
 
-### Запуск без Docker
+### Run without Docker
 
-Нужен Python 3.11+. Лучше использовать виртуальное окружение. Порт задаётся переменной `PORT` (по умолчанию `5000`).
+You need Python 3.11+. A virtual environment is recommended. The port is set with the `PORT` variable (default `5000`).
 
 Bash / Git Bash / WSL:
 
@@ -96,70 +97,73 @@ $env:PORT = 8081
 python vulnerable\app.py               # http://127.0.0.1:8081
 ```
 
-Чтобы запустить исправленную версию, замените `vulnerable` на `fixed` (и порт на `8082`). Зависимости у версий могут отличаться, поэтому ставьте `requirements.txt` именно той версии, которую запускаете. В A03 это разные версии Flask: в `vulnerable/` он нарочно устаревший.
+To run the fixed version, replace `vulnerable` with `fixed` (and the port with `8082`). The two versions may have different dependencies, so install the `requirements.txt` of the version you are running. In A03 the Flask versions differ on purpose: `vulnerable/` uses an outdated one.
 
-## Как проходить лабу
+## How to work through a lab
 
-1. Откройте `README.md` нужной лабы и прочитайте, о чём она и какие там тестовые аккаунты.
-2. Запустите лабу и откройте адрес `vulnerable`. В браузере `/` перенаправляет на страницу `/ui` с формами для всех эндпоинтов. Те же запросы можно отправлять через `curl` или Postman.
-3. Выполните пункты из раздела «Задание». Если застряли, раскройте подсказки в `<details>`.
-4. В `vulnerable/app.py` дефекты помечены комментариями `# ДЕФЕКТ N`. Найдите их и сформулируйте нарушенное правило.
-5. Откройте `fixed/app.py`: исправления помечены `# FIX N`, номер совпадает с номером дефекта. Повторите те же запросы на `fixed` и убедитесь, что атака больше не работает, а обычные сценарии работают.
-6. Только после этого читайте `SOLUTION.md`.
+1. Open the lab's `README.md` and read what it is about and which test accounts it has.
+2. Start the lab and open the `vulnerable` address. In a browser, `/` redirects to the `/ui` page with forms for all endpoints. The same requests can be sent with `curl` or Postman.
+3. Complete the items in the "Task" section (in the Russian README: «Задание»; in the Uzbek one: «Topshiriq»). If you get stuck, expand the hints in `<details>`.
+4. In `vulnerable/app.py` the flaws are marked with `# ДЕФЕКТ N` comments (Russian for "DEFECT N"). Find them and state the rule that was violated.
+5. Open `fixed/app.py`: the fixes are marked `# FIX N`, and the number matches the number of the flaw. Repeat the same requests against `fixed` and confirm that the attack no longer works while normal scenarios still do.
+6. Only after that read `SOLUTION.md`.
 
-## Как устроена каждая лаба
+## Structure of each lab
 
 ```
-AXX-название-категории/
-  README.md              описание, задание, эндпоинты, подсказки
-  SOLUTION.md            разбор решения (со спойлерами)
+AXX-category-name/
+  README.md              description, task, endpoints, hints (Russian)
+  README.uz.md           Uzbek translation
+  SOLUTION.md            walkthrough (with spoilers)
+  SOLUTION.uz.md         Uzbek translation
   Dockerfile             python:3.11-slim, ARG VARIANT, ENV HOST=0.0.0.0 PORT=5000
-  docker-compose.yml     два сервиса (vulnerable и fixed), порты на 127.0.0.1
+  docker-compose.yml     two services (vulnerable and fixed), ports on 127.0.0.1
   vulnerable/
-    app.py               уязвимая версия
-    labui.py             учебный интерфейс /ui
+    app.py               vulnerable version
+    labui.py             the /ui learning interface
     requirements.txt
   fixed/
-    app.py               исправленная версия
+    app.py               fixed version
     labui.py
     requirements.txt
 ```
 
-В отдельных лабах есть дополнительные файлы: например, `wordlist.txt` в A04, `backup.sql` в `vulnerable/` A02, `requirements.in` в `fixed/` A03.
+Some labs have extra files: for example `wordlist.txt` in A04, `backup.sql` in A02's `vulnerable/`, `requirements.in` in A03's `fixed/`.
 
-## Общие соглашения
+## Common conventions
 
-- **Стек.** Flask, как правило JSON API. Адрес и порт берутся из переменных окружения `HOST` и `PORT` (по умолчанию `127.0.0.1:5000`).
-- **Страница `/ui`.** Учебная обвязка, не часть уязвимости. Строится по списку маршрутов Flask, поэтому одинакова для обеих версий. Если в браузере вместо неё видите JSON, откройте `/ui` вручную.
-- **Флаги.** В ответах `vulnerable` встречаются строки вида `FLAG{aNN_...}`. Это подтверждение, что дефект найден и эксплуатирован.
-- **Сброс состояния.** В лабах A06–A10 есть `POST /reset-lab`, возвращающий данные к исходным. В остальных лабах состояние сбрасывается перезапуском приложения.
-- **Вспомогательные эндпоинты.** Маршруты, имитирующие действия атакующего или внешней системы (например, зеркало обновлений в A08), подписаны в коде как лабораторные помощники и не являются частью уязвимости.
-- **Cookie.** У `vulnerable` и `fixed` разные имена cookie, потому что разные порты на `127.0.0.1` делят один набор cookie в браузере.
-- **Пароли.** Для простоты хранятся в открытом виде. Правильное хранение паролей разбирает лаба A04.
-- **Боевых эксплойтов нет.** Лабы показывают дефект на безопасном примере, без готовой эксплуатации вроде RCE через десериализацию.
+- **Stack.** Flask, usually a JSON API. The address and port come from the `HOST` and `PORT` environment variables (default `127.0.0.1:5000`).
+- **The `/ui` page.** A learning wrapper, not part of the vulnerability. It is built from the list of Flask routes, so it is the same for both versions. If you see JSON in the browser instead, open `/ui` manually.
+- **Flags.** Responses of `vulnerable` contain strings like `FLAG{aNN_...}`. They confirm that the flaw was found and exploited.
+- **Resetting state.** Labs A06–A10 have `POST /reset-lab`, which restores the initial data. In the other labs, restart the application to reset the state.
+- **Helper endpoints.** Routes that simulate the actions of an attacker or an external system (for example the update mirror in A08) are labelled in the code as lab helpers and are not part of the vulnerability.
+- **Cookies.** `vulnerable` and `fixed` use different cookie names, because different ports on `127.0.0.1` share one cookie jar in the browser.
+- **Passwords.** For simplicity they are stored in plain text. Proper password storage is covered by lab A04.
+- **No weaponized exploits.** The labs demonstrate each flaw on a safe example, without ready-made exploitation such as RCE through deserialization.
 
-## Языки
+## Languages
 
-Документация всех лаб (A01–A10) и этот README доступны на двух языках: русском (`README.md`, `SOLUTION.md`) и узбекском, латиницей (`README.uz.md`, `SOLUTION.uz.md`). Вверху каждого файла есть ссылка для переключения.
+- **This README** is available in English (`README.md`), Russian (`README.ru.md`) and Uzbek (`README.uz.md`). Each file has a language switcher on its first line.
+- **Lab documentation** (A01–A10) is available in Russian (`README.md`, `SOLUTION.md`) and Uzbek, Latin script (`README.uz.md`, `SOLUTION.uz.md`). English translations of the lab documents are not available yet.
+- **The `/ui` page** of every lab has a **RU / UZ** switcher in the top right corner. The choice is remembered in the browser, and it can also be set in the address bar by appending `?lang=uz` (if the address ends with `/ui`) or `/ui?lang=uz` (if it does not), for example `http://127.0.0.1:8041/ui?lang=uz`. A browser with an Uzbek locale opens the Uzbek version right away.
+- Only the interface shell is translated (headings, buttons, hints, examples). The applications' own responses (note texts, product names, error messages) are left as they are so that they match `SOLUTION`. Code comments (`# ДЕФЕКТ N` / `# FIX N`) stay in Russian.
 
-У всех лаб страница `/ui` тоже двуязычная: в правом верхнем углу кнопки **RU / UZ**. Выбор запоминается в браузере, язык можно задать и в адресе; браузер с узбекской локалью сразу откроет узбекскую версию. Если локаль браузера, например, русская, а нужен узбекский: перейдите в окно с лабой и допишите в конец адреса `?lang=uz` (если адрес заканчивается на `/ui`) или `/ui?lang=uz` (если адрес без `/ui`), например `http://127.0.0.1:8041/ui?lang=uz`; либо нажмите кнопку **UZ**. Переводится только оболочка (заголовки, кнопки, подсказки, примеры); ответы самих приложений (тексты заметок, названия товаров, сообщения об ошибках) остаются как есть, чтобы совпадать с `SOLUTION`. Комментарии в коде (`# ДЕФЕКТ N` / `# FIX N`) остаются на русском.
+## Solutions and spoilers
 
-## Решения и спойлеры
+For every flaw, the `SOLUTION.md` of each lab gives the commands, the violated rule and a description of the fix, followed by a summary. Read it after your own attempt.
 
-`SOLUTION.md` в каждой лабе содержит для каждого дефекта команды, нарушенное правило и описание исправления, а в конце итог. Читайте его после самостоятельной попытки.
+## Troubleshooting
 
-## Решение проблем
+- **Port already in use.** Stop the other lab or change the left-hand port in `docker-compose.yml` (for example `127.0.0.1:9001:5000`). Without Docker, set a different `PORT`.
+- **Cookies "stick" between labs.** Open the page in a private window or clear the cookies for `127.0.0.1`.
+- **`curl` behaves strangely in PowerShell.** Use `curl.exe`, Git Bash or WSL.
+- **Docker does not start.** Check that Docker Desktop is running and that the `docker compose` command is available (not only `docker-compose`).
 
-- **Порт занят.** Остановите другую лабу или измените порт слева в `docker-compose.yml` (например, `127.0.0.1:9001:5000`). Без Docker задайте другое значение `PORT`.
-- **Cookie «залипли» между лабами.** Откройте страницу в режиме инкогнито или очистите cookie для `127.0.0.1`.
-- **`curl` в PowerShell ведёт себя странно.** Используйте `curl.exe`, Git Bash или WSL.
-- **Docker не стартует.** Проверьте, что Docker Desktop запущен и доступна команда `docker compose` (а не только `docker-compose`).
-
-## Полезные ссылки
+## Useful links
 
 - [OWASP Top 10:2025](https://owasp.org/Top10/2025/0x00_2025-Introduction/)
-- [OWASP ASVS](https://owasp.org/www-project-application-security-verification-standard/) и [Web Security Testing Guide](https://owasp.org/www-project-web-security-testing-guide/) для более глубокого изучения
+- [OWASP ASVS](https://owasp.org/www-project-application-security-verification-standard/) and the [Web Security Testing Guide](https://owasp.org/www-project-web-security-testing-guide/) for deeper study
 
-## Лицензия
+## License
 
 [MIT](./LICENSE)
