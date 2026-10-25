@@ -39,8 +39,9 @@ def register_ui(app, title, notes="", presets=None):
 
     @app.before_request
     def _ui_redirect():
+        # браузер всегда называет text/html в Accept; curl/Postman шлют */*
         if (request.path == "/" and request.method == "GET"
-                and request.accept_mimetypes.best == "text/html"):
+                and "text/html" in request.headers.get("Accept", "")):
             return redirect("/ui")
 
     @app.get("/ui")
