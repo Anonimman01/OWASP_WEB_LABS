@@ -50,6 +50,3 @@ docker compose up
 - [OWASP Top 10:2025](https://owasp.org/Top10/2025/0x00_2025-Introduction/)
 - OWASP ASVS и Web Security Testing Guide — для более глубокого изучения
 
-## Лицензия
-
-Рекомендуется MIT или Apache-2.0 (добавьте файл `LICENSE`). Проект предназначен только для обучения.
