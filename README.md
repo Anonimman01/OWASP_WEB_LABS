@@ -19,7 +19,7 @@
 | A05 | [A05-injection](./A05-injection) | Инъекции (SQLi, XSS и др.) | 8041 / 8042 | ✅ готово |
 | A06 | [A06-insecure-design](./A06-insecure-design) | Небезопасная архитектура | 8051 / 8052 | ✅ готово |
 | A07 | [A07-authentication-failures](./A07-authentication-failures) | Сбои аутентификации | 8061 / 8062 | ✅ готово |
-| A08 | [A08-software-or-data-integrity-failures](./A08-software-or-data-integrity-failures) | Нарушения целостности ПО и данных | — | 🕓 запланировано |
+| A08 | [A08-software-or-data-integrity-failures](./A08-software-or-data-integrity-failures) | Нарушения целостности ПО и данных | 8071 / 8072 | ✅ готово |
 | A09 | [A09-logging-and-alerting-failures](./A09-logging-and-alerting-failures) | Сбои логирования и оповещений | — | 🕓 запланировано |
 | A10 | [A10-mishandling-of-exceptional-conditions](./A10-mishandling-of-exceptional-conditions) | Неверная обработка исключительных ситуаций | — | 🕓 запланировано |
 
