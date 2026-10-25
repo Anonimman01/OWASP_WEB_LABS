@@ -1,48 +1,48 @@
-🌐 **Русский** · [Oʻzbekcha](./README.uz.md)
+🌐 **English** · [Русский](./README.ru.md) · [Oʻzbekcha](./README.uz.md)
 
-# A06 — Insecure Design (небезопасная архитектура)
+# A06 — Insecure Design
 
-**Статус:** ✅ готово
+**Status:** ✅ ready
 
-## О чём лаба
-Мини-магазин (JSON API) с аккуратным кодом, но сломанной бизнес-логикой: цена приходит от клиента, количество и купоны не ограничены, шаги заказа можно пропускать, а код сброса пароля перебирается. Здесь нет «одной опасной строки»: исправить это можно только изменив дизайн.
+## About the lab
+A mini web shop (JSON API) with neat code but broken business logic: the price comes from the client, quantity and coupons are unlimited, the order steps can be skipped, and the password reset code can be brute-forced. There is no "one dangerous line" here: this can only be fixed by changing the design.
 
-## Чему научитесь
-- Видеть уязвимости бизнес-логики, которые не найдёт сканер
-- Не доверять клиенту деньги и состояние процесса
-- Моделировать процесс как конечный автомат и угрозы как злоупотребления (abuse cases)
-- Защищать одноразовые коды: лимит попыток, срок жизни, криптостойкая случайность
+## What you will learn
+- To see business logic vulnerabilities that a scanner will not find
+- Not to trust the client with money and process state
+- To model a process as a state machine and threats as abuse cases
+- To protect one-time codes: attempt limit, lifetime, cryptographically strong randomness
 
-## Запуск
+## Running
 
 ```bash
 docker compose up --build
 ```
 
-| Версия | Адрес |
-|--------|-------|
-| vulnerable (уязвимая) | http://127.0.0.1:8051 |
-| fixed (исправленная) | http://127.0.0.1:8052 |
+| Version | Address |
+|---------|---------|
+| vulnerable | http://127.0.0.1:8051 |
+| fixed | http://127.0.0.1:8052 |
 
-Без Docker:
+Without Docker:
 
 ```bash
 pip install -r vulnerable/requirements.txt
 PORT=8051 python vulnerable/app.py   # http://127.0.0.1:8051
 ```
 
-> ⚠️ Приложение уязвимо специально. Запускайте только локально и не публикуйте в интернет.
+> ⚠️ The application is vulnerable on purpose. Run it locally only and do not expose it to the internet.
 
-## Задание
-Тестовые аккаунты: `alice` / `alice123` (баланс $100) и `bob` / `S3cr3t-b0b-pass` (баланс $10 000). Работать удобно через `curl`, Postman или Burp (JSON). `POST /reset-lab` сбрасывает данные лабы.
+## Task
+Test accounts: `alice` / `alice123` (balance $100) and `bob` / `S3cr3t-b0b-pass` (balance $10,000). It is convenient to work with `curl`, Postman or Burp (JSON). `POST /reset-lab` resets the lab data.
 
-1. Закажите «Подарочный набор» (`product_id: 3`, $5000), заплатив за него меньше $1, и получите флаг на `/orders/<id>/ship`.
-2. Увеличьте баланс alice, ничего не продав.
-3. Получите отгрузку заказа, **не оплатив его**.
-4. Захватите аккаунт `bob` через сброс пароля (код «приходит» в лог: `docker compose logs vulnerable`) и объясните, почему сервер не защищён от перебора.
-5. Для каждого найденного дефекта сформулируйте нарушенное *архитектурное* правило, затем сравните с `fixed/` (комментарии `# FIX N`).
+1. Order the "Gift set" (`product_id: 3`, $5000) while paying less than $1 for it, and get the flag at `/orders/<id>/ship`.
+2. Increase alice's balance without selling anything.
+3. Get an order shipped **without paying for it**.
+4. Take over the `bob` account through the password reset (the code "arrives" in the log: `docker compose logs vulnerable`) and explain why the server is not protected against brute force.
+5. For every defect you find, state the *architectural* rule that was violated, then compare with `fixed/` (the `# FIX N` comments).
 
-## Эндпоинты
+## Endpoints
 
 ```
 POST /login                  {"username","password"}
@@ -57,59 +57,59 @@ POST /password-reset/confirm {"username","otp","new_password"}
 POST /reset-lab
 ```
 
-## Подсказки
+## Hints
 
 <details>
-<summary>Подсказка 1 — цена</summary>
+<summary>Hint 1 — price</summary>
 
-Клиент присылает JSON с товарами заказа. Посмотрите внимательно, какие поля
-принимает `POST /orders` для каждой позиции — совпадает ли по смыслу с тем,
-что обычно решает сервер (каталог), а что — клиент (количество)?
+The client sends JSON with the items of the order. Look carefully at which fields
+`POST /orders` accepts for each item: does that match what the server normally
+decides (the catalog) and what the client decides (the quantity)?
 </details>
 
 <details>
-<summary>Подсказка 2 — количество</summary>
+<summary>Hint 2 — quantity</summary>
 
-Что произойдёт с суммой заказа, если `quantity` отрицательное? А если очень
-большое?
+What happens to the order total if `quantity` is negative? And if it is very
+large?
 </details>
 
 <details>
-<summary>Подсказка 3 — купоны</summary>
+<summary>Hint 3 — coupons</summary>
 
-Поле `coupons` — это список. Что если передать один и тот же код в нём
-несколько раз?
+The `coupons` field is a list. What if you pass the same code in it several
+times?
 </details>
 
 <details>
-<summary>Подсказка 4 — порядок шагов</summary>
+<summary>Hint 4 — order of steps</summary>
 
-Эндпоинты `/pay` и `/ship` — отдельные независимые вызовы. Обязательно ли
-вызывать их в этом порядке?
+The `/pay` and `/ship` endpoints are separate, independent calls. Do they have
+to be called in that order?
 </details>
 
 <details>
-<summary>Подсказка 5 — повторная оплата</summary>
+<summary>Hint 5 — paying again</summary>
 
-Можно ли вызвать `/orders/<id>/pay` дважды для одного заказа? Что если у
-заказа отрицательная сумма (см. подсказку 2)?
+Can you call `/orders/<id>/pay` twice for the same order? What if the order has
+a negative total (see hint 2)?
 </details>
 
 <details>
-<summary>Подсказка 6 — сброс пароля</summary>
+<summary>Hint 6 — password reset</summary>
 
-`POST /password-reset/request` «отправляет» код — посмотрите в лог сервера
-(`docker compose logs vulnerable`), сколько в нём цифр. Сколько запросов на
-`/password-reset/confirm` нужно сделать, чтобы перебрать все варианты, и
-ограничивает ли сервер их число?
+`POST /password-reset/request` "sends" a code — look at the server log
+(`docker compose logs vulnerable`) to see how many digits it has. How many
+requests to `/password-reset/confirm` does it take to try every option, and
+does the server limit their number?
 </details>
 
-## Структура
-- `vulnerable/` — уязвимая версия
-- `fixed/` — исправленная версия
-- `SOLUTION.md` — разбор решения (со спойлерами)
-- `docker-compose.yml` — запуск обеих версий
+## Structure
+- `vulnerable/` — the vulnerable version
+- `fixed/` — the fixed version
+- `SOLUTION.md` — the walkthrough (with spoilers)
+- `docker-compose.yml` — runs both versions
 
-## Дальше
+## Further reading
 - [OWASP Top 10:2025](https://owasp.org/Top10/)
-- [OWASP ASVS](https://owasp.org/www-project-application-security-verification-standard/) — раздел V1: архитектура, дизайн и моделирование угроз
+- [OWASP ASVS](https://owasp.org/www-project-application-security-verification-standard/) — section V1: architecture, design and threat modeling

@@ -1,52 +1,52 @@
-🌐 **Русский** · [Oʻzbekcha](./README.uz.md)
+🌐 **English** · [Русский](./README.ru.md) · [Oʻzbekcha](./README.uz.md)
 
-# A10 — Mishandling of Exceptional Conditions (неверная обработка исключительных ситуаций)
+# A10 — Mishandling of Exceptional Conditions
 
-**Статус:** ✅ готово
+**Status:** ✅ ready
 
-## О чём лаба
-Любое приложение иногда ломается: приходят неожиданные данные, падают зависимости, кончаются ресурсы. Вопрос в том, **как** оно ломается. Здесь пять неправильных ответов на сбой: показать клиенту всё про себя, «на всякий случай» разрешить, бросить операцию на полпути, не ограничить запрос по размеру и вывалить текст исключения.
+## About the lab
+Every application breaks sometimes: unexpected data arrives, dependencies fail, resources run out. The question is **how** it breaks. Here are five wrong responses to a failure: show the client everything about yourself, allow "just in case", abandon the operation halfway, not limit a request by size, and dump the exception text.
 
-## Чему научитесь
-- Принципу fail-closed (fail-secure): при сбое проверки доступ закрывается
-- Делать операции атомарными: транзакция и откат вместо «половины» действия
-- Отдавать клиенту нейтральную ошибку с `error_id`, а подробности хранить в логе
-- Проверять размеры и границы входных данных до выделения ресурсов
-- Различать ожидаемые ошибки (обрабатываем по существу) и неожиданные (единый обработчик)
+## What you will learn
+- The fail-closed (fail-secure) principle: when an access check fails, access is denied
+- To make operations atomic: a transaction and rollback instead of "half" of an action
+- To return a neutral error with an `error_id` to the client and keep the details in the log
+- To check the sizes and bounds of input data before allocating resources
+- To tell expected errors (handled on the merits) from unexpected ones (a single handler)
 
-## Запуск
+## Running
 
 ```bash
 docker compose up --build
 ```
 
-| Версия | Адрес |
-|--------|-------|
-| vulnerable (уязвимая) | http://127.0.0.1:8091 |
-| fixed (исправленная) | http://127.0.0.1:8092 |
+| Version | Address |
+|---------|---------|
+| vulnerable | http://127.0.0.1:8091 |
+| fixed | http://127.0.0.1:8092 |
 
-Без Docker:
+Without Docker:
 
 ```bash
 pip install -r vulnerable/requirements.txt
 PORT=8091 python vulnerable/app.py   # http://127.0.0.1:8091
 ```
 
-В браузере `/` открывает страницу `/ui` с формами для всех эндпоинтов. То же самое можно делать через `curl` (в Windows — Git Bash/WSL или `curl.exe`).
+In a browser `/` opens the `/ui` page with forms for all endpoints. You can do the same with `curl` (on Windows: Git Bash/WSL or `curl.exe`).
 
-> ⚠️ Приложение уязвимо специально. Запускайте только локально и не публикуйте в интернет.
+> ⚠️ The application is vulnerable on purpose. Run it locally only and do not expose it to the internet.
 
-## Задание
-Тестовые аккаунты: `alice` / `alice123` (уровень доступа 1) и `bob` / `bob123` (уровень 2). Начальный баланс у обоих 100. `POST /reset-lab` сбрасывает данные лабы и «поднимает» упавший сервис. `GET /_lab/consistency` — лабораторный помощник: он сверяет списания и заказы.
+## Task
+Test accounts: `alice` / `alice123` (access level 1) and `bob` / `bob123` (level 2). Both start with a balance of 100. `POST /reset-lab` resets the lab data and "brings up" a crashed service. `GET /_lab/consistency` is a lab helper: it reconciles charges and orders.
 
-1. Вызовите ошибку в `GET /report` так, чтобы сервер показал больше, чем должен: что именно вы видите в ответе? (флаг в ответе)
-2. Войдите как `alice` и прочитайте документ `3`, хотя у неё нет на него прав (флаг в содержимом). Документы `2` и `4` ей недоступны, а `3` почему-то открылся. Почему?
-3. Закажите три кружки (`POST /orders`, `item_id: 1`, `qty: 3`). Что произойдёт с вашим балансом? Проверьте `GET /_lab/consistency` (флаг).
-4. Выведите сервис из строя **одним** запросом к `POST /thumbnail`, затем убедитесь в этом через `GET /health` (флаг).
-5. Откройте отчёты `GET /reports/q1`, `/reports/q2` и `/reports/archive`. Что вы узнаёте о сервере из текста ошибок?
-6. Повторите всё на `fixed` (порт 8092) и сравните ответы и поведение. Заглядывайте в консоль сервера: там остаются подробности, которых нет в ответах.
+1. Cause an error in `GET /report` so that the server shows more than it should: what exactly do you see in the response? (the flag is in the response)
+2. Log in as `alice` and read document `3`, although she has no rights to it (the flag is in the content). Documents `2` and `4` are closed to her, but `3` somehow opened. Why?
+3. Order three mugs (`POST /orders`, `item_id: 1`, `qty: 3`). What happens to your balance? Check `GET /_lab/consistency` (the flag).
+4. Take the service down with **one** request to `POST /thumbnail`, then confirm it through `GET /health` (the flag).
+5. Open the reports `GET /reports/q1`, `/reports/q2` and `/reports/archive`. What do you learn about the server from the error texts?
+6. Repeat everything on `fixed` (port 8092) and compare the responses and behavior. Look at the server console: it keeps details that are not in the responses.
 
-## Эндпоинты
+## Endpoints
 
 ```
 POST /login                  {"username","password"}
@@ -56,55 +56,55 @@ GET  /report?month=<1-12>
 GET  /items
 POST /orders                 {"item_id","qty"}
 POST /thumbnail              {"width","height"}
-GET  /reports/<имя>
+GET  /reports/<name>
 GET  /health
-GET  /_lab/consistency       (помощник: сверка списаний и заказов)
+GET  /_lab/consistency       (helper: reconciling charges and orders)
 POST /reset-lab
 ```
 
-## Подсказки
+## Hints
 
 <details>
-<summary>Подсказка 1 — что находится в ответе об ошибке</summary>
+<summary>Hint 1 — what is in the error response</summary>
 
-Подайте в `month` не число. Прочитайте ответ целиком: кроме самой ошибки там есть ещё два поля. Что в них лежит и кому это может пригодиться?
+Pass something that is not a number in `month`. Read the whole response: besides the error itself there are two more fields. What is in them and who could find that useful?
 </details>
 
 <details>
-<summary>Подсказка 2 — документ с «особенностью»</summary>
+<summary>Hint 2 — a document with a "quirk"</summary>
 
-У каждого документа есть поле `level`. Сравните документы `2`, `3` и `4`: чем документ `3` отличается от остальных и что делает проверка доступа, если не может сравнить значения?
+Every document has a `level` field. Compare documents `2`, `3` and `4`: how does document `3` differ from the others, and what does the access check do if it cannot compare the values?
 </details>
 
 <details>
-<summary>Подсказка 3 — порядок шагов</summary>
+<summary>Hint 3 — the order of steps</summary>
 
-В какой последовательности `POST /orders` списывает деньги, проверяет склад и создаёт заказ? Что остаётся в базе, если упасть между первым и вторым шагом?
+In what sequence does `POST /orders` charge the money, check the stock and create the order? What is left in the database if it fails between the first and the second step?
 </details>
 
 <details>
-<summary>Подсказка 4 — размер запроса</summary>
+<summary>Hint 4 — request size</summary>
 
-Сервису «доступно» 64 МБ, а на картинку нужно 4 байта на пиксель. Какие значения `width` и `height` проверяет приложение до выделения памяти?
+The service has "64 MB available", and an image needs 4 bytes per pixel. Which `width` and `height` values does the application check before allocating memory?
 </details>
 
 <details>
-<summary>Подсказка 5 — три отчёта, три ошибки</summary>
+<summary>Hint 5 — three reports, three errors</summary>
 
-Сравните тексты ошибок для `q2` (файла нет) и `archive` (на месте файла каталог). Что в них общего и чем это полезно тому, кто изучает сервер?
+Compare the error texts for `q2` (the file does not exist) and `archive` (there is a directory in place of the file). What do they have in common and how is that useful to someone studying the server?
 </details>
 
-## Что сравнить в fixed/
-Откройте `fixed/app.py` и найдите комментарии `# FIX N`: номер совпадает с номером дефекта во `vulnerable/app.py`.
+## What to compare in fixed/
+Open `fixed/app.py` and find the `# FIX N` comments: the number matches the number of the defect in `vulnerable/app.py`.
 
-## Структура
-- `vulnerable/` — уязвимая версия
-- `fixed/` — исправленная версия
-- `SOLUTION.md` — разбор решения (со спойлерами)
-- `docker-compose.yml` — запуск обеих версий
+## Structure
+- `vulnerable/` — the vulnerable version
+- `fixed/` — the fixed version
+- `SOLUTION.md` — the walkthrough (with spoilers)
+- `docker-compose.yml` — runs both versions
 
-## Дальше
+## Further reading
 - [OWASP Top 10:2025](https://owasp.org/Top10/)
 - [OWASP Cheat Sheet: Error Handling](https://cheatsheetseries.owasp.org/cheatsheets/Error_Handling_Cheat_Sheet.html)
 - [OWASP: Improper Error Handling](https://owasp.org/www-community/Improper_Error_Handling)
-- [CWE-636: Not Failing Securely («Failing Open»)](https://cwe.mitre.org/data/definitions/636.html)
+- [CWE-636: Not Failing Securely ("Failing Open")](https://cwe.mitre.org/data/definitions/636.html)

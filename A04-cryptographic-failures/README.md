@@ -1,63 +1,63 @@
-🌐 **Русский** · [Oʻzbekcha](./README.uz.md)
+🌐 **English** · [Русский](./README.ru.md) · [Oʻzbekcha](./README.uz.md)
 
-# A04 — Cryptographic Failures (криптографические сбои)
+# A04 — Cryptographic Failures
 
-**Статус:** ✅ готово
+**Status:** ✅ ready
 
-## О чём лаба
-Сервис с аккаунтами и привязанными банковскими картами (все данные вымышленные, номера карт тестовые). Безопасность построена на криптографии, но сделана с ошибками: слабое хранение паролей, предсказуемые токены, слабый ключ сессии, данные карт без шифрования.
+## About the lab
+A service with accounts and linked bank cards (all data is fictional, the card numbers are test ones). Security is built on cryptography, but done with mistakes: weak password storage, predictable tokens, a weak session key, card data stored unencrypted.
 
-## Чему научитесь
-- Отличать безопасное хранение паролей (scrypt, bcrypt, Argon2 с солью) от небезопасного (MD5 без соли)
-- Понимать, чем опасны предсказуемые токены и слабые секретные ключи
-- Шифровать чувствительные данные и не отдавать их наружу без необходимости
-- Хранить секреты вне исходного кода
+## What you will learn
+- To tell secure password storage (scrypt, bcrypt, Argon2 with a salt) from insecure (unsalted MD5)
+- Why predictable tokens and weak secret keys are dangerous
+- To encrypt sensitive data and not expose it unnecessarily
+- To keep secrets out of the source code
 
-## Запуск
+## Running
 
 ```bash
 docker compose up --build
 ```
 
-| Версия | Адрес |
-|--------|-------|
-| vulnerable (уязвимая) | http://127.0.0.1:8031 |
-| fixed (исправленная) | http://127.0.0.1:8032 |
+| Version | Address |
+|---------|---------|
+| vulnerable | http://127.0.0.1:8031 |
+| fixed | http://127.0.0.1:8032 |
 
-Без Docker:
+Without Docker:
 
 ```bash
-pip install -r vulnerable/requirements.txt   # для fixed: fixed/requirements.txt
+pip install -r vulnerable/requirements.txt   # for fixed: fixed/requirements.txt
 python vulnerable/app.py                     # http://127.0.0.1:5000
 ```
 
-> ⚠️ Приложение уязвимо специально. Запускайте только локально и не публикуйте в интернет.
-> В лабе нет HTTPS, чтобы не усложнять запуск. В реальной системе весь трафик должен идти по TLS, а cookie должны иметь флаг `Secure`.
+> ⚠️ The application is vulnerable on purpose. Run it locally only and do not expose it to the internet.
+> The lab has no HTTPS, to keep the setup simple. In a real system all traffic must go over TLS and cookies must have the `Secure` flag.
 
-## Задание
-Тестовые аккаунты: `alice` / `sunshine`, `bob` / `qwerty`. У каждого есть привязанная карта.
+## Task
+Test accounts: `alice` / `sunshine`, `bob` / `qwerty`. Each has a linked card.
 
-Служебные эндпоинты `GET /_lab/dump` (имитация утечки базы) и `GET /_lab/outbox` (имитация почтового ящика) нужны только для обучения.
+The helper endpoints `GET /_lab/dump` (imitates a database leak) and `GET /_lab/outbox` (imitates a mailbox) exist for learning only.
 
-1. Представьте, что база утекла: откройте `/_lab/dump`. В каком виде лежат пароли и номера карт?
-2. Используйте словарь `wordlist.txt` и восстановите пароли `alice` и `bob` по их хешам. Получится ли это с `admin`?
-3. Получите права администратора (в `/me` админа есть флаг) **двумя способами**:
-   - через сброс пароля (`POST /reset-request`, `POST /reset/<token>`);
-   - через cookie сессии.
-4. Повторите все шаги на **fixed**-версии и объясните, почему они не работают.
-5. Сравните `vulnerable/app.py` и `fixed/app.py`: места исправлений помечены `FIX`.
+1. Imagine the database has leaked: open `/_lab/dump`. In what form are the passwords and card numbers stored?
+2. Use the `wordlist.txt` dictionary to recover the passwords of `alice` and `bob` from their hashes. Does it work for `admin`?
+3. Get administrator rights (the admin's `/me` contains a flag) in **two ways**:
+   - through a password reset (`POST /reset-request`, `POST /reset/<token>`);
+   - through the session cookie.
+4. Repeat all the steps against the **fixed** version and explain why they do not work.
+5. Compare `vulnerable/app.py` and `fixed/app.py`: the fixes are marked `FIX`.
 
-## Подсказки
-1. Сколько символов в хеше пароля и какой это алгоритм? Есть ли в нём «соль»?
-2. Запросите сброс пароля для себя и посмотрите ссылку в `/_lab/outbox`. Как токен связан с вашим именем?
-3. Cookie сессии подписывается секретным ключом. Что, если ключ слишком простой?
-4. Что возвращает `GET /cards`?
+## Hints
+1. How many characters does the password hash have and which algorithm is it? Is there a "salt" in it?
+2. Request a password reset for yourself and look at the link in `/_lab/outbox`. How is the token related to your name?
+3. The session cookie is signed with a secret key. What if the key is too simple?
+4. What does `GET /cards` return?
 
-Полное решение со спойлерами: [SOLUTION.md](./SOLUTION.md)
+Full solution with spoilers: [SOLUTION.md](./SOLUTION.md)
 
-## Как защититься
-- Пароли: scrypt, bcrypt или Argon2 с уникальной солью, никогда MD5 или SHA-1
-- Токены: только криптографически стойкий генератор (`secrets`), хранить хеш, ограничивать срок жизни, делать одноразовыми
-- Секретные ключи: длинные случайные значения из окружения или менеджера секретов
-- Чувствительные данные: шифровать при хранении, показывать маскированными, не отдавать лишнее
-- Весь трафик только по HTTPS
+## How to defend
+- Passwords: scrypt, bcrypt or Argon2 with a unique salt, never MD5 or SHA-1
+- Tokens: only a cryptographically strong generator (`secrets`), store a hash, limit the lifetime, make them single-use
+- Secret keys: long random values from the environment or a secrets manager
+- Sensitive data: encrypt at rest, show it masked, do not return more than needed
+- All traffic over HTTPS only

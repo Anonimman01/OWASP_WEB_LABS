@@ -1,59 +1,59 @@
-🌐 **Русский** · [Oʻzbekcha](./README.uz.md)
+🌐 **English** · [Русский](./README.ru.md) · [Oʻzbekcha](./README.uz.md)
 
-# A05 — Injection (инъекции)
+# A05 — Injection
 
-**Статус:** ✅ готово
+**Status:** ✅ ready
 
-## О чём лаба
-Мини-магазин с входом, поиском товаров, страницей результатов поиска и гостевой книгой. Ввод пользователя попадает в SQL-запросы и в HTML без обработки, поэтому его можно превратить в код: **SQL-инъекции** и **XSS** (отражённый и хранимый).
+## About the lab
+A mini web shop with login, product search, a search results page and a guestbook. User input gets into SQL queries and into HTML without processing, so it can be turned into code: **SQL injection** and **XSS** (reflected and stored).
 
-## Чему научитесь
-- Понимать, как данные пользователя меняют смысл SQL-запроса
-- Обходить вход и вытаскивать чужие данные через SQL-инъекцию (на учебном приложении)
-- Видеть разницу между отражённым и хранимым XSS
-- Защищаться: параметризованные запросы, экранирование вывода, CSP
+## What you will learn
+- To understand how user data changes the meaning of an SQL query
+- To bypass a login and extract other people's data with SQL injection (on a learning application)
+- To see the difference between reflected and stored XSS
+- To defend: parameterized queries, output escaping, CSP
 
-## Запуск
+## Running
 
 ```bash
 docker compose up --build
 ```
 
-| Версия | Адрес |
-|--------|-------|
-| vulnerable (уязвимая) | http://127.0.0.1:8041 |
-| fixed (исправленная) | http://127.0.0.1:8042 |
+| Version | Address |
+|---------|---------|
+| vulnerable | http://127.0.0.1:8041 |
+| fixed | http://127.0.0.1:8042 |
 
-Без Docker:
+Without Docker:
 
 ```bash
 pip install -r vulnerable/requirements.txt
 python vulnerable/app.py   # http://127.0.0.1:5000
 ```
 
-> ⚠️ Приложение уязвимо специально. Запускайте только локально и не публикуйте в интернет.
+> ⚠️ The application is vulnerable on purpose. Run it locally only and do not expose it to the internet.
 
-## Задание
-Тестовый аккаунт: `alice` / `alice123`. Страницы `/search` и `/guestbook` удобнее открывать в браузере.
+## Task
+Test account: `alice` / `alice123`. The `/search` and `/guestbook` pages are easier to open in a browser.
 
-1. Войдите как `admin`, **не зная пароля** (`POST /login`).
-2. Через поиск товаров (`GET /products?q=...`) покажите товар, который скрыт от обычных покупателей.
-3. Через тот же поиск достаньте из таблицы `users` секрет администратора (флаг `FLAG{...}`).
-4. Добейтесь, чтобы страница `/search?q=...` выполнила ваш скрипт (отражённый XSS), затем сделайте то же через гостевую книгу (хранимый XSS). Для проверки достаточно `alert(1)`.
-5. Повторите всё на **fixed**-версии и объясните, почему не работает.
-6. Сравните `vulnerable/app.py` и `fixed/app.py`: места исправлений помечены `FIX`.
+1. Log in as `admin` **without knowing the password** (`POST /login`).
+2. Through the product search (`GET /products?q=...`) show a product that is hidden from ordinary customers.
+3. Through the same search extract the administrator's secret (a `FLAG{...}` flag) from the `users` table.
+4. Make the `/search?q=...` page run your script (reflected XSS), then do the same through the guestbook (stored XSS). `alert(1)` is enough for the check.
+5. Repeat everything against the **fixed** version and explain why it does not work.
+6. Compare `vulnerable/app.py` and `fixed/app.py`: the fixes are marked `FIX`.
 
-## Подсказки
-1. Что произойдёт, если в имя пользователя поставить одинарную кавычку `'`? Видно ли ошибку SQL?
-2. В SQL `--` начинает комментарий. Что можно закомментировать в запросе входа?
-3. В запросе поиска есть условие `hidden = 0`. Как его нейтрализовать?
-4. `UNION SELECT` добавляет строки из другой таблицы, но число столбцов должно совпасть с исходным запросом.
-5. Для XSS посмотрите, как сообщение попадает в HTML-страницу.
+## Hints
+1. What happens if you put a single quote `'` into the username? Do you see an SQL error?
+2. In SQL `--` starts a comment. What could you comment out in the login query?
+3. The search query has the condition `hidden = 0`. How can you neutralize it?
+4. `UNION SELECT` adds rows from another table, but the number of columns must match the original query.
+5. For XSS, look at how the message gets into the HTML page.
 
-Полное решение со спойлерами: [SOLUTION.md](./SOLUTION.md)
+Full solution with spoilers: [SOLUTION.md](./SOLUTION.md)
 
-## Как защититься
-- **SQL:** параметризованные запросы (`?` и передача значений отдельно), а не склейка строк
-- **XSS:** экранирование данных при выводе в HTML, шаблонизаторы с автоэкранированием
-- **Защита в глубину:** заголовок `Content-Security-Policy`, ограничение длины и формата ввода, минимальные права у учётной записи БД
-- Не показывать пользователю тексты ошибок БД
+## How to defend
+- **SQL:** parameterized queries (`?` and passing the values separately), not string concatenation
+- **XSS:** escape data when outputting into HTML, use template engines with auto-escaping
+- **Defense in depth:** the `Content-Security-Policy` header, limits on input length and format, minimal privileges for the database account
+- Do not show database error messages to the user

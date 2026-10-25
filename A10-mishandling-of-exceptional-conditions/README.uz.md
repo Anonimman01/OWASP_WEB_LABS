@@ -1,4 +1,4 @@
-🌐 [Русский](./README.md) · **Oʻzbekcha**
+🌐 [English](./README.md) · [Русский](./README.ru.md) · **Oʻzbekcha**
 
 # A10 — Mishandling of Exceptional Conditions (istisno holatlarni notoʻgʻri qayta ishlash)
 

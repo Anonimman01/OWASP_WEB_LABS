@@ -1,4 +1,4 @@
-🌐 [Русский](./SOLUTION.md) · **Oʻzbekcha**
+🌐 [English](./SOLUTION.md) · [Русский](./SOLUTION.ru.md) · **Oʻzbekcha**
 
 # A10 — Yechim tahlili (spoylerlar)
 

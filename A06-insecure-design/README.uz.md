@@ -1,4 +1,4 @@
-🌐 [Русский](./README.md) · **Oʻzbekcha**
+🌐 [English](./README.md) · [Русский](./README.ru.md) · **Oʻzbekcha**
 
 # A06 — Insecure Design (xavfsiz boʻlmagan arxitektura)
 

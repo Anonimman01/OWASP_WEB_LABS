@@ -5,7 +5,7 @@
 Ten local hands-on labs, one for each category of the **[OWASP Top 10:2025](https://owasp.org/Top10/2025/0x00_2025-Introduction/)**.
 The format is **break it → fix it**: every lab starts two versions of the same application side by side, a vulnerable one and a fixed one. You find the flaws in the first, then compare it with the second to see exactly how each hole was closed.
 
-The lab documentation is written in Russian and translated into Uzbek (Latin script); this README is available in English, Russian and Uzbek (see [Languages](#languages)). License: MIT.
+The documentation of every lab is available in English, Russian and Uzbek (Latin script); this README is available in the same three languages (see [Languages](#languages)). License: MIT.
 
 > ⚠️ **Important.** The applications in this repository are **intentionally vulnerable**.
 > - Run them only locally (`127.0.0.1`) or in an isolated environment (Docker, a virtual machine).
@@ -28,7 +28,7 @@ The lab documentation is written in Russian and translated into Uzbek (Latin scr
 ## Lab list
 
 Ports are listed as **vulnerable / fixed**. All addresses look like `http://127.0.0.1:<port>`.
-Lab documentation (README and SOLUTION) is in Russian and Uzbek; the folder links below open the Russian version, and each file has a link to the Uzbek one at the top.
+Lab documentation (README and SOLUTION) is in English, Russian and Uzbek; the folder links below open the English version, and each file has links to the other languages at the top.
 
 | №   | Lab | Category | What is inside | Ports |
 |-----|-----|----------|----------------|-------|
@@ -103,7 +103,7 @@ To run the fixed version, replace `vulnerable` with `fixed` (and the port with `
 
 1. Open the lab's `README.md` and read what it is about and which test accounts it has.
 2. Start the lab and open the `vulnerable` address. In a browser, `/` redirects to the `/ui` page with forms for all endpoints. The same requests can be sent with `curl` or Postman.
-3. Complete the items in the "Task" section (in the Russian README: «Задание»; in the Uzbek one: «Topshiriq»). If you get stuck, expand the hints in `<details>`.
+3. Complete the items in the "Task" section. If you get stuck, expand the hints in `<details>`.
 4. In `vulnerable/app.py` the flaws are marked with `# ДЕФЕКТ N` comments (Russian for "DEFECT N"). Find them and state the rule that was violated.
 5. Open `fixed/app.py`: the fixes are marked `# FIX N`, and the number matches the number of the flaw. Repeat the same requests against `fixed` and confirm that the attack no longer works while normal scenarios still do.
 6. Only after that read `SOLUTION.md`.
@@ -112,9 +112,11 @@ To run the fixed version, replace `vulnerable` with `fixed` (and the port with `
 
 ```
 AXX-category-name/
-  README.md              description, task, endpoints, hints (Russian)
+  README.md              description, task, endpoints, hints (English)
+  README.ru.md           Russian translation
   README.uz.md           Uzbek translation
-  SOLUTION.md            walkthrough (with spoilers)
+  SOLUTION.md            walkthrough (with spoilers, English)
+  SOLUTION.ru.md         Russian translation
   SOLUTION.uz.md         Uzbek translation
   Dockerfile             python:3.11-slim, ARG VARIANT, ENV HOST=0.0.0.0 PORT=5000
   docker-compose.yml     two services (vulnerable and fixed), ports on 127.0.0.1
@@ -144,7 +146,7 @@ Some labs have extra files: for example `wordlist.txt` in A04, `backup.sql` in A
 ## Languages
 
 - **This README** is available in English (`README.md`), Russian (`README.ru.md`) and Uzbek (`README.uz.md`). Each file has a language switcher on its first line.
-- **Lab documentation** (A01–A10) is available in Russian (`README.md`, `SOLUTION.md`) and Uzbek, Latin script (`README.uz.md`, `SOLUTION.uz.md`). English translations of the lab documents are not available yet.
+- **Lab documentation** (A01–A10) is available in English (`README.md`, `SOLUTION.md`), Russian (`README.ru.md`, `SOLUTION.ru.md`) and Uzbek, Latin script (`README.uz.md`, `SOLUTION.uz.md`). Each file has a language switcher on its first line.
 - **The `/ui` page** of every lab is available in English (the default), Russian and Uzbek, with an **EN / RU / UZ** switcher in the top right corner. The choice is remembered in the browser, and it can also be set in the address bar by appending `?lang=ru` or `?lang=uz` (if the address ends with `/ui`) or `/ui?lang=ru` / `/ui?lang=uz` (if it does not), for example `http://127.0.0.1:8041/ui?lang=uz`. A browser with an Uzbek locale opens the Uzbek version right away.
 - Only the interface shell is translated (headings, buttons, hints, examples). The applications' own responses (note texts, product names, error messages) are left as they are so that they match `SOLUTION`. Code comments (`# ДЕФЕКТ N` / `# FIX N`) stay in Russian.
 

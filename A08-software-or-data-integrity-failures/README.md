@@ -1,49 +1,49 @@
-🌐 **Русский** · [Oʻzbekcha](./README.uz.md)
+🌐 **English** · [Русский](./README.ru.md) · [Oʻzbekcha](./README.uz.md)
 
-# A08 — Software or Data Integrity Failures (нарушения целостности ПО и данных)
+# A08 — Software or Data Integrity Failures
 
-**Статус:** ✅ готово
+**Status:** ✅ ready
 
-## О чём лаба
-Приложение принимает код и данные, подлинность которых никто не проверил: состояние пользователя в cookie, «подписанную» лицензию, обновление с зеркала, уведомление платёжной системы и скрипт со стороннего CDN. Если злоумышленник может изменить такие данные «по дороге» или в хранилище, приложение выполнит его волю.
+## About the lab
+The application accepts code and data whose authenticity nobody has verified: user state in a cookie, a "signed" license, an update from a mirror, a payment system notification and a script from a third-party CDN. If an attacker can change such data "on the way" or in storage, the application will do their bidding.
 
-## Чему научитесь
-- Отличать контрольную сумму (хеш) от настоящей подписи (HMAC / асимметричная подпись)
-- Не хранить доверенное состояние на стороне клиента без подписи
-- Проверять целостность обновлений и зависимостей (lock-файлы, закреплённые хеши, подписи)
-- Проверять подлинность webhook-ов: подпись, свежесть, повторная доставка (replay)
-- Подключать сторонние скрипты с SRI
+## What you will learn
+- To tell a checksum (hash) from a real signature (HMAC / asymmetric signature)
+- Not to keep trusted state on the client side without a signature
+- To verify the integrity of updates and dependencies (lock files, pinned hashes, signatures)
+- To verify the authenticity of webhooks: signature, freshness, replay
+- To include third-party scripts with SRI
 
-## Запуск
+## Running
 
 ```bash
 docker compose up --build
 ```
 
-| Версия | Адрес |
-|--------|-------|
-| vulnerable (уязвимая) | http://127.0.0.1:8071 |
-| fixed (исправленная) | http://127.0.0.1:8072 |
+| Version | Address |
+|---------|---------|
+| vulnerable | http://127.0.0.1:8071 |
+| fixed | http://127.0.0.1:8072 |
 
-Без Docker:
+Without Docker:
 
 ```bash
 pip install -r vulnerable/requirements.txt
 PORT=8071 python vulnerable/app.py   # http://127.0.0.1:8071
 ```
 
-> ⚠️ Приложение уязвимо специально. Запускайте только локально и не публикуйте в интернет.
+> ⚠️ The application is vulnerable on purpose. Run it locally only and do not expose it to the internet.
 
-## Задание
-Тестовые аккаунты: `alice` / `alice123` (обычный пользователь) и `admin` (пароль вам не нужен). Работать удобно через `curl` (в Windows — Git Bash/WSL или `curl.exe`) и короткие скрипты на Python. `POST /reset-lab` сбрасывает данные лабы. Эндпоинты `/mirror/publish` и `/cdn/compromise` — лабораторные помощники: они имитируют злоумышленника, получившего доступ к зеркалу обновлений и к CDN.
+## Task
+Test accounts: `alice` / `alice123` (an ordinary user) and `admin` (you do not need the password). It is convenient to work with `curl` (on Windows: Git Bash/WSL or `curl.exe`) and short Python scripts. `POST /reset-lab` resets the lab data. The `/mirror/publish` and `/cdn/compromise` endpoints are lab helpers: they imitate an attacker who has gained access to the update mirror and to the CDN.
 
-1. Войдите как `alice` и получите доступ к `GET /admin`, **не зная пароля admin**.
-2. Купите тариф `basic` (`POST /buy`) и получите доступ к `GET /pro`, **не платя за pro**.
-3. Через автообновление (`POST /system/run-update`) подмените `payout_account` в настройках на счёт злоумышленника (флаг появится в `GET /settings`).
-4. Сделайте заказ `1001` оплаченным (`GET /orders/1001` покажет ключ), **не платя**.
-5. Откройте `GET /donate` в браузере, затем `POST /cdn/compromise` и перезагрузите страницу: какие реквизиты теперь видит жертва? Что изменилось в fixed?
+1. Log in as `alice` and get access to `GET /admin` **without knowing the admin password**.
+2. Buy the `basic` plan (`POST /buy`) and get access to `GET /pro` **without paying for pro**.
+3. Through the auto-update (`POST /system/run-update`) replace `payout_account` in the settings with the attacker's account (the flag appears in `GET /settings`).
+4. Make order `1001` paid (`GET /orders/1001` will show the key) **without paying**.
+5. Open `GET /donate` in a browser, then `POST /cdn/compromise` and reload the page: which payment details does the victim see now? What changed in fixed?
 
-## Эндпоинты
+## Endpoints
 
 ```
 POST /login                  {"username","password"}
@@ -51,59 +51,59 @@ GET  /me
 GET  /admin
 POST /buy                    {"plan":"basic"}
 GET  /pro
-POST /system/run-update      имитация cron: автообновление с зеркала
-POST /mirror/publish         {"package","version","content":{}}   (помощник: «взлом» зеркала)
+POST /system/run-update      cron imitation: auto-update from the mirror
+POST /mirror/publish         {"package","version","content":{}}   (helper: "hacking" the mirror)
 GET  /settings
 GET  /orders/<id>
 POST /webhook/payment        {"order_id","status","amount"}
-GET  /donate                 HTML-страница со сторонним скриптом
-POST /cdn/compromise         (помощник: «взлом» CDN)
+GET  /donate                 an HTML page with a third-party script
+POST /cdn/compromise         (helper: "hacking" the CDN)
 POST /reset-lab
 ```
 
-## Подсказки
+## Hints
 
 <details>
-<summary>Подсказка 1 — cookie после входа</summary>
+<summary>Hint 1 — the cookie after login</summary>
 
-Войдите и посмотрите cookie `a08v_profile`. Это похоже на base64? Что получится, если его декодировать, изменить одно поле и закодировать обратно?
+Log in and look at the `a08v_profile` cookie. Does it look like base64? What happens if you decode it, change one field and encode it back?
 </details>
 
 <details>
-<summary>Подсказка 2 — cookie лицензии</summary>
+<summary>Hint 2 — the license cookie</summary>
 
-У cookie `a08v_license` есть «подпись» после точки. Чем она считается? Нужен ли для этого какой-то секрет, который знает только сервер?
+The `a08v_license` cookie has a "signature" after the dot. What is it computed with? Does it need a secret that only the server knows?
 </details>
 
 <details>
-<summary>Подсказка 3 — зеркало обновлений</summary>
+<summary>Hint 3 — the update mirror</summary>
 
-Что проверяет `/system/run-update` перед тем, как применить пакет с зеркала? И какие поля настроек пакет вообще имеет право менять?
+What does `/system/run-update` check before applying a package from the mirror? And which settings fields is a package allowed to change at all?
 </details>
 
 <details>
-<summary>Подсказка 4 — webhook</summary>
+<summary>Hint 4 — the webhook</summary>
 
-Кто, кроме платёжной системы, может отправить POST на `/webhook/payment`? Как сервер отличает настоящее уведомление от подделки?
+Who other than the payment system can send a POST to `/webhook/payment`? How does the server tell a real notification from a fake?
 </details>
 
 <details>
-<summary>Подсказка 5 — SRI</summary>
+<summary>Hint 5 — SRI</summary>
 
-Посмотрите HTML страницы `/donate` в vulnerable и в fixed (исходный код страницы). Чем отличаются теги `<script>`?
+Look at the HTML of the `/donate` page in vulnerable and in fixed (the page source). How do the `<script>` tags differ?
 </details>
 
-## Что сравнить в fixed/
-Откройте `fixed/app.py` и найдите комментарии `# FIX N`: номер совпадает с номером дефекта во `vulnerable/app.py`.
+## What to compare in fixed/
+Open `fixed/app.py` and find the `# FIX N` comments: the number matches the number of the defect in `vulnerable/app.py`.
 
-## Структура
-- `vulnerable/` — уязвимая версия
-- `fixed/` — исправленная версия
-- `SOLUTION.md` — разбор решения (со спойлерами)
-- `docker-compose.yml` — запуск обеих версий
+## Structure
+- `vulnerable/` — the vulnerable version
+- `fixed/` — the fixed version
+- `SOLUTION.md` — the walkthrough (with spoilers)
+- `docker-compose.yml` — runs both versions
 
-## Дальше
+## Further reading
 - [OWASP Top 10:2025](https://owasp.org/Top10/)
 - [OWASP Cheat Sheet: Deserialization](https://cheatsheetseries.owasp.org/cheatsheets/Deserialization_Cheat_Sheet.html)
-- [SLSA](https://slsa.dev/) и [Sigstore](https://www.sigstore.dev/) — подпись и происхождение артефактов
+- [SLSA](https://slsa.dev/) and [Sigstore](https://www.sigstore.dev/) — signing and provenance of artifacts
 - [MDN: Subresource Integrity](https://developer.mozilla.org/docs/Web/Security/Subresource_Integrity)

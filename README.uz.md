@@ -5,7 +5,7 @@
 Har bir **[OWASP Top 10:2025](https://owasp.org/Top10/2025/0x00_2025-Introduction/)** toifasi uchun bittadan, jami oʻnta lokal laboratoriya ishi.
 Format «**buz → tuzat**»: har bir laboratoriyada bir ilovaning ikki versiyasi, zaif va tuzatilgani, bir vaqtda ishga tushadi. Siz birinchisidagi nuqsonlarni topasiz, keyin uni tuzatilgani bilan solishtirib, har bir teshik aynan nima bilan yopilganini koʻrasiz.
 
-Laboratoriyalar hujjatlarining asosiy tili rus tili; barcha laboratoriyalar (A01–A10) uchun oʻzbekcha (lotin alifbosida) tarjima ham bor. Shu README ingliz, rus va oʻzbek tillarida mavjud. Litsenziya: MIT.
+Barcha laboratoriyalar (A01–A10) hujjatlari inglizcha, ruscha va oʻzbekcha (lotin alifbosida) mavjud. Shu README ham uch tilda. Litsenziya: MIT.
 
 > ⚠️ **Muhim.** Ushbu repozitoriydagi ilovalar **ataylab zaif qilingan**.
 > - Ularni faqat lokal (`127.0.0.1`) yoki izolyatsiyalangan muhitda (Docker, virtual mashina) ishga tushiring.
@@ -116,7 +116,7 @@ Har bir laboratoriyaning portlari yuqoridagi jadvalda. Masalan, A01 uchun: `http
 
 ## Laboratoriyani qanday bajarish
 
-1. Kerakli laboratoriyaning `README.uz.md` (yoki rus tilidagi `README.md`) faylini oching va u nima haqida ekanini hamda test akkauntlarini oʻqing.
+1. Kerakli laboratoriyaning `README.uz.md` (yoki inglizcha `README.md`, ruscha `README.ru.md`) faylini oching va u nima haqida ekanini hamda test akkauntlarini oʻqing.
 2. Laboratoriyani ishga tushiring va `vulnerable` manzilini oching. Brauzerda `/` barcha endpointlar uchun shakllari bor `/ui` sahifasiga yoʻnaltiradi. Xuddi shu soʻrovlarni `curl` yoki Postman orqali ham yuborish mumkin.
 3. «Topshiriq» boʻlimidagi bandlarni bajaring. Qiynalsangiz, maslahatlarni oching.
 4. `vulnerable/app.py` da nuqsonlar `# ДЕФЕКТ N` izohlari bilan belgilangan. Ularni toping va buzilgan qoidani shakllantiring.
@@ -127,9 +127,11 @@ Har bir laboratoriyaning portlari yuqoridagi jadvalda. Masalan, A01 uchun: `http
 
 ```
 AXX-toifa-nomi/
-  README.md              tavsif, topshiriq, endpointlar, maslahatlar
+  README.md              tavsif, topshiriq, endpointlar, maslahatlar (inglizcha)
+  README.ru.md           ruscha tarjima
   README.uz.md           oʻzbekcha tarjima
-  SOLUTION.md            yechim tahlili (spoylerlar bilan)
+  SOLUTION.md            yechim tahlili (spoylerlar bilan, inglizcha)
+  SOLUTION.ru.md         ruscha tarjima
   SOLUTION.uz.md         oʻzbekcha tarjima
   Dockerfile             python:3.11-slim, ARG VARIANT, ENV HOST=0.0.0.0 PORT=5000
   docker-compose.yml     ikkita servis (vulnerable va fixed), 127.0.0.1 dagi portlar
@@ -158,7 +160,7 @@ Ayrim laboratoriyalarda qoʻshimcha fayllar bor: masalan, A04 da `wordlist.txt`,
 
 ## Tillar
 
-Barcha laboratoriyalar (A01–A10) hujjatlari ikki tilda mavjud: rus tilida (`README.md`, `SOLUTION.md`) va oʻzbek tilida, lotin alifbosida (`README.uz.md`, `SOLUTION.uz.md`). Ildiz README esa uch tilda: inglizcha (`README.md`), ruscha (`README.ru.md`) va oʻzbekcha (`README.uz.md`). Har bir fayl tepasida tilni almashtirish havolasi bor.
+Barcha laboratoriyalar (A01–A10) hujjatlari uch tilda mavjud: inglizcha (`README.md`, `SOLUTION.md`), ruscha (`README.ru.md`, `SOLUTION.ru.md`) va oʻzbekcha, lotin alifbosida (`README.uz.md`, `SOLUTION.uz.md`). Ildiz README esa uch tilda: inglizcha (`README.md`), ruscha (`README.ru.md`) va oʻzbekcha (`README.uz.md`). Har bir fayl tepasida tilni almashtirish havolasi bor.
 
 Barcha laboratoriyalarda `/ui` sahifasi ham uch tilli (inglizcha, ruscha, oʻzbekcha), oʻtish usuli [yuqorida](#interfeys-tili-uz) tushuntirilgan. Faqat qobiq tarjima qilinadi (sarlavhalar, tugmalar, maslahatlar, namunalar). Ilovalarning oʻz javoblari (qaydlar matni, mahsulot nomlari, xato xabarlari) `SOLUTION` ga mos kelishi uchun oʻzgarishsiz qoladi. Koddagi izohlar (`# ДЕФЕКТ N` / `# FIX N`) rus tilida qoladi.
 

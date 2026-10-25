@@ -1,4 +1,4 @@
-🌐 [Русский](./README.md) · **Oʻzbekcha**
+🌐 [English](./README.md) · [Русский](./README.ru.md) · **Oʻzbekcha**
 
 # A02 — Security Misconfiguration (xavfsiz boʻlmagan konfiguratsiya)
 

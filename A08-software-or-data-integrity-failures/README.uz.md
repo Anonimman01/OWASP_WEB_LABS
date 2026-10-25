@@ -1,4 +1,4 @@
-🌐 [Русский](./README.md) · **Oʻzbekcha**
+🌐 [English](./README.md) · [Русский](./README.ru.md) · **Oʻzbekcha**
 
 # A08 — Software or Data Integrity Failures (dasturiy taʼminot va maʼlumotlar yaxlitligining buzilishi)
 

@@ -1,54 +1,54 @@
-🌐 **Русский** · [Oʻzbekcha](./README.uz.md)
+🌐 **English** · [Русский](./README.ru.md) · [Oʻzbekcha](./README.uz.md)
 
-# A01 — Broken Access Control (нарушение контроля доступа)
+# A01 — Broken Access Control
 
-**Статус:** ✅ готово
+**Status:** ✅ ready
 
-## О чём лаба
-Заметочник с тремя пользователями (`alice`, `bob`, `admin`). Вход есть, но сервер не везде проверяет, **кому** принадлежит ресурс и **какая роль** у пользователя.
+## About the lab
+A notes app with three users (`alice`, `bob`, `admin`). Login works, but the server does not always check **who owns** a resource and **which role** the user has.
 
-## Чему научитесь
-- Находить IDOR (подмена идентификатора ресурса в запросе)
-- Отличать аутентификацию («кто вы») от авторизации («что вам можно»)
-- Проверять права на сервере при каждом запросе, по принципу «запрещено по умолчанию»
+## What you will learn
+- To find IDOR (swapping a resource identifier in a request)
+- To tell authentication ("who are you") from authorization ("what are you allowed to do")
+- To check permissions on the server on every request, following the "deny by default" principle
 
-## Запуск
+## Running
 
 ```bash
 docker compose up --build
 ```
 
-| Версия | Адрес |
-|--------|-------|
-| vulnerable (уязвимая) | http://127.0.0.1:8001 |
-| fixed (исправленная) | http://127.0.0.1:8002 |
+| Version | Address |
+|---------|---------|
+| vulnerable | http://127.0.0.1:8001 |
+| fixed | http://127.0.0.1:8002 |
 
-Без Docker:
+Without Docker:
 
 ```bash
 pip install -r vulnerable/requirements.txt
 python vulnerable/app.py   # http://127.0.0.1:5000
 ```
 
-> ⚠️ Приложение уязвимо специально. Запускайте только локально и не публикуйте в интернет.
+> ⚠️ The application is vulnerable on purpose. Run it locally only and do not expose it to the internet.
 
-## Задание
-Тестовый аккаунт: `alice` / `alice123`.
+## Task
+Test account: `alice` / `alice123`.
 
-1. Войдите как `alice` (`POST /login`, JSON с `username` и `password`).
-2. Прочитайте заметку, которая принадлежит **админу** (в ней спрятан флаг `FLAG{...}`).
-3. Откройте админский раздел `/admin/users`, не будучи админом.
-4. Повторите те же запросы на **fixed**-версии и убедитесь, что доступ закрыт.
-5. Сравните `vulnerable/app.py` и `fixed/app.py`: места исправлений помечены `FIX`.
+1. Log in as `alice` (`POST /login`, JSON with `username` and `password`).
+2. Read the note that belongs to the **admin** (it hides a `FLAG{...}` flag).
+3. Open the admin section `/admin/users` without being an admin.
+4. Repeat the same requests against the **fixed** version and make sure access is denied.
+5. Compare `vulnerable/app.py` and `fixed/app.py`: the fixes are marked `FIX`.
 
-## Подсказки
-1. Откройте `GET /api/notes`: какие `id` у ваших заметок?
-2. Что вернёт `GET /api/notes/<id>`, если подставить чужой `id`?
-3. Какие проверки делает сервер перед `GET /admin/users`?
+## Hints
+1. Open `GET /api/notes`: what are the `id`s of your notes?
+2. What does `GET /api/notes/<id>` return if you put in someone else's `id`?
+3. Which checks does the server make before `GET /admin/users`?
 
-Полное решение со спойлерами: [SOLUTION.md](./SOLUTION.md)
+Full solution with spoilers: [SOLUTION.md](./SOLUTION.md)
 
-## Как защититься
-- Проверять владельца ресурса и роль пользователя **на сервере**, для каждого запроса
-- Запрет по умолчанию: доступ только там, где он явно разрешён
-- Не полагаться на то, что «пользователь не знает URL»
+## How to defend
+- Check the resource owner and the user's role **on the server**, for every request
+- Deny by default: access only where it is explicitly allowed
+- Do not rely on "the user does not know the URL"

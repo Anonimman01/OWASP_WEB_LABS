@@ -1,52 +1,52 @@
-🌐 **Русский** · [Oʻzbekcha](./README.uz.md)
+🌐 **English** · [Русский](./README.ru.md) · [Oʻzbekcha](./README.uz.md)
 
-# A09 — Security Logging and Alerting Failures (сбои логирования и оповещений)
+# A09 — Security Logging and Alerting Failures
 
-**Статус:** ✅ готово
+**Status:** ✅ ready
 
-## О чём лаба
-Атаку замечают слишком поздно, если события безопасности не пишутся в лог, если по ним нет оповещений или если сам лог ненадёжен: его можно подделать, прочитать постороннему, а в нём лежат пароли и сессии. В лабе шесть таких дефектов в одном небольшом приложении.
+## About the lab
+An attack is noticed too late if security events are not written to the log, if there are no alerts on them, or if the log itself is unreliable: it can be forged, read by an outsider, and it contains passwords and sessions. The lab has six such defects in one small application.
 
-## Чему научитесь
-- Что нужно логировать: входы (успешные и неудачные), отказы в доступе, значимые действия
-- Как не допустить log injection и не писать в лог секреты
-- Как строить оповещения: счётчики, пороги, окно времени
-- Как защищать сам лог: доступ, аудит, цепочка хешей для обнаружения подмены
+## What you will learn
+- What should be logged: logins (successful and failed), access denials, significant actions
+- How to prevent log injection and not write secrets to the log
+- How to build alerts: counters, thresholds, a time window
+- How to protect the log itself: access, audit, a hash chain to detect tampering
 
-## Запуск
+## Running
 
 ```bash
 docker compose up --build
 ```
 
-| Версия | Адрес |
-|--------|-------|
-| vulnerable (уязвимая) | http://127.0.0.1:8081 |
-| fixed (исправленная) | http://127.0.0.1:8082 |
+| Version | Address |
+|---------|---------|
+| vulnerable | http://127.0.0.1:8081 |
+| fixed | http://127.0.0.1:8082 |
 
-Без Docker:
+Without Docker:
 
 ```bash
 pip install -r vulnerable/requirements.txt
 PORT=8081 python vulnerable/app.py   # http://127.0.0.1:8081
 ```
 
-В браузере `/` открывает страницу `/ui` с формами для всех эндпоинтов. То же самое можно делать через `curl` (в Windows — Git Bash/WSL или `curl.exe`).
+In a browser `/` opens the `/ui` page with forms for all endpoints. You can do the same with `curl` (on Windows: Git Bash/WSL or `curl.exe`).
 
-> ⚠️ Приложение уязвимо специально. Запускайте только локально и не публикуйте в интернет.
+> ⚠️ The application is vulnerable on purpose. Run it locally only and do not expose it to the internet.
 
-## Задание
-Тестовые аккаунты: `alice` / `alice123` и `bob` / `bob123` (обычные пользователи), `admin` (пароль вам не нужен). `POST /reset-lab` сбрасывает данные лабы. Эндпоинт `/_lab/tamper` — лабораторный помощник: он имитирует злоумышленника, у которого есть доступ к хранилищу лога.
+## Task
+Test accounts: `alice` / `alice123` and `bob` / `bob123` (ordinary users), `admin` (you do not need the password). `POST /reset-lab` resets the lab data. The `/_lab/tamper` endpoint is a lab helper: it imitates an attacker who has access to the log storage.
 
-1. Переберите пароль `bob`: сделайте не меньше 10 неудачных входов, потом войдите правильно. Найдите следы перебора в `GET /logs`. Затем откройте `GET /alerts` (флаг появится, если атаку никто не заметил).
-2. Войдите как `alice` и обратитесь к `GET /admin/export` (будет 403). Остался ли отказ в логе?
-3. Подделайте в логе запись о входе пользователя, которого не было, через `POST /feedback`. Проверьте результат в `GET /logs/summary` (флаг).
-4. Получите доступ администратора, **не подбирая пароль** и не взламывая приложение: достаточно того, что вы уже умеете читать (флаг в `GET /admin/export`).
-5. Сделайте перевод `POST /transfer` и поищите о нём запись в логе.
-6. Через `POST /_lab/tamper` удалите из лога строку со своим входом. Есть ли в приложении способ это заметить?
-7. Повторите всё на `fixed` (порт 8082). Там вы выступаете и атакующим, и защитником: логи и оповещения читает только администратор, поэтому войдите как `admin` (пароль возьмите из `fixed/app.py`) и посмотрите `GET /alerts`, `GET /logs` и `GET /logs/verify`.
+1. Brute-force `bob`'s password: make at least 10 failed logins, then log in correctly. Find the traces of the brute force in `GET /logs`. Then open `GET /alerts` (the flag appears if nobody noticed the attack).
+2. Log in as `alice` and request `GET /admin/export` (it will be 403). Is the denial left in the log?
+3. Forge a log entry about a login of a user who never existed, through `POST /feedback`. Check the result in `GET /logs/summary` (the flag).
+4. Get administrator access **without guessing the password** and without hacking the application: what you already know how to read is enough (the flag is in `GET /admin/export`).
+5. Make a transfer with `POST /transfer` and look for an entry about it in the log.
+6. With `POST /_lab/tamper` delete the line with your login from the log. Is there a way in the application to notice this?
+7. Repeat everything on `fixed` (port 8082). There you play both the attacker and the defender: the logs and alerts are readable only by the administrator, so log in as `admin` (take the password from `fixed/app.py`) and look at `GET /alerts`, `GET /logs` and `GET /logs/verify`.
 
-## Эндпоинты
+## Endpoints
 
 ```
 POST /login                  {"username","password"}
@@ -55,55 +55,55 @@ POST /transfer               {"to","amount"}
 POST /feedback               {"name","message"}
 GET  /admin/export
 GET  /logs
-GET  /logs/summary           (fixed: только admin)
-GET  /logs/verify            (только fixed: проверка цепочки хешей)
+GET  /logs/summary           (fixed: admin only)
+GET  /logs/verify            (fixed only: hash chain check)
 GET  /alerts
-POST /_lab/tamper            {"index","text"}   помощник: правка хранилища лога
+POST /_lab/tamper            {"index","text"}   helper: editing the log storage
 POST /reset-lab
 ```
 
-## Подсказки
+## Hints
 
 <details>
-<summary>Подсказка 1 — что видно в логе</summary>
+<summary>Hint 1 — what is visible in the log</summary>
 
-Сделайте несколько входов, в том числе неверных, потом откройте `GET /logs`. Сколько строк появилось? Какие события в них есть, а каких нет?
+Make several logins, including wrong ones, then open `GET /logs`. How many lines appeared? Which events are in them and which are missing?
 </details>
 
 <details>
-<summary>Подсказка 2 — перевод строки</summary>
+<summary>Hint 2 — a line break</summary>
 
-Лог — это обычный текст, одна запись на строку. Что произойдёт, если в `message` попадёт символ перевода строки (`\n` в JSON)?
+The log is plain text, one entry per line. What happens if a line break character (`\n` in JSON) ends up in `message`?
 </details>
 
 <details>
-<summary>Подсказка 3 — что ещё лежит в логе</summary>
+<summary>Hint 3 — what else is in the log</summary>
 
-Прочитайте строки про вход администратора внимательно. Всё ли в них нужно хранить?
+Read the lines about the administrator's login carefully. Does everything in them need to be stored?
 </details>
 
 <details>
-<summary>Подсказка 4 — кто смотрит на оповещения</summary>
+<summary>Hint 4 — who looks at the alerts</summary>
 
-Где в приложении порог, после которого кто-то узнаёт о переборе? Сравните `GET /alerts` в vulnerable и в fixed.
+Where in the application is the threshold after which someone learns about the brute force? Compare `GET /alerts` in vulnerable and in fixed.
 </details>
 
 <details>
-<summary>Подсказка 5 — можно ли доверять логу</summary>
+<summary>Hint 5 — can the log be trusted</summary>
 
-Если злоумышленник удалил строку, по чему это можно понять? Посмотрите, что хранит каждая запись в fixed и что делает `GET /logs/verify`.
+If an attacker deleted a line, how can you tell? Look at what each entry stores in fixed and what `GET /logs/verify` does.
 </details>
 
-## Что сравнить в fixed/
-Откройте `fixed/app.py` и найдите комментарии `# FIX N`: номер совпадает с номером дефекта во `vulnerable/app.py`.
+## What to compare in fixed/
+Open `fixed/app.py` and find the `# FIX N` comments: the number matches the number of the defect in `vulnerable/app.py`.
 
-## Структура
-- `vulnerable/` — уязвимая версия
-- `fixed/` — исправленная версия
-- `SOLUTION.md` — разбор решения (со спойлерами)
-- `docker-compose.yml` — запуск обеих версий
+## Structure
+- `vulnerable/` — the vulnerable version
+- `fixed/` — the fixed version
+- `SOLUTION.md` — the walkthrough (with spoilers)
+- `docker-compose.yml` — runs both versions
 
-## Дальше
+## Further reading
 - [OWASP Top 10:2025](https://owasp.org/Top10/)
 - [OWASP Cheat Sheet: Logging](https://cheatsheetseries.owasp.org/cheatsheets/Logging_Cheat_Sheet.html)
 - [OWASP: Log Injection](https://owasp.org/www-community/attacks/Log_Injection)

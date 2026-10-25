@@ -1,50 +1,50 @@
-🌐 **Русский** · [Oʻzbekcha](./README.uz.md)
+🌐 **English** · [Русский](./README.ru.md) · [Oʻzbekcha](./README.uz.md)
 
-# A03 — Software Supply Chain Failures (сбои в цепочке поставок ПО)
+# A03 — Software Supply Chain Failures
 
-**Статус:** ✅ готово
+**Status:** ✅ ready
 
-## О чём лаба
-Приложение само по себе безобидно: оно только показывает версии установленных пакетов. Проблема в его **зависимостях**: в `vulnerable/requirements.txt` намеренно закреплены старые версии с известными уязвимостями, включая транзитивные зависимости (то, что приходит вместе с `requests` и `Flask`).
+## About the lab
+The application itself is harmless: it only shows the versions of the installed packages. The problem is in its **dependencies**: `vulnerable/requirements.txt` deliberately pins old versions with known vulnerabilities, including transitive dependencies (what comes along with `requests` and `Flask`).
 
-## Чему научитесь
-- Проверять зависимости на известные уязвимости (`pip-audit`)
-- Понимать, что такое транзитивные зависимости и почему их тоже нужно проверять
-- Фиксировать версии и **хеши** пакетов (lock-файл) и устанавливать их через `--require-hashes`
-- Получать SBOM (перечень компонентов) проекта
+## What you will learn
+- To check dependencies for known vulnerabilities (`pip-audit`)
+- What transitive dependencies are and why they need checking too
+- To pin package versions and **hashes** (a lock file) and install them with `--require-hashes`
+- To get an SBOM (a bill of materials) of a project
 
-## Запуск
+## Running
 
 ```bash
 docker compose up --build
 ```
 
-| Версия | Адрес |
-|--------|-------|
-| vulnerable (старые зависимости) | http://127.0.0.1:8021 |
-| fixed (обновлённые + хеши) | http://127.0.0.1:8022 |
+| Version | Address |
+|---------|---------|
+| vulnerable (old dependencies) | http://127.0.0.1:8021 |
+| fixed (updated + hashes) | http://127.0.0.1:8022 |
 
-Эндпоинт `GET /deps` показывает версии установленных пакетов.
+The `GET /deps` endpoint shows the versions of the installed packages.
 
-> ⚠️ Приложение с намеренно устаревшими зависимостями. Запускайте только локально и не публикуйте в интернет.
+> ⚠️ An application with deliberately outdated dependencies. Run it locally only and do not expose it to the internet.
 
-## Задание
-1. Установите инструмент: `pip install pip-audit`
-2. Проверьте уязвимую версию: `pip-audit -r vulnerable/requirements.txt`
-3. Выясните, какие пакеты уязвимы и до каких версий их нужно обновить. Какие из них вы **не** указывали в проекте напрямую?
-4. Проверьте fixed-версию той же командой: `pip-audit -r fixed/requirements.txt`
-5. Откройте `fixed/requirements.in` и `fixed/requirements.txt`. Чем они отличаются и зачем нужны хеши?
-6. Эксперимент: скопируйте `fixed/requirements.txt`, замените любой хеш на нули и попробуйте `pip install --require-hashes -r <файл>`. Что произойдёт?
+## Task
+1. Install the tool: `pip install pip-audit`
+2. Check the vulnerable version: `pip-audit -r vulnerable/requirements.txt`
+3. Find out which packages are vulnerable and to which versions they must be updated. Which of them did you **not** list in the project directly?
+4. Check the fixed version with the same command: `pip-audit -r fixed/requirements.txt`
+5. Open `fixed/requirements.in` and `fixed/requirements.txt`. How do they differ and why are the hashes needed?
+6. Experiment: copy `fixed/requirements.txt`, replace any hash with zeros and try `pip install --require-hashes -r <file>`. What happens?
 
-## Подсказки
-1. `pip-audit` выводит имя пакета, версию, номер уведомления и версию, в которой проблема исправлена.
-2. `requests` тянет за собой `urllib3`, `idna` и `certifi`, а `Flask` тянет `Werkzeug` и `Jinja2`.
-3. Версии в таких проектах быстро устаревают: новые уведомления появляются постоянно, проверку нужно повторять.
+## Hints
+1. `pip-audit` prints the package name, the version, the advisory number and the version in which the problem is fixed.
+2. `requests` pulls in `urllib3`, `idna` and `certifi`, and `Flask` pulls in `Werkzeug` and `Jinja2`.
+3. Versions in projects like this go stale quickly: new advisories appear all the time, so the check has to be repeated.
 
-Полное решение со спойлерами: [SOLUTION.md](./SOLUTION.md)
+Full solution with spoilers: [SOLUTION.md](./SOLUTION.md)
 
-## Как защититься
-- Регулярно проверять зависимости (`pip-audit`, Dependabot, аналоги) и обновлять их
-- Хранить lock-файл с хешами и ставить с `--require-hashes`
-- Вести SBOM, чтобы знать, из чего состоит продукт
-- Брать пакеты только из доверенных источников и следить за названиями (опечатки в имени пакета и подмена внутренних пакетов публичными)
+## How to defend
+- Check dependencies regularly (`pip-audit`, Dependabot, similar tools) and update them
+- Keep a lock file with hashes and install with `--require-hashes`
+- Maintain an SBOM to know what the product consists of
+- Take packages only from trusted sources and watch the names (typos in a package name and public packages replacing internal ones)

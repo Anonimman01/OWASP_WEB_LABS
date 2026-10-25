@@ -1,133 +1,136 @@
-🌐 **Русский** · [Oʻzbekcha](./README.uz.md)
+🌐 **English** · [Русский](./README.ru.md) · [Oʻzbekcha](./README.uz.md)
 
-# A07 — Authentication Failures (сбои аутентификации)
+# A07 — Authentication Failures
 
-**Статус:** ✅ готово
+**Status:** ✅ ready
 
-## О чём лаба
-Мини-сервис с регистрацией, входом, «запомнить меня» и сменой пароля.
-Код не содержит SQL-инъекций или XSS — все семь дефектов этой лабы находятся
-в том, как устроены сессии, токены и проверки при аутентификации: слабая
-парольная политика, перечисление пользователей, отсутствие защиты от
-перебора, фиксация сессии, logout «только для вида», предсказуемый токен
-«запомнить меня» и смена пароля без повторного ввода текущего.
+## About the lab
+A mini service with registration, login, "remember me" and password change.
+The code contains no SQL injection or XSS — all seven defects of this lab are
+in how sessions, tokens and checks are built in authentication: a weak
+password policy, user enumeration, no brute-force protection, session
+fixation, a "cosmetic" logout, a predictable "remember me" token, and a
+password change without re-entering the current password.
 
-## Чему научитесь
-- Отличать аутентификацию (кто ты) от авторизации (что тебе можно)
-- Видеть, почему сессию нужно перевыпускать при входе (session fixation)
-- Понимать, что logout должен быть серверной операцией, а не только удалением куки в браузере
-- Оценивать энтропию и непредсказуемость токенов «запомнить меня»
-- Требовать повторного подтверждения личности перед чувствительными действиями
+## What you will learn
+- To tell authentication (who you are) from authorization (what you are allowed to do)
+- To see why a session must be reissued at login (session fixation)
+- That logout must be a server-side operation, not just deleting the cookie in the browser
+- To assess the entropy and unpredictability of "remember me" tokens
+- To require re-confirmation of identity before sensitive actions
 
-## Запуск
+## Running
 
 ```bash
 docker compose up --build
 ```
 
-| Версия | Адрес |
-|--------|-------|
-| vulnerable (уязвимая) | http://127.0.0.1:8061 |
-| fixed (исправленная) | http://127.0.0.1:8062 |
+| Version | Address |
+|---------|---------|
+| vulnerable | http://127.0.0.1:8061 |
+| fixed | http://127.0.0.1:8062 |
 
-Без Docker:
+Without Docker:
 
 ```bash
 pip install -r vulnerable/requirements.txt
 PORT=8061 python vulnerable/app.py   # http://127.0.0.1:8061
 ```
 
-> ⚠️ Приложение уязвимо специально. Запускайте только локально и не публикуйте в интернет.
+> ⚠️ The application is vulnerable on purpose. Run it locally only and do not expose it to the internet.
 
-## Задание
+## Task
 
-Тестовые аккаунты: `alice` / `alice-Good-Pass1`, `bob` / `123456` (пароль
-специально слабый — он прошёл регистрацию, потому что политика паролей это
-позволяла), `admin` / `Adm1n-Str0ng-Pass!2025` (пароль специально стойкий —
-этого аккаунта не вскрыть перебором). Работать удобно через `curl` с
-сохранением cookie (`-c cookies.txt -b cookies.txt`). `POST /reset-lab`
-сбрасывает данные лабы.
+Test accounts: `alice` / `alice-Good-Pass1`, `bob` / `123456` (the password is
+weak on purpose — it got through registration because the password policy
+allowed it), `admin` / `Adm1n-Str0ng-Pass!2025` (the password is strong on
+purpose — this account cannot be broken by brute force). It is convenient to
+work with `curl`, saving cookies (`-c cookies.txt -b cookies.txt`).
+`POST /reset-lab` resets the lab data.
 
-1. **Токен «запомнить меня».** Получите доступ к `GET /admin` (и флаг),
-   не зная пароль `admin`, используя только куку `remember_token`.
-2. **Session fixation.** Получите тот же доступ другим способом: через
-   sid, который вы заполучили ещё до того, как кто-то вошёл под `admin`.
-3. **Logout.** Войдите, запомните значение куки `sid`, выйдите — и
-   покажите, что этим же значением всё ещё можно пользоваться.
-4. **Перечисление + перебор.** По ответу `POST /login` определите, какие
-   логины вообще существуют, затем переберите пароль `bob` коротким
-   словарём без каких-либо задержек или блокировок.
-5. **Захват аккаунта.** Имея любую чужую активную сессию (например, из
-   пункта 1–3), смените пароль жертвы через `POST /change-password`, не
-   зная её текущий пароль.
+1. **The "remember me" token.** Get access to `GET /admin` (and the flag)
+   without knowing the `admin` password, using only the `remember_token`
+   cookie.
+2. **Session fixation.** Get the same access another way: through a `sid`
+   that you obtained before anyone logged in as `admin`.
+3. **Logout.** Log in, remember the value of the `sid` cookie, log out — and
+   show that the same value can still be used.
+4. **Enumeration + brute force.** From the response of `POST /login`,
+   determine which logins exist at all, then brute-force `bob`'s password
+   with a short dictionary, without any delays or lockouts.
+5. **Account takeover.** With any active session of someone else (for example
+   from items 1–3), change the victim's password through
+   `POST /change-password` without knowing their current password.
 
-## Эндпоинты
+## Endpoints
 
 ```
 POST /register           {"username","password"}
 POST /login               {"username","password","remember":true|false}
 POST /logout
-GET  /auto-login          вход по cookie remember_token
+GET  /auto-login          login by the remember_token cookie
 GET  /me
 GET  /admin
-POST /change-password     {"new_password"}   (в fixed ещё и "current_password")
+POST /change-password     {"new_password"}   (in fixed also "current_password")
 POST /reset-lab
 ```
 
-## Подсказки
+## Hints
 
 <details>
-<summary>Подсказка 1 — remember_token</summary>
+<summary>Hint 1 — remember_token</summary>
 
-При `POST /login` с `"remember": true` сервер выставляет куку
-`remember_token`. Чем она вычисляется — случайным секретом или чем-то,
-что можно посчитать самому, зная только логин?
+On `POST /login` with `"remember": true` the server sets the
+`remember_token` cookie. What is it computed from — a random secret or
+something you can compute yourself knowing only the login?
 </details>
 
 <details>
-<summary>Подсказка 2 — session fixation</summary>
+<summary>Hint 2 — session fixation</summary>
 
-Откройте `GET /`. Сервер уже выдаёт вам куку `sid` — до того, как вы
-вообще вошли в систему. Что произойдёт с этим же значением `sid`, если
-теперь выполнить `POST /login` под другим пользователем?
+Open `GET /`. The server already gives you a `sid` cookie — before you have
+even logged in. What happens to this same `sid` value if you now do
+`POST /login` as another user?
 </details>
 
 <details>
-<summary>Подсказка 3 — logout</summary>
+<summary>Hint 3 — logout</summary>
 
-`POST /logout` отвечает `{"ok": true}` и явно удаляет куки в ответе. Но
-удаление куки в браузере — это не то же самое, что уничтожение записи о
-сессии на сервере. Сохраните значение `sid` отдельно до выхода и
-попробуйте использовать его после.
+`POST /logout` answers `{"ok": true}` and explicitly deletes the cookies in
+the response. But deleting a cookie in the browser is not the same as
+destroying the session record on the server. Save the `sid` value separately
+before logging out and try to use it afterwards.
 </details>
 
 <details>
-<summary>Подсказка 4 — перечисление и перебор</summary>
+<summary>Hint 4 — enumeration and brute force</summary>
 
-Сравните код и текст ответа `POST /login` для несуществующего логина и
-для существующего логина с неверным паролем. А затем — сколько раз подряд
-можно звать `/login`, прежде чем сервер скажет «хватит»?
+Compare the code and the text of the `POST /login` response for a
+nonexistent login and for an existing login with a wrong password. And then:
+how many times in a row can you call `/login` before the server says
+"enough"?
 </details>
 
 <details>
-<summary>Подсказка 5 — смена пароля</summary>
+<summary>Hint 5 — password change</summary>
 
-`POST /change-password` требует только активную сессию. Посмотрите, какие
-поля вообще принимает этот запрос — есть ли там что-то про старый пароль?
+`POST /change-password` requires only an active session. Look at which
+fields this request accepts at all — is there anything about the old
+password?
 </details>
 
-## Что сравнить в fixed/
+## What to compare in fixed/
 
-Откройте `fixed/app.py` и найдите комментарии `# FIX N` — каждый отвечает
-дефекту с тем же номером во `vulnerable/app.py`.
+Open `fixed/app.py` and find the `# FIX N` comments — each corresponds to the
+defect with the same number in `vulnerable/app.py`.
 
-## Структура
-- `vulnerable/` — уязвимая версия
-- `fixed/` — исправленная версия
-- `SOLUTION.md` — разбор решения (со спойлерами)
-- `docker-compose.yml` — запуск обеих версий
+## Structure
+- `vulnerable/` — the vulnerable version
+- `fixed/` — the fixed version
+- `SOLUTION.md` — the walkthrough (with spoilers)
+- `docker-compose.yml` — runs both versions
 
-## Дальше
+## Further reading
 - [OWASP Top 10:2025](https://owasp.org/Top10/)
-- [OWASP ASVS](https://owasp.org/www-project-application-security-verification-standard/) — раздел V3: Session Management, раздел V2: Authentication
+- [OWASP ASVS](https://owasp.org/www-project-application-security-verification-standard/) — section V3: Session Management, section V2: Authentication
 - [OWASP Web Security Testing Guide — Testing for Authentication](https://owasp.org/www-project-web-security-testing-guide/)

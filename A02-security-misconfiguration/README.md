@@ -1,58 +1,58 @@
-🌐 **Русский** · [Oʻzbekcha](./README.uz.md)
+🌐 **English** · [Русский](./README.ru.md) · [Oʻzbekcha](./README.uz.md)
 
-# A02 — Security Misconfiguration (небезопасная конфигурация)
+# A02 — Security Misconfiguration
 
-**Статус:** ✅ готово
+**Status:** ✅ ready
 
-## О чём лаба
-Небольшой интернет-магазин (API) с типичными ошибками настройки: пароль по умолчанию, лишние открытые файлы, подробные ошибки и отсутствие защитных заголовков. Кода-эксплойтов здесь нет: уязвимости это именно **неправильные настройки**.
+## About the lab
+A small web shop (API) with typical configuration mistakes: a default password, unnecessary exposed files, verbose errors and missing security headers. There is no exploit code here: the vulnerabilities are exactly the **wrong settings**.
 
-## Чему научитесь
-- Находить небезопасные настройки в приложении
-- Понимать, чем опасны подробные ошибки и забытые файлы (`.env`, бэкапы)
-- Настраивать защитные HTTP-заголовки и отдавать наружу только нужное
+## What you will learn
+- To find insecure settings in an application
+- Why verbose errors and forgotten files (`.env`, backups) are dangerous
+- To configure security HTTP headers and expose only what is needed
 
-## Запуск
+## Running
 
 ```bash
 docker compose up --build
 ```
 
-| Версия | Адрес |
-|--------|-------|
-| vulnerable (уязвимая) | http://127.0.0.1:8011 |
-| fixed (исправленная) | http://127.0.0.1:8012 |
+| Version | Address |
+|---------|---------|
+| vulnerable | http://127.0.0.1:8011 |
+| fixed | http://127.0.0.1:8012 |
 
-Без Docker:
+Without Docker:
 
 ```bash
 pip install -r vulnerable/requirements.txt
 python vulnerable/app.py   # http://127.0.0.1:5000
 ```
 
-> ⚠️ Приложение уязвимо специально. Запускайте только локально и не публикуйте в интернет.
+> ⚠️ The application is vulnerable on purpose. Run it locally only and do not expose it to the internet.
 
-## Задание
-Найдите в vulnerable-версии **четыре** ошибки конфигурации (в каждой спрятан флаг или признак):
+## Task
+Find **four** configuration mistakes in the vulnerable version (each hides a flag or a telltale sign):
 
-1. Войдите администратором, не зная пароля.
-2. Получите секретные данные приложения, не имея доступа к серверу.
-3. Заставьте приложение выдать лишнюю техническую информацию.
-4. Проверьте HTTP-заголовки ответа: каких защитных заголовков не хватает и что лишнее выдаёт сервер?
+1. Log in as the administrator without knowing the password.
+2. Get the application's secret data without having access to the server.
+3. Make the application give out extra technical information.
+4. Check the HTTP response headers: which security headers are missing and what extra does the server reveal?
 
-Затем повторите проверки на fixed-версии. Пароль админа в fixed генерируется при старте: `docker compose logs fixed` (или задайте свой через переменную `ADMIN_PASSWORD`).
+Then repeat the checks against the fixed version. The admin password in fixed is generated at startup: `docker compose logs fixed` (or set your own through the `ADMIN_PASSWORD` variable).
 
-## Подсказки
-1. Какие логин и пароль часто остаются «по умолчанию»?
-2. Что делает маршрут `GET /files/<имя>` и какие файлы лежат рядом с `app.py`?
-3. Что вернёт `GET /items?id=abc`?
-4. Используйте `curl -i`, чтобы увидеть заголовки.
+## Hints
+1. Which login and password are often left as the "default"?
+2. What does the `GET /files/<name>` route do, and which files sit next to `app.py`?
+3. What does `GET /items?id=abc` return?
+4. Use `curl -i` to see the headers.
 
-Полное решение со спойлерами: [SOLUTION.md](./SOLUTION.md)
+Full solution with spoilers: [SOLUTION.md](./SOLUTION.md)
 
-## Как защититься
-- Менять пароли по умолчанию, секреты хранить в окружении, а не в файлах рядом с кодом
-- Отдавать наружу только каталог со статикой, а не корень приложения
-- Показывать пользователю нейтральную ошибку, подробности писать в серверный лог
-- Добавлять защитные заголовки и убирать лишние баннеры с версиями
-- Регулярно проверять конфигурацию автоматическими сканерами
+## How to defend
+- Change default passwords, keep secrets in the environment and not in files next to the code
+- Serve only a static directory, not the application root
+- Show the user a neutral error and write the details to the server log
+- Add security headers and remove version banners
+- Check the configuration regularly with automated scanners

