@@ -1,3 +1,5 @@
+🌐 **Русский** · [Oʻzbekcha](./SOLUTION.uz.md)
+
 # A10 — Разбор решения (спойлеры)
 
 Примеры: `curl` на `http://127.0.0.1:8091` (vulnerable) и `http://127.0.0.1:8092` (fixed). В Windows удобнее Git Bash или WSL (или `curl.exe` в PowerShell).

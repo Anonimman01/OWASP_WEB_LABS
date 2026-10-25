@@ -289,7 +289,9 @@ def cdn_compromise():
 # Учебный интерфейс /ui: не часть уязвимости, одинаков в vulnerable и fixed
 from labui import register_ui  # noqa: E402
 register_ui(app, 'A08 Integrity Failures — fixed', notes='Аккаунты: alice / alice123, admin / Adm1n-lab-pass',
-            presets={'POST /login': [('alice', {'username': 'alice', 'password': 'alice123'})], 'POST /buy': [('тариф basic', {'plan': 'basic'})]})
+            presets={'POST /login': [('alice', {'username': 'alice', 'password': 'alice123'})], 'POST /buy': [('тариф basic', {'plan': 'basic'})]},
+            uz={'notes': 'Akkauntlar: alice / alice123, admin / Adm1n-lab-pass',
+                'presets': {'POST /buy': [('basic tarifi', {'plan': 'basic'})]}})
 
 
 if __name__ == "__main__":

@@ -281,7 +281,12 @@ register_ui(app, "A10 Mishandling of Exceptional Conditions — vulnerable",
                 "POST /orders": [("1 кружка", {"item_id": 1, "qty": 1})],
                 "POST /thumbnail": [("800×600", {"width": 800, "height": 600})],
                 "GET /reports/<name>": [("q1", "/reports/q1")],
-            })
+            },
+            uz={"notes": "Akkauntlar: alice / alice123 (1-daraja), bob / bob123 (2-daraja). Boshlangʻich balans: 100.",
+                "presets": {
+                    "GET /documents/<int:doc_id>": [("hujjat 1", "/documents/1"), ("hujjat 2", "/documents/2")],
+                    "POST /orders": [("1 ta krujka", {"item_id": 1, "qty": 1})],
+                }})
 
 
 if __name__ == "__main__":

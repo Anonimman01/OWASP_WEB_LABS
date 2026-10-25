@@ -1,3 +1,5 @@
+🌐 **Русский** · [Oʻzbekcha](./README.uz.md)
+
 # A10 — Mishandling of Exceptional Conditions (неверная обработка исключительных ситуаций)
 
 **Статус:** ✅ готово

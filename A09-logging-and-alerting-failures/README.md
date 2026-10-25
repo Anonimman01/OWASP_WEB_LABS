@@ -1,3 +1,5 @@
+🌐 **Русский** · [Oʻzbekcha](./README.uz.md)
+
 # A09 — Security Logging and Alerting Failures (сбои логирования и оповещений)
 
 **Статус:** ✅ готово

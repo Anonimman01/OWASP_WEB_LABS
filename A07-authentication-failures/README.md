@@ -1,3 +1,5 @@
+🌐 **Русский** · [Oʻzbekcha](./README.uz.md)
+
 # A07 — Authentication Failures (сбои аутентификации)
 
 **Статус:** ✅ готово

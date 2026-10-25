@@ -5,7 +5,7 @@
 Har bir **[OWASP Top 10:2025](https://owasp.org/Top10/2025/0x00_2025-Introduction/)** toifasi uchun bittadan, jami oʻnta lokal laboratoriya ishi.
 Format «**buz → tuzat**»: har bir laboratoriyada bir ilovaning ikki versiyasi, zaif va tuzatilgani, bir vaqtda ishga tushadi. Siz birinchisidagi nuqsonlarni topasiz, keyin uni tuzatilgani bilan solishtirib, har bir teshik aynan nima bilan yopilganini koʻrasiz.
 
-Hujjatlar rus tilida yozilgan. Laboratoriyalar A01–A05 va shu README uchun oʻzbekcha (lotin alifbosida) tarjima ham bor. Litsenziya: MIT.
+Hujjatlar rus tilida yozilgan. Barcha laboratoriyalar (A01–A10) va shu README uchun oʻzbekcha (lotin alifbosida) tarjima ham bor. Litsenziya: MIT.
 
 > ⚠️ **Muhim.** Ushbu repozitoriydagi ilovalar **ataylab zaif qilingan**.
 > - Ularni faqat lokal (`127.0.0.1`) yoki izolyatsiyalangan muhitda (Docker, virtual mashina) ishga tushiring.
@@ -29,7 +29,7 @@ Hujjatlar rus tilida yozilgan. Laboratoriyalar A01–A05 va shu README uchun oʻ
 ## Laboratoriyalar jadvali
 
 Portlar **vulnerable / fixed** tartibida koʻrsatilgan. Barcha manzillar `http://127.0.0.1:<port>` koʻrinishida.
-A01–A05 uchun havola oʻzbekcha README ga olib boradi. A06–A10 hujjatlari hozircha faqat rus tilida.
+Havolalar laboratoriyalarning oʻzbekcha README fayllariga olib boradi.
 
 | №   | Laboratoriya | Toifa | Ichida nima | Portlar |
 |-----|--------------|-------|-------------|---------|
@@ -38,11 +38,11 @@ A01–A05 uchun havola oʻzbekcha README ga olib boradi. A06–A10 hujjatlari ho
 | A03 | [software-supply-chain-failures](./A03-software-supply-chain-failures/README.uz.md) | Dasturiy taʼminot yetkazib berish zanjiridagi nosozliklar | Eskirgan qotirilgan bogʻliqliklarga ega zararsiz ilova; `fixed/` da `requirements.in` yondashuvi koʻrsatilgan | 8021 / 8022 |
 | A04 | [cryptographic-failures](./A04-cryptographic-failures/README.uz.md) | Kriptografik nosozliklar | Akkauntlar va bank kartalari: zaif kriptografiya, administrator akkauntini egallash | 8031 / 8032 |
 | A05 | [injection](./A05-injection/README.uz.md) | Inyeksiyalar (SQLi, XSS va boshq.) | Kirish, qidiruv va mehmonlar kitobi bor doʻkon; kiritilgan maʼlumot SQL va HTML ga ishlovsiz tushadi | 8041 / 8042 |
-| A06 | [insecure-design](./A06-insecure-design) (rus tilida) | Xavfsiz boʻlmagan arxitektura | Kodi toza, ammo biznes-mantiqi buzilgan doʻkon JSON API si | 8051 / 8052 |
-| A07 | [authentication-failures](./A07-authentication-failures) (rus tilida) | Autentifikatsiya nosozliklari | Roʻyxatdan oʻtish, kirish, «meni eslab qol», parolni almashtirish | 8061 / 8062 |
-| A08 | [software-or-data-integrity-failures](./A08-software-or-data-integrity-failures) (rus tilida) | Dasturiy taʼminot va maʼlumotlar yaxlitligining buzilishi | Imzolanmagan cookie, litsenziya, oynadan yangilash va webhook | 8071 / 8072 |
-| A09 | [logging-and-alerting-failures](./A09-logging-and-alerting-failures) (rus tilida) | Jurnal yuritish va ogohlantirish nosozliklari | Hujum logda koʻrinmaydi: yozuvlar yoʻq, log injection, logda sirlar, ogohlantirishlar yoʻq | 8081 / 8082 |
-| A10 | [mishandling-of-exceptional-conditions](./A10-mishandling-of-exceptional-conditions) (rus tilida) | Istisno holatlarni notoʻgʻri qayta ishlash | Batafsil xatolar, fail-open, orqaga qaytarilmaydigan amallar, cheklovlarning yoʻqligi | 8091 / 8092 |
+| A06 | [insecure-design](./A06-insecure-design/README.uz.md) | Xavfsiz boʻlmagan arxitektura | Kodi toza, ammo biznes-mantiqi buzilgan doʻkon JSON API si | 8051 / 8052 |
+| A07 | [authentication-failures](./A07-authentication-failures/README.uz.md) | Autentifikatsiya nosozliklari | Roʻyxatdan oʻtish, kirish, «meni eslab qol», parolni almashtirish | 8061 / 8062 |
+| A08 | [software-or-data-integrity-failures](./A08-software-or-data-integrity-failures/README.uz.md) | Dasturiy taʼminot va maʼlumotlar yaxlitligining buzilishi | Imzolanmagan cookie, litsenziya, oynadan yangilash va webhook | 8071 / 8072 |
+| A09 | [logging-and-alerting-failures](./A09-logging-and-alerting-failures/README.uz.md) | Jurnal yuritish va ogohlantirish nosozliklari | Hujum logda koʻrinmaydi: yozuvlar yoʻq, log injection, logda sirlar, ogohlantirishlar yoʻq | 8081 / 8082 |
+| A10 | [mishandling-of-exceptional-conditions](./A10-mishandling-of-exceptional-conditions/README.uz.md) | Istisno holatlarni notoʻgʻri qayta ishlash | Batafsil xatolar, fail-open, orqaga qaytarilmaydigan amallar, cheklovlarning yoʻqligi | 8091 / 8092 |
 
 Holati: ✅ barcha oʻnta laboratoriya tayyor.
 
@@ -102,7 +102,7 @@ Tuzatilgan versiyani ishga tushirish uchun `vulnerable` ni `fixed` ga (portni es
 
 ## Interfeys tili (UZ)
 
-**Interfeysni oʻzbek tilida ochish.** A01–A05 laboratoriyalarida brauzer sahifasi (`/ui`) ikki tilli: rus va oʻzbek. Brauzeringiz tili, masalan, rus tilida boʻlsa, sahifa avval ruscha ochiladi. Oʻzbekchaga oʻtish uchun:
+**Interfeysni oʻzbek tilida ochish.** Barcha laboratoriyalarda brauzer sahifasi (`/ui`) ikki tilli: rus va oʻzbek. Brauzeringiz tili, masalan, rus tilida boʻlsa, sahifa avval ruscha ochiladi. Oʻzbekchaga oʻtish uchun:
 
 1. Laboratoriya ochilgan brauzer oynasiga oʻting.
 2. Manzil qatorining oxiriga quyidagini yozing:
@@ -128,9 +128,9 @@ Har bir laboratoriyaning portlari yuqoridagi jadvalda. Masalan, A01 uchun: `http
 ```
 AXX-toifa-nomi/
   README.md              tavsif, topshiriq, endpointlar, maslahatlar
-  README.uz.md           oʻzbekcha tarjima (hozircha A01–A05)
+  README.uz.md           oʻzbekcha tarjima
   SOLUTION.md            yechim tahlili (spoylerlar bilan)
-  SOLUTION.uz.md         oʻzbekcha tarjima (hozircha A01–A05)
+  SOLUTION.uz.md         oʻzbekcha tarjima
   Dockerfile             python:3.11-slim, ARG VARIANT, ENV HOST=0.0.0.0 PORT=5000
   docker-compose.yml     ikkita servis (vulnerable va fixed), 127.0.0.1 dagi portlar
   vulnerable/
@@ -158,11 +158,9 @@ Ayrim laboratoriyalarda qoʻshimcha fayllar bor: masalan, A04 da `wordlist.txt`,
 
 ## Tillar
 
-A01–A05 laboratoriyalari hujjatlari ikki tilda mavjud: rus tilida (`README.md`, `SOLUTION.md`) va oʻzbek tilida, lotin alifbosida (`README.uz.md`, `SOLUTION.uz.md`). Har bir fayl tepasida tilni almashtirish havolasi bor. Shu README ham ikki tilda: `README.md` va `README.uz.md`.
+Barcha laboratoriyalar (A01–A10) hujjatlari ikki tilda mavjud: rus tilida (`README.md`, `SOLUTION.md`) va oʻzbek tilida, lotin alifbosida (`README.uz.md`, `SOLUTION.uz.md`). Har bir fayl tepasida tilni almashtirish havolasi bor. Shu README ham ikki tilda: `README.md` va `README.uz.md`.
 
-A01–A05 laboratoriyalarida `/ui` sahifasi ham ikki tilli, oʻtish usuli [yuqorida](#interfeys-tili-uz) tushuntirilgan. Faqat qobiq tarjima qilinadi (sarlavhalar, tugmalar, maslahatlar, namunalar). Ilovalarning oʻz javoblari (qaydlar matni, mahsulot nomlari, xato xabarlari) `SOLUTION` ga mos kelishi uchun oʻzgarishsiz qoladi. Koddagi izohlar (`# ДЕФЕКТ N` / `# FIX N`) rus tilida qoladi.
-
-A06–A10 hujjatlari va interfeysi hozircha faqat rus tilida.
+Barcha laboratoriyalarda `/ui` sahifasi ham ikki tilli, oʻtish usuli [yuqorida](#interfeys-tili-uz) tushuntirilgan. Faqat qobiq tarjima qilinadi (sarlavhalar, tugmalar, maslahatlar, namunalar). Ilovalarning oʻz javoblari (qaydlar matni, mahsulot nomlari, xato xabarlari) `SOLUTION` ga mos kelishi uchun oʻzgarishsiz qoladi. Koddagi izohlar (`# ДЕФЕКТ N` / `# FIX N`) rus tilida qoladi.
 
 ## Yechimlar va spoylerlar
 

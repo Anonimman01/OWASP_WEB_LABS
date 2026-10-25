@@ -231,7 +231,12 @@ register_ui(app, "A09 Logging and Alerting Failures — vulnerable",
                 "POST /transfer": [("alice → bob 50", {"to": "bob", "amount": 50})],
                 "POST /feedback": [("отзыв", {"name": "Аня", "message": "Всё отлично"})],
                 "POST /_lab/tamper": [("удалить строку 1", {"index": 1, "text": None})],
-            })
+            },
+            uz={"notes": "Akkauntlar: alice / alice123, bob / bob123. Admin parolini oʻzingiz toping.",
+                "presets": {
+                    "POST /feedback": [("fikr", {"name": "Ali", "message": "Hammasi yaxshi"})],
+                    "POST /_lab/tamper": [("1-qatorni oʻchirish", {"index": 1, "text": None})],
+                }})
 
 
 if __name__ == "__main__":

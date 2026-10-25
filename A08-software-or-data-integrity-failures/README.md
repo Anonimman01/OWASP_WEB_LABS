@@ -1,3 +1,5 @@
+🌐 **Русский** · [Oʻzbekcha](./README.uz.md)
+
 # A08 — Software or Data Integrity Failures (нарушения целостности ПО и данных)
 
 **Статус:** ✅ готово
