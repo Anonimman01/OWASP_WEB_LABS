@@ -1,3 +1,5 @@
+🌐 **Русский** · [Oʻzbekcha](./README.uz.md)
+
 # A04 — Cryptographic Failures (криптографические сбои)
 
 **Статус:** ✅ готово

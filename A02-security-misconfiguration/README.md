@@ -1,3 +1,5 @@
+🌐 **Русский** · [Oʻzbekcha](./README.uz.md)
+
 # A02 — Security Misconfiguration (небезопасная конфигурация)
 
 **Статус:** ✅ готово

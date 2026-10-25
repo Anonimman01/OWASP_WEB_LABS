@@ -1,3 +1,5 @@
+🌐 **Русский** · [Oʻzbekcha](./README.uz.md)
+
 # A03 — Software Supply Chain Failures (сбои в цепочке поставок ПО)
 
 **Статус:** ✅ готово

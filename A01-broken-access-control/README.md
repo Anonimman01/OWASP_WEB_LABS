@@ -1,3 +1,5 @@
+🌐 **Русский** · [Oʻzbekcha](./README.uz.md)
+
 # A01 — Broken Access Control (нарушение контроля доступа)
 
 **Статус:** ✅ готово
