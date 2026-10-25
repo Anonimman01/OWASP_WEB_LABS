@@ -24,6 +24,13 @@ docker compose up --build
 | vulnerable (eski bogʻliqliklar) | http://127.0.0.1:8021 |
 | fixed (yangilangan + xeshlar) | http://127.0.0.1:8022 |
 
+> 🌐 **Interfeysni oʻzbek tilida ochish.** Brauzeringiz tili, masalan, rus tilida boʻlsa, `/ui` sahifasi avval ruscha ochiladi. Oʻzbekchaga oʻtish uchun laboratoriya ochilgan brauzer oynasiga oʻting va manzil qatorining oxiriga quyidagini yozing:
+>
+> - manzil `http://127.0.0.1:8021/ui` boʻlsa (odatda shunday: brauzer `/` dan `/ui` ga oʻzi yoʻnaltiradi), oxiriga `?lang=uz` qoʻshing;
+> - manzil `http://127.0.0.1:8021` boʻlsa, oxiriga `/ui?lang=uz` qoʻshing.
+>
+> Natija: `http://127.0.0.1:8021/ui?lang=uz` (vulnerable) yoki `http://127.0.0.1:8022/ui?lang=uz` (fixed). Soʻng Enter bosing. Yoki sahifaning yuqori oʻng burchagidagi **UZ** tugmasini bosing: tanlov brauzerda eslab qolinadi.
+
 `GET /deps` endpointi oʻrnatilgan paketlar versiyalarini koʻrsatadi.
 
 > ⚠️ Ataylab eskirgan bogʻliqliklarga ega ilova. Faqat lokal ishga tushiring va internetga chiqarmang.
