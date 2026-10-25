@@ -40,7 +40,8 @@ def deps():
 # Учебный интерфейс /ui: не часть уязвимости, одинаков в vulnerable и fixed
 from labui import register_ui  # noqa: E402
 register_ui(app, 'A03 Software Supply Chain Failures — vulnerable', notes='Приложение показывает установленные версии зависимостей: /deps.',
-            presets={})
+            presets={},
+            uz={'notes': 'Ilova oʻrnatilgan bogʻliqliklar versiyalarini koʻrsatadi: /deps.'})
 
 
 if __name__ == "__main__":

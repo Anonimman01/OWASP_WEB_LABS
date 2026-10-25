@@ -104,7 +104,8 @@ def admin_users():
 # Учебный интерфейс /ui: не часть уязвимости, одинаков в vulnerable и fixed
 from labui import register_ui  # noqa: E402
 register_ui(app, 'A01 Broken Access Control — fixed', notes='Аккаунты: alice / alice123, bob / bob123, admin / Adm1n-lab-pass',
-            presets={'POST /login': [('alice', {'username': 'alice', 'password': 'alice123'}), ('bob', {'username': 'bob', 'password': 'bob123'})]})
+            presets={'POST /login': [('alice', {'username': 'alice', 'password': 'alice123'}), ('bob', {'username': 'bob', 'password': 'bob123'})]},
+            uz={'notes': 'Akkauntlar: alice / alice123, bob / bob123, admin / Adm1n-lab-pass'})
 
 
 if __name__ == "__main__":
