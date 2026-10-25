@@ -10,26 +10,28 @@
 
 ## Список лаб
 
-| №   | Папка | Категория | Статус |
-|-----|-------|-----------|--------|
-| A01 | [A01-broken-access-control](./A01-broken-access-control) | Нарушение контроля доступа | 🕓 запланировано |
-| A02 | [A02-security-misconfiguration](./A02-security-misconfiguration) | Небезопасная конфигурация | 🕓 запланировано |
-| A03 | [A03-software-supply-chain-failures](./A03-software-supply-chain-failures) | Сбои в цепочке поставок ПО | 🕓 запланировано |
-| A04 | [A04-cryptographic-failures](./A04-cryptographic-failures) | Криптографические сбои | 🕓 запланировано |
-| A05 | [A05-injection](./A05-injection) | Инъекции (SQLi, XSS и др.) | 🕓 запланировано |
-| A06 | [A06-insecure-design](./A06-insecure-design) | Небезопасная архитектура | 🕓 запланировано |
-| A07 | [A07-authentication-failures](./A07-authentication-failures) | Сбои аутентификации | 🕓 запланировано |
-| A08 | [A08-software-or-data-integrity-failures](./A08-software-or-data-integrity-failures) | Нарушения целостности ПО и данных | 🕓 запланировано |
-| A09 | [A09-logging-and-alerting-failures](./A09-logging-and-alerting-failures) | Сбои логирования и оповещений | 🕓 запланировано |
-| A10 | [A10-mishandling-of-exceptional-conditions](./A10-mishandling-of-exceptional-conditions) | Неверная обработка исключительных ситуаций | 🕓 запланировано |
+| №   | Папка | Категория | Порты (vulnerable / fixed) | Статус |
+|-----|-------|-----------|----------------------------|--------|
+| A01 | [A01-broken-access-control](./A01-broken-access-control) | Нарушение контроля доступа | 8001 / 8002 | ✅ готово |
+| A02 | [A02-security-misconfiguration](./A02-security-misconfiguration) | Небезопасная конфигурация | 8011 / 8012 | ✅ готово |
+| A03 | [A03-software-supply-chain-failures](./A03-software-supply-chain-failures) | Сбои в цепочке поставок ПО | 8021 / 8022 | ✅ готово |
+| A04 | [A04-cryptographic-failures](./A04-cryptographic-failures) | Криптографические сбои | — | 🕓 запланировано |
+| A05 | [A05-injection](./A05-injection) | Инъекции (SQLi, XSS и др.) | — | 🕓 запланировано |
+| A06 | [A06-insecure-design](./A06-insecure-design) | Небезопасная архитектура | — | 🕓 запланировано |
+| A07 | [A07-authentication-failures](./A07-authentication-failures) | Сбои аутентификации | — | 🕓 запланировано |
+| A08 | [A08-software-or-data-integrity-failures](./A08-software-or-data-integrity-failures) | Нарушения целостности ПО и данных | — | 🕓 запланировано |
+| A09 | [A09-logging-and-alerting-failures](./A09-logging-and-alerting-failures) | Сбои логирования и оповещений | — | 🕓 запланировано |
+| A10 | [A10-mishandling-of-exceptional-conditions](./A10-mishandling-of-exceptional-conditions) | Неверная обработка исключительных ситуаций | — | 🕓 запланировано |
 
 ## Как устроена каждая лаба
 
 ```
 AXX-название-категории/
   README.md            описание, цель, подсказки
+  SOLUTION.md          разбор решения (со спойлерами)
   vulnerable/          уязвимая версия приложения
   fixed/               исправленная версия (для сравнения)
+  Dockerfile
   docker-compose.yml   запуск одной командой
 ```
 
@@ -37,13 +39,23 @@ AXX-название-категории/
 
 ## Быстрый старт
 
+Нужны Git и Docker (с плагином Compose).
+
 ```bash
-git clone <адрес-репозитория>
-cd owasp-labs/A01-broken-access-control
-docker compose up
+git clone https://github.com/Anonimman01/OWASP_WEB_LABS.git
+cd OWASP_WEB_LABS/A01-broken-access-control
+docker compose up --build
 ```
 
-Приложение откроется на `http://127.0.0.1:8080` (порт может отличаться, смотрите README конкретной лабы).
+Обе версии (уязвимая и исправленная) запускаются одновременно на портах из таблицы выше, только на `127.0.0.1`.
+
+Без Docker (нужен Python 3.11+):
+
+```bash
+cd OWASP_WEB_LABS/A01-broken-access-control
+pip install -r vulnerable/requirements.txt
+python vulnerable/app.py   # http://127.0.0.1:5000
+```
 
 ## Полезные ссылки
 

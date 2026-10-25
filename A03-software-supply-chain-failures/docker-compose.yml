@@ -1,0 +1,17 @@
+# Порты привязаны к 127.0.0.1: лаба доступна только с вашего компьютера.
+services:
+  vulnerable:
+    build:
+      context: .
+      args:
+        VARIANT: vulnerable
+    ports:
+      - "127.0.0.1:8021:5000"
+  fixed:
+    build:
+      context: .
+      args:
+        VARIANT: fixed
+        PIP_FLAGS: "--require-hashes"
+    ports:
+      - "127.0.0.1:8022:5000"
