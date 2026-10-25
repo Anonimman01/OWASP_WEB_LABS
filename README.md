@@ -15,8 +15,8 @@
 | A01 | [A01-broken-access-control](./A01-broken-access-control) | Нарушение контроля доступа | 8001 / 8002 | ✅ готово |
 | A02 | [A02-security-misconfiguration](./A02-security-misconfiguration) | Небезопасная конфигурация | 8011 / 8012 | ✅ готово |
 | A03 | [A03-software-supply-chain-failures](./A03-software-supply-chain-failures) | Сбои в цепочке поставок ПО | 8021 / 8022 | ✅ готово |
-| A04 | [A04-cryptographic-failures](./A04-cryptographic-failures) | Криптографические сбои | — | 🕓 запланировано |
-| A05 | [A05-injection](./A05-injection) | Инъекции (SQLi, XSS и др.) | — | 🕓 запланировано |
+| A04 | [A04-cryptographic-failures](./A04-cryptographic-failures) | Криптографические сбои | 8031 / 8032 | ✅ готово |
+| A05 | [A05-injection](./A05-injection) | Инъекции (SQLi, XSS и др.) | 8041 / 8042 | ✅ готово |
 | A06 | [A06-insecure-design](./A06-insecure-design) | Небезопасная архитектура | — | 🕓 запланировано |
 | A07 | [A07-authentication-failures](./A07-authentication-failures) | Сбои аутентификации | — | 🕓 запланировано |
 | A08 | [A08-software-or-data-integrity-failures](./A08-software-or-data-integrity-failures) | Нарушения целостности ПО и данных | — | 🕓 запланировано |
