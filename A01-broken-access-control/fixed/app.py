@@ -9,6 +9,8 @@ from flask import Flask, jsonify, request, session
 
 app = Flask(__name__)
 app.secret_key = "lab-secret-not-for-production"
+# Разные имена cookie: vulnerable и fixed на 127.0.0.1 не должны делить сессию
+app.config["SESSION_COOKIE_NAME"] = "a01_fixed_session"
 
 USERS = {
     "alice": {"password": "alice123", "role": "user"},
@@ -16,11 +18,31 @@ USERS = {
     "admin": {"password": "Adm1n-lab-pass", "role": "admin"},
 }
 
+# Заявки сотрудников в HR (маршрут по-прежнему /api/notes)
 NOTES = {
-    1: {"id": 1, "owner": "alice", "text": "Заметка Алисы: список покупок"},
-    2: {"id": 2, "owner": "bob", "text": "Заметка Боба: черновик письма"},
-    3: {"id": 3, "owner": "admin", "text": "Секрет админа: FLAG{a01_idor_admin_note}"},
+    1: {"id": 1, "owner": "alice", "text": "Заявка Алисы: отпуск с 14 по 28 июля"},
+    2: {"id": 2, "owner": "bob", "text": "Заявка Боба: перенос рабочего графика на 10:00"},
+    3: {"id": 3, "owner": "admin", "text": "Конфиденциально (админ): FLAG{a01_idor_admin_note}"},
 }
+
+# Справочник сотрудников для портала. department/position это коды,
+# названия подставляет интерфейс на выбранном языке. username=None: у
+# коллеги нет учётной записи в лабе.
+EMPLOYEES = [
+    {"username": "alice", "name": "Alice Johnson", "department": "qa", "position": "qa_engineer"},
+    {"username": "bob", "name": "Bob Smith", "department": "dev", "position": "developer"},
+    {"username": "admin", "name": "Admin", "department": "hr", "position": "hr_admin"},
+    {"username": None, "name": "Dilnoza Karimova", "department": "design", "position": "designer"},
+    {"username": None, "name": "Jasur Rakhimov", "department": "dev", "position": "developer"},
+    {"username": None, "name": "Malika Yusupova", "department": "finance", "position": "accountant"},
+    {"username": None, "name": "Timur Abdullaev", "department": "sales", "position": "sales_manager"},
+]
+
+
+def employee_public(e):
+    slug = e["name"].lower().replace(" ", ".")
+    return {"name": e["name"], "department": e["department"],
+            "position": e["position"], "email": f"{slug}@testlab.example"}
 
 
 def current_user():
@@ -54,7 +76,9 @@ def index():
     return jsonify(
         message="A01 Broken Access Control lab (fixed)",
         login="POST /login (JSON: username, password). Тестовый аккаунт: alice / alice123",
-        endpoints=["GET /me", "GET /api/notes", "GET /api/notes/<id>", "GET /admin/users"],
+        endpoints=["GET /me", "GET /api/notes", "GET /api/notes/<id>", "GET /api/employees",
+                   "GET /admin/users", "POST /logout"],
+        portal="Откройте / в браузере: HR-портал TestLab HR (консоль эндпоинтов: /ui)",
     )
 
 
@@ -68,10 +92,25 @@ def login():
     return jsonify(message="logged in", user=data["username"])
 
 
+@app.post("/logout")
+def logout():
+    session.clear()
+    return jsonify(message="logged out")
+
+
 @app.get("/me")
 @login_required
 def me():
-    return jsonify(user=current_user(), role=USERS[current_user()]["role"])
+    profile = next(e for e in EMPLOYEES if e["username"] == current_user())
+    return jsonify(user=current_user(), role=USERS[current_user()]["role"],
+                   name=profile["name"], department=profile["department"],
+                   position=profile["position"])
+
+
+@app.get("/api/employees")
+@login_required
+def employees():
+    return jsonify([employee_public(e) for e in EMPLOYEES])
 
 
 @app.get("/api/notes")
@@ -101,7 +140,10 @@ def admin_users():
     )
 
 
-# Учебный интерфейс /ui: не часть уязвимости, одинаков в vulnerable и fixed
+# Учебная обвязка: не часть уязвимости, одинакова в vulnerable и fixed.
+# Портал ("/" в браузере) подключается ДО /ui, чтобы "/" не уходил в консоль.
+from portal import register_portal  # noqa: E402
+register_portal(app, "fixed")
 from labui import register_ui  # noqa: E402
 register_ui(app, 'A01 Broken Access Control — fixed', notes='Аккаунты: alice / alice123, bob / bob123, admin / Adm1n-lab-pass',
             presets={'POST /login': [('alice', {'username': 'alice', 'password': 'alice123'}), ('bob', {'username': 'bob', 'password': 'bob123'})]},

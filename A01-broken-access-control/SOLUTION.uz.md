@@ -23,6 +23,10 @@ curl -b jar.txt http://127.0.0.1:8001/admin/users
 # → foydalanuvchilar roʻyxati va flag FLAG{a01_admin_panel_open}
 ```
 
+## Xuddi shu portalda
+
+`alice` sifatida kiring, ariza manzilidagi raqamni oʻzgartiring (`/#/requests/3`) va menyu bandi sizdan yashirilgan boʻlsa ham «Boshqaruv» sahifasini toʻgʻridan-toʻgʻri oching (`/#/admin`). fixed da (port 8002) ikkala sahifa ham «Kirish taqiqlandi» koʻrsatadi. Menyu bandini yashirish kirish nazorati oʻrnini bosmaydi: serverning oʻzi rad etishi kerak.
+
 ## Xato nimada
 
 1. `GET /api/notes/<id>`: server faqat foydalanuvchi tizimga kirganini tekshiradi, lekin `note["owner"]` ni joriy foydalanuvchi bilan solishtirmaydi (**IDOR**).

@@ -32,7 +32,7 @@ Lab documentation (README and SOLUTION) is in English, Russian and Uzbek; the fo
 
 | №   | Lab | Category | What is inside | Ports |
 |-----|-----|----------|----------------|-------|
-| A01 | [broken-access-control](./A01-broken-access-control) | Broken Access Control | A notes app with roles: the server does not check who owns a resource or what role the user has | 8001 / 8002 |
+| A01 | [broken-access-control](./A01-broken-access-control) | Broken Access Control | A corporate HR portal with roles: the server does not check who owns a resource or what role the user has | 8001 / 8002 |
 | A02 | [security-misconfiguration](./A02-security-misconfiguration) | Security Misconfiguration | A shop (API): default password, extra exposed files, verbose errors, no security headers | 8011 / 8012 |
 | A03 | [software-supply-chain-failures](./A03-software-supply-chain-failures) | Software Supply Chain Failures | A harmless app with outdated pinned dependencies; `fixed/` shows the `requirements.in` approach | 8021 / 8022 |
 | A04 | [cryptographic-failures](./A04-cryptographic-failures) | Cryptographic Failures | Accounts and bank cards: weak cryptography, taking over the administrator account | 8031 / 8032 |

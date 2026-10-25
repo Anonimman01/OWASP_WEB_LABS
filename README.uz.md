@@ -33,7 +33,7 @@ Havolalar laboratoriyalarning oʻzbekcha README fayllariga olib boradi.
 
 | №   | Laboratoriya | Toifa | Ichida nima | Portlar |
 |-----|--------------|-------|-------------|---------|
-| A01 | [broken-access-control](./A01-broken-access-control/README.uz.md) | Kirish nazoratining buzilishi | Rollari bor qaydlar ilovasi: server resurs kimga tegishli ekanini va foydalanuvchi roli qanday ekanini tekshirmaydi | 8001 / 8002 |
+| A01 | [broken-access-control](./A01-broken-access-control/README.uz.md) | Kirish nazoratining buzilishi | Rollari bor HR-portal: server resurs kimga tegishli ekanini va foydalanuvchi roli qanday ekanini tekshirmaydi | 8001 / 8002 |
 | A02 | [security-misconfiguration](./A02-security-misconfiguration/README.uz.md) | Xavfsiz boʻlmagan konfiguratsiya | Doʻkon (API): sukut boʻyicha parol, ortiqcha ochiq fayllar, batafsil xatolar, himoya sarlavhalari yoʻq | 8011 / 8012 |
 | A03 | [software-supply-chain-failures](./A03-software-supply-chain-failures/README.uz.md) | Dasturiy taʼminot yetkazib berish zanjiridagi nosozliklar | Eskirgan qotirilgan bogʻliqliklarga ega zararsiz ilova; `fixed/` da `requirements.in` yondashuvi koʻrsatilgan | 8021 / 8022 |
 | A04 | [cryptographic-failures](./A04-cryptographic-failures/README.uz.md) | Kriptografik nosozliklar | Akkauntlar va bank kartalari: zaif kriptografiya, administrator akkauntini egallash | 8031 / 8032 |

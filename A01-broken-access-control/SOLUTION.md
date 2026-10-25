@@ -23,6 +23,10 @@ curl -b jar.txt http://127.0.0.1:8001/admin/users
 # → the user list and the flag FLAG{a01_admin_panel_open}
 ```
 
+## The same in the portal
+
+Sign in as `alice`, change the number in the address of a request (`/#/requests/3`) and open the Administration page directly (`/#/admin`), although the menu item is hidden from you. On fixed (port 8002) both pages show “Access denied”. Hiding a menu item is not access control: the server must refuse.
+
 ## What is wrong
 
 1. `GET /api/notes/<id>`: the server only checks that the user is logged in, but does not compare `note["owner"]` with the current user (**IDOR**).
