@@ -140,6 +140,8 @@ ul { margin: 0; padding: 0; list-style: none; }
   gap: 60px; padding: 46px 0 60px; border-top: 1px solid var(--line);
 }
 .band + .band { border-top: 1px solid var(--line); }
+/* секция из одного блока (About, Gallery) занимает всю ширину контейнера */
+.band > :only-child { grid-column: 1 / -1; }
 
 .why h2, .sect h2 {
   font-size: clamp(28px, 3vw, 40px); font-weight: 400; letter-spacing: -.01em;

@@ -41,7 +41,7 @@
         {% for o in orders %}
         <tr>
           <td>#{{ o.no }}</td>
-          <td>{{ o.items }}</td>
+          <td>{{ o['items'] }}</td>
           <td>{{ o.time }}</td>
           <td>${{ o.total }}</td>
           <td><span class="pill {{ o.state }}">{{ o.status }}</span></td>
