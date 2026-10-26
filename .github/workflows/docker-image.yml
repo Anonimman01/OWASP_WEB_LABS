@@ -1,18 +1,52 @@
-name: Docker Image CI
+name: CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
 jobs:
-
-  build:
-
+  checks:
+    name: Repo checks
     runs-on: ubuntu-latest
-
     steps:
-    - uses: actions/checkout@v4
-    - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Shared files identical, Dockerfiles bind 0.0.0.0, code compiles
+        run: python .github/scripts/check_repo.py
+
+  docker:
+    name: Docker ${{ matrix.lab }} / ${{ matrix.variant }}
+    runs-on: ubuntu-latest
+    needs: checks
+    strategy:
+      fail-fast: false
+      matrix:
+        lab:
+          - A01-broken-access-control
+          - A02-security-misconfiguration
+          - A03-software-supply-chain-failures
+          - A04-cryptographic-failures
+          - A05-injection
+          - A06-insecure-design
+          - A07-authentication-failures
+          - A08-software-or-data-integrity-failures
+          - A09-logging-and-alerting-failures
+          - A10-mishandling-of-exceptional-conditions
+        variant: [vulnerable, fixed]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build image
+        working-directory: ${{ matrix.lab }}
+        run: docker build --build-arg VARIANT=${{ matrix.variant }} -t lab:test .
+      - name: Start container and wait for HTTP 200 on /
+        run: |
+          docker run -d --name lab -p 127.0.0.1:5000:5000 lab:test
+          for i in $(seq 1 30); do
+            if curl -fsS -o /dev/null http://127.0.0.1:5000/; then echo "up after ${i}s"; exit 0; fi
+            sleep 1
+          done
+          echo "container did not answer"; docker logs lab; exit 1
