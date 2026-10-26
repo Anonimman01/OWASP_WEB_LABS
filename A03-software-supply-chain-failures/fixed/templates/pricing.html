@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% set active = 'pricing' %}
+{% block title %}Kestrel CI — {{ t.pricing_title }}{% endblock %}
+{% block content %}
+
+<section class="sect container" style="padding-top:3.4rem">
+  <p class="eyebrow">{{ t.pricing_eyebrow }}</p>
+  <h2>{{ t.pricing_title }}</h2>
+  <p class="lead" style="margin-top:.8rem">{{ t.pricing_lead }}</p>
+</section>
+
+<div class="container">
+  <div class="plans">
+    {% for plan in plans %}
+    <article class="plan {% if plan.highlight %}hot{% endif %}">
+      {% if plan.highlight %}<span class="chip">{{ t.plan_pop }}</span>{% endif %}
+      <h3>{{ plan.name }}</h3>
+      <div class="price"><b>${{ plan.price }}</b><span>{{ plan.period }}</span></div>
+      <p class="muted small">{{ plan.text }}</p>
+      <ul>
+        {% for line in plan.features %}
+        <li>{{ line }}</li>
+        {% endfor %}
+      </ul>
+      <a class="btn {% if not plan.highlight %}line{% endif %}" href="/docs">{{ plan.cta }}</a>
+    </article>
+    {% endfor %}
+  </div>
+
+  <section class="sect">
+    <div class="grid-2">
+      <article class="card">
+        <h3>{{ included.title }}</h3>
+        <ul class="plain">
+          {% for line in included.features %}
+          <li>{{ line }}</li>
+          {% endfor %}
+        </ul>
+      </article>
+      <article class="card">
+        <h3>{{ included.note_title }}</h3>
+        <p>{{ included.note }}</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="band">
+    <div>
+      <h2>{{ t.cta_band_title }}</h2>
+      <p>{{ t.cta_band_text }}</p>
+    </div>
+    <a class="btn dark" href="/docs">{{ t.cta_docs }}</a>
+  </section>
+</div>
+
+{% endblock %}

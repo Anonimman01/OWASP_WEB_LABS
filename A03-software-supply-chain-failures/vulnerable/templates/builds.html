@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+{% set active = 'builds' %}
+{% block title %}Kestrel CI — {{ t.builds_title }}{% endblock %}
+{% block content %}
+
+<section class="container" style="padding-top:3.4rem">
+  <p class="eyebrow">{{ t.builds_eyebrow }}</p>
+  <h2>{{ t.builds_title }}</h2>
+  <p class="lead" style="margin-top:.8rem">{{ t.builds_lead }}</p>
+</section>
+
+<div class="container">
+  <div class="stats">
+    {% for stat in stats %}
+    <div><b>{{ stat.value }}</b><span>{{ stat.label }}</span></div>
+    {% endfor %}
+  </div>
+
+  <section class="sect">
+    <h2>{{ t.runs_h }}</h2>
+    <div class="table-wrap" style="margin-top:1.2rem">
+      <table>
+        <thead>
+          <tr>
+            <th>{{ t.col_no }}</th>
+            <th>{{ t.col_branch }}</th>
+            <th>{{ t.col_commit }}</th>
+            <th>{{ t.col_status }}</th>
+            <th>{{ t.col_time }}</th>
+            <th>{{ t.col_digest }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for run in runs %}
+          <tr>
+            <td class="mono">{{ run.no }}</td>
+            <td class="mono">{{ run.branch }}</td>
+            <td class="mono">{{ run.commit }}</td>
+            <td><span class="pill {{ run.state }}">{{ run.status }}</span></td>
+            <td>{{ run.time }}</td>
+            <td class="mono muted">{{ run.digest }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  {% if result %}
+  <section class="sect">
+    <h2>{{ t.result_h }}</h2>
+    <div class="result {% if result.ok %}ok{% else %}bad{% endif %}">
+      <h3>{{ result.title }}</h3>
+      <p>{{ result.text }}</p>
+      {% if result.flag %}
+      <span class="small muted">{{ t.result_flag_h }}</span>
+      <span class="flag">{{ result.flag }}</span>
+      {% endif %}
+    </div>
+  </section>
+  {% endif %}
+
+  <section class="sect">
+    <h2>{{ t.release_h }}</h2>
+    <div class="grid-2" style="margin-top:1.2rem">
+      <form class="card" method="post" action="/api/releases">
+        <p class="muted small">{{ t.release_text }}</p>
+        <div class="row">
+          <div class="field">
+            <label for="rel-name">{{ t.f_name }}</label>
+            <input id="rel-name" name="name" value="app" required>
+          </div>
+          <div class="field">
+            <label for="rel-version">{{ t.f_version }}</label>
+            <input id="rel-version" name="version" value="2.14.0" required>
+          </div>
+        </div>
+        <div class="field">
+          <label for="rel-digest">{{ t.f_digest }}</label>
+          <input id="rel-digest" name="digest" class="mono"
+                 value="9f2c1ad4e7b8c0f5a1d3e6b7402c8f9a5d1e3b7c4a6f8025d9e1c3b5a7f04d21">
+          <p class="hint">{{ t.hint_release }}</p>
+        </div>
+        <div class="field">
+          <label for="rel-signature">{{ t.f_signature }}</label>
+          <input id="rel-signature" name="signature" class="mono" value="">
+        </div>
+        <div class="field">
+          <label for="rel-artifact">{{ t.f_artifact }}</label>
+          <textarea id="rel-artifact" name="artifact">app-2.14.0</textarea>
+        </div>
+        <div class="form-foot">
+          <button class="btn" type="submit">{{ t.f_submit_release }}</button>
+        </div>
+      </form>
+
+      <div>
+        <form class="card" method="post" action="/api/builds/run">
+          <h3>{{ t.profile_h }}</h3>
+          <p class="muted small">{{ t.profile_text }}</p>
+          <div class="field" style="margin-top:1rem">
+            <label for="profile">profile</label>
+            <textarea id="profile" name="profile">{"cache": "pip", "env": "staging", "stages": ["deps", "test", "build", "sign"]}</textarea>
+            <p class="hint">{{ t.hint_profile }}</p>
+          </div>
+          <div class="form-foot">
+            <button class="btn" type="submit">{{ t.f_submit_profile }}</button>
+          </div>
+        </form>
+
+        <form class="card" method="post" action="/webhooks/ci" style="margin-top:1.2rem">
+          <h3>{{ t.webhook_h }}</h3>
+          <p class="muted small">{{ t.webhook_text }}</p>
+          <div class="row" style="margin-top:1rem">
+            <div class="field">
+              <label for="hook-build">build</label>
+              <input id="hook-build" name="build" value="#4821" class="mono">
+            </div>
+            <div class="field">
+              <label for="hook-env">env</label>
+              <input id="hook-env" name="env" value="production" class="mono">
+            </div>
+          </div>
+          <div class="field">
+            <label for="hook-signature">X-Kestrel-Signature</label>
+            <input id="hook-signature" name="signature" class="mono" value="">
+            <p class="hint">{{ t.hint_webhook }}</p>
+          </div>
+          <div class="form-foot">
+            <button class="btn line" type="submit">{{ t.webhook_send }}</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <pre style="margin-top:1.2rem">{{ webhook }}</pre>
+  </section>
+</div>
+
+{% endblock %}

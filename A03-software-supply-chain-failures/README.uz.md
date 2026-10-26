@@ -5,13 +5,34 @@
 **Holati:** ✅ tayyor
 
 ## Laboratoriya haqida
-Ilovaning oʻzi zararsiz: u faqat oʻrnatilgan paketlar versiyalarini koʻrsatadi. Muammo uning **bogʻliqliklarida**: `vulnerable/requirements.txt` da ataylab maʼlum zaifliklarga ega eski versiyalar qayd etilgan, jumladan tranzitiv bogʻliqliklar (`requests` va `Flask` bilan birga keladigan paketlar).
+
+**Kestrel CI** — relizlarni yigʻish va yetkazish uchun oʻylab topilgan SaaS sayti: bosh sahifa, narxlar, hujjatlar, yigʻishlar sahifasi va paketlar reyestri. Interfeys **ingliz, rus va oʻzbek tillarida** ishlaydi (boshqaruv panelidagi EN / RU / UZ almashtirgichi). Laboratoriya ikki qismdan iborat:
+
+1. **Ilova ichidagi butunlik.** Server yigʻish yuborgan narsaga ishonadi: artefakt xeshi qayta hisoblanmaydi, imzo tekshirilmaydi, yigʻish profili kod sifatida oʻqiladi, CI hodisasiga imzosiz ishoniladi, paket nomlari esa bir vaqtda ikki indeksdan hal qilinadi. Bu yerda flagli toʻrt nuqson bor.
+2. **Bogʻliqliklar.** `vulnerable/requirements.txt` da ataylab maʼlum zaifliklarga ega eski versiyalar, jumladan tranzitiv paketlar qayd etilgan. `fixed/` da toʻgʻri yondashuv koʻrsatilgan: `requirements.in`, xeshlari bor lock-fayl va `--require-hashes` bilan oʻrnatish.
 
 ## Nimalarni oʻrganasiz
-- Bogʻliqliklarni maʼlum zaifliklarga tekshirish (`pip-audit`)
-- Tranzitiv bogʻliqliklar nima ekanini va ularni ham nega tekshirish kerakligini tushunish
-- Paketlar versiyalarini va **xeshlarini** qotirish (lock-fayl) hamda ularni `--require-hashes` bilan oʻrnatish
-- Loyihaning SBOM ini (komponentlar roʻyxati) olish
+
+- Xeshni server tomonida mazmundan hisoblash va qatʼiy belgilangan qiymat bilan solishtirish
+- Artefaktlarni imzolash (HMAC) va joylashtirishdan oldin imzoni tekshirish
+- Maʼlumotlarni xavfsiz boʻlmagan deserializatorlar bilan (`pickle`) oʻqish mumkin emasligini va bu nima bilan tugashini tushunish
+- Vebhuk imzosini tekshirish va imzosiz hodisalarni rad etish
+- Bogʻliqliklar versiyalari **va xeshlarini** qotirish (lock-fayl) hamda nomlarni ommaviy indeksdan hal qilmaslik
+- Bogʻliqliklarni maʼlum zaifliklarga tekshirish (`pip-audit`) va SBOM olish
+
+## Sayt tuzilishi
+
+| Sahifa | Manzil | Izoh |
+|--------|--------|------|
+| Bosh sahifa | `/` | Brauzerda sayt ochiladi; `curl` API haqida qisqa JSON oladi |
+| Narxlar | `/pricing` | Uch reja va barcha rejalarga kirgan narsalar |
+| Hujjatlar | `/docs` | Tez boshlash, `kestrel.yml` formati, imzo formulasi, endpointlar jadvali |
+| Yigʻishlar | `/builds` | Artefakt xeshlari bilan ishga tushishlar, reliz, profil va vebhuk formalari |
+| Paketlar reyestri | `/registry` | Ichki indeks va ommaviy oyna, paket oʻrnatish formasi |
+| Laboratoriya konsoli | `/ui` | Endpointlar roʻyxati, tayyor soʻrovlar va javoblar |
+| Paket versiyalari | `/deps` | Oʻrnatilgan bogʻliqliklar versiyalari (JSON) |
+
+> 🌐 **Sayt tilini oʻzgartirish.** Almashtirgich sahifaning yuqori oʻng burchagida; tanlov cookie da eslab qolinadi. Xuddi shu natijani manzilga `?lang=uz` qoʻshib ham olish mumkin, masalan `http://127.0.0.1:8021/registry?lang=uz`. Laboratoriya konsoli uchun: `http://127.0.0.1:8021/ui?lang=uz`.
 
 ## Ishga tushirish
 
@@ -21,21 +42,35 @@ docker compose up --build
 
 | Versiya | Manzil |
 |---------|--------|
-| vulnerable (eski bogʻliqliklar) | http://127.0.0.1:8021 |
-| fixed (yangilangan + xeshlar) | http://127.0.0.1:8022 |
+| vulnerable (butunlik nuqsonlari + eski bogʻliqliklar) | http://127.0.0.1:8021 |
+| fixed (tekshiruvlar joyida + xeshlar bilan yangilangan bogʻliqliklar) | http://127.0.0.1:8022 |
 
-> 🌐 **Interfeysni oʻzbek tilida ochish.** `/ui` sahifasi odatda inglizcha ochiladi. Oʻzbekchaga oʻtish uchun laboratoriya ochilgan brauzer oynasiga oʻting va manzil qatorining oxiriga quyidagini yozing:
->
-> - manzil `http://127.0.0.1:8021/ui` boʻlsa (odatda shunday: brauzer `/` dan `/ui` ga oʻzi yoʻnaltiradi), oxiriga `?lang=uz` qoʻshing;
-> - manzil `http://127.0.0.1:8021` boʻlsa, oxiriga `/ui?lang=uz` qoʻshing.
->
-> Natija: `http://127.0.0.1:8021/ui?lang=uz` (vulnerable) yoki `http://127.0.0.1:8022/ui?lang=uz` (fixed). Soʻng Enter bosing. Yoki sahifaning yuqori oʻng burchagidagi **UZ** tugmasini bosing: tanlov brauzerda eslab qolinadi.
+Ikki versiya ham bir xil saytni koʻrsatadi — faqat `app.py` farq qiladi. Brauzerda http://127.0.0.1:8021/ ni ochib, saytdan oddiy tashrif buyuruvchi sifatida foydalaning. Docker'siz:
 
-`GET /deps` endpointi oʻrnatilgan paketlar versiyalarini koʻrsatadi.
+```bash
+pip install -r vulnerable/requirements.txt
+python vulnerable/app.py   # http://127.0.0.1:5000
+```
 
-> ⚠️ Ataylab eskirgan bogʻliqliklarga ega ilova. Faqat lokal ishga tushiring va internetga chiqarmang.
+Relizlar va vebhuklar imzolanadigan laboratoriya kaliti — `kestrel-lab-project-key` (u `/docs` sahifasida ham koʻrsatilgan). Kalit ataylab kodda yotibdi: usiz tekshiradigan narsa boʻlmasdi.
+
+> ⚠️ Ilova ataylab zaif. Faqat lokal ishga tushiring va internetga chiqarmang.
 
 ## Topshiriq
+
+### 1-qism. Ilova ichidagi butunlik
+
+vulnerable versiyada **toʻrtta** butunlik xatosini toping (har birida flag yashiringan):
+
+1. Artefakt mazmuniga mos kelmaydigan xesh bilan va umuman imzosiz reliz eʼlon qiling. Server uni qabul qildimi? Xeshni oʻzi qayta hisobladimi?
+2. Yigʻish profiliga JSON emas, balki seriyalangan obyektning base64 blobini yuboring. Server profilning birinchi maydonini oʻqishidan **oldin** nima sodir boʻldi?
+3. `/webhooks/ci` manziliga `X-Kestrel-Signature` sarlavhasisiz hodisa yuboring. Yigʻishga nima boʻldi va bu manzilni bilgan odam uchun bu nimani anglatadi?
+4. `kestrel-utils` paketini avval versiyasiz, keyin `1.4.2` versiyasi bilan oʻrnating. Har bir holatda paket qaysi indeksdan keldi va uning xeshi lock-faylda qotirilgan xesh bilan solishtirildimi?
+
+Toʻrt holatni ham tuzatilgan versiyada (8022-port) takrorlab koʻring va u yerda aynan nima oʻzgarganini ayting. Nuqsonlar `vulnerable/app.py` da `# ДЕФЕКТ N` izohlari bilan belgilangan.
+
+### 2-qism. Bogʻliqliklar
+
 1. Vositani oʻrnating: `pip install pip-audit`
 2. Zaif versiyani tekshiring: `pip-audit -r vulnerable/requirements.txt`
 3. Qaysi paketlar zaif ekanini va ularni qaysi versiyagacha yangilash kerakligini aniqlang. Ulardan qaysilarini loyihada siz **bevosita koʻrsatmagansiz**?
@@ -44,14 +79,20 @@ docker compose up --build
 6. Tajriba: `fixed/requirements.txt` ni nusxalang, istalgan xeshni nollarga almashtiring va `pip install --require-hashes -r <fayl>` ni sinab koʻring. Nima sodir boʻladi?
 
 ## Maslahatlar
-1. `pip-audit` paket nomini, versiyasini, bildirishnoma raqamini va muammo tuzatilgan versiyani chiqaradi.
-2. `requests` oʻzi bilan `urllib3`, `idna` va `certifi` ni olib keladi, `Flask` esa `Werkzeug` va `Jinja2` ni.
-3. Bunday loyihalarda versiyalar tez eskiradi: yangi bildirishnomalar doimo chiqib turadi, tekshiruvni takrorlab turish kerak.
+
+1. Barcha soʻrovlar uchun formalar `/builds` va `/registry` sahifalarida bor, shuning uchun ishning bir qismini brauzerda bajarish mumkin. curl uchun JSON qulayroq: `curl -X POST http://127.0.0.1:8021/api/releases -H 'Content-Type: application/json' -d '{...}'`.
+2. Reliz imzosi — xesh satrining loyiha kaliti bilan olingan HMAC-SHA256 qiymati. Python misoli `/docs` sahifasida.
+3. Yigʻish profili `pickle` oʻqiy oladigan narsaning base64 koʻrinishida yuboriladi. Keyingi natija obyekt ichida nima borligiga bogʻliq.
+4. `/registry` sahifasidagi «Ommaviy oyna» jadvali qaysi paketlar tashqi indeksdan kelishini koʻrsatadi. Xeshlarga eʼtibor bering: ular ichki xeshlardan farq qiladi.
+5. `pip-audit` paket nomini, versiyasini, bildirishnoma raqamini va muammo tuzatilgan versiyani chiqaradi.
+6. `requests` oʻzi bilan `urllib3`, `idna` va `certifi` ni olib keladi, `Flask` esa `Werkzeug` va `Jinja2` ni.
 
 Spoylerli toʻliq yechim: [SOLUTION.uz.md](./SOLUTION.uz.md)
 
 ## Qanday himoyalanish
-- Bogʻliqliklarni muntazam tekshirish (`pip-audit`, Dependabot, shunga oʻxshashlar) va yangilab turish
-- Xeshlari bor lock-faylni saqlash va `--require-hashes` bilan oʻrnatish
-- Mahsulot nimalardan tashkil topganini bilish uchun SBOM yuritish
-- Paketlarni faqat ishonchli manbalardan olish va nomlarga eʼtibor berish (paket nomidagi xatolar va ichki paketlarni ommaviy paketlar bilan almashtirish)
+
+- Xeshni server tomonida mazmundan hisoblab, qotirilgan qiymat bilan solishtirish; relizlarni imzolash va chiqarishdan oldin imzoni tekshirish
+- Kiruvchi maʼlumotlarni hech qachon xavfsiz boʻlmagan deserializatorlar bilan oʻqimaslik (`pickle`, `marshal`, `yaml.load`): faqat JSON, sxemalar va validatsiya
+- Vebhuklardan imzo talab qilish va uni constant-time solishtirish; imzosiz hodisalarni rad etish
+- Paket nomlarini faqat ichki indeksdan hal qilish, versiya **va xeshlarni** lock-faylda qotirish, tashqi indeksni teng huquqli manba deb hisoblamaslik
+- Bogʻliqliklarni muntazam tekshirish (`pip-audit`, Dependabot va shunga oʻxshashlar), yangilab turish va SBOM yuritish

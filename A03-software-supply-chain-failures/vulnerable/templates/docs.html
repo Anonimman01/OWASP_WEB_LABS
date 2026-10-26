@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% set active = 'docs' %}
+{% block title %}Kestrel CI — {{ t.docs_title }}{% endblock %}
+{% block content %}
+
+<section class="container" style="padding-top:3.4rem">
+  <p class="eyebrow">{{ t.docs_eyebrow }}</p>
+  <h2>{{ t.docs_title }}</h2>
+  <p class="lead" style="margin-top:.8rem">{{ t.docs_lead }}</p>
+</section>
+
+<div class="container docs">
+  <nav class="docs-nav" aria-label="{{ t.docs_title }}">
+    {% for anchor, label in sections %}
+    <a href="#{{ anchor }}">{{ label }}</a>
+    {% endfor %}
+  </nav>
+
+  <div class="docs-main">
+    <section id="qs">
+      <h2>{{ t.docs_qs_title }}</h2>
+      <p>{{ t.docs_qs_text }}</p>
+      <pre>{{ code.install }}</pre>
+    </section>
+
+    <section id="pipeline">
+      <h2>{{ t.docs_pipe_title }}</h2>
+      <p>{{ t.docs_pipe_text }}</p>
+      <pre>{{ code.pipeline }}</pre>
+    </section>
+
+    <section id="signing">
+      <h2>{{ t.docs_sign_title }}</h2>
+      <p>{{ t.docs_sign_text }}</p>
+      <pre>{{ code.sign }}</pre>
+      <div class="notice">
+        <span>{{ t.docs_sign_warn }} <code>{{ project_key }}</code></span>
+      </div>
+    </section>
+
+    <section id="api">
+      <h2>{{ t.docs_api_title }}</h2>
+      <p>{{ t.docs_api_text }}</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>{{ t.docs_api_method }}</th>
+              <th>{{ t.docs_api_path }}</th>
+              <th>{{ t.docs_api_desc }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for endpoint in endpoints %}
+            <tr>
+              <td><span class="tag">{{ endpoint.method }}</span></td>
+              <td class="mono">{{ endpoint.path }}</td>
+              <td>{{ endpoint.desc }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="console">
+      <h2>{{ t.docs_console_title }}</h2>
+      <p>{{ t.docs_console_text }}</p>
+      <pre>{{ code.webhook }}</pre>
+      <div class="form-foot">
+        <a class="btn" href="/ui">{{ t.docs_console_btn }}</a>
+      </div>
+    </section>
+  </div>
+</div>
+
+{% endblock %}

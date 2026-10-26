@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="{{ lang }}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Kestrel CI — pipelines, signed artifacts and a private dependency registry.">
+<title>{% block title %}Kestrel CI{% endblock %}</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="container bar">
+    <a class="brand" href="/">
+      <span class="mark" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 4v16"/><path d="M20 5 9 12l11 7"/></svg></span>
+      <b>KESTREL</b><i>CI</i>
+    </a>
+
+    <nav class="nav" aria-label="{{ t.nav_label }}">
+      <a href="/#product" {% if active == 'product' %}class="on"{% endif %}>{{ t.nav_product }}</a>
+      <a href="/pricing" {% if active == 'pricing' %}class="on"{% endif %}>{{ t.nav_pricing }}</a>
+      <a href="/docs" {% if active == 'docs' %}class="on"{% endif %}>{{ t.nav_docs }}</a>
+      <a href="/builds" {% if active == 'builds' %}class="on"{% endif %}>{{ t.nav_builds }}</a>
+      <a href="/registry" {% if active == 'registry' %}class="on"{% endif %}>{{ t.nav_registry }}</a>
+    </nav>
+
+    <div class="head-right">
+      <div class="langs" aria-label="{{ t.lang_label }}">
+        {% for code in langs %}
+        <a href="{{ request.path }}?lang={{ code }}" hreflang="{{ code }}"
+           {% if code == lang %}class="on"{% endif %}>{{ code }}</a>
+        {% endfor %}
+      </div>
+      <a class="btn small" href="/builds">{{ t.cta_console }}</a>
+    </div>
+  </div>
+</header>
+
+<main>
+{% block content %}{% endblock %}
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <b>KESTREL CI</b>
+        <p>{{ t.foot_about }}</p>
+      </div>
+      <div>
+        <h4>{{ t.foot_product }}</h4>
+        <ul>
+          <li><a href="/#product">{{ t.nav_product }}</a></li>
+          <li><a href="/pricing">{{ t.nav_pricing }}</a></li>
+          <li><a href="/docs">{{ t.nav_docs }}</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>{{ t.nav_builds }}</h4>
+        <ul>
+          <li><a href="/builds">{{ t.nav_builds }}</a></li>
+          <li><a href="/registry">{{ t.nav_registry }}</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>{{ t.foot_dev }}</h4>
+        <ul>
+          <li><a href="/ui">{{ t.foot_console }}</a></li>
+          <li><a href="/deps">{{ t.foot_deps }}</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot-note">
+      <span>{{ t.foot_note }}</span>
+      <span class="badge">{{ variant_label }}</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

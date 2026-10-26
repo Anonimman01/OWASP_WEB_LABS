@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% set active = 'registry' %}
+{% block title %}Kestrel CI — {{ t.reg_title }}{% endblock %}
+{% block content %}
+
+<section class="container" style="padding-top:3.4rem">
+  <p class="eyebrow">{{ t.reg_eyebrow }}</p>
+  <h2>{{ t.reg_title }}</h2>
+  <p class="lead" style="margin-top:.8rem">{{ t.reg_lead }}</p>
+</section>
+
+<div class="container">
+  <section class="sect">
+    <div class="grid-2">
+      <form class="card" method="post" action="/api/registry/install">
+        <h3>{{ t.install_h }}</h3>
+        <p class="muted small">{{ t.install_text }}</p>
+        <div class="row" style="margin-top:1rem">
+          <div class="field">
+            <label for="pkg-name">{{ t.f_pkg_name }}</label>
+            <input id="pkg-name" name="name" value="kestrel-utils" class="mono" required>
+          </div>
+          <div class="field">
+            <label for="pkg-version">{{ t.f_pkg_version }}</label>
+            <input id="pkg-version" name="version" class="mono" value="">
+          </div>
+        </div>
+        <div class="form-foot">
+          <button class="btn" type="submit">{{ t.f_submit_install }}</button>
+        </div>
+      </form>
+
+      <article class="card">
+        <h3>{{ t.reg_hint_h }}</h3>
+        <p class="muted small">{{ t.reg_hint }}</p>
+      </article>
+    </div>
+  </section>
+
+  {% if result %}
+  <section class="sect" style="padding-top:1.2rem">
+    <div class="result {% if result.ok %}ok{% else %}bad{% endif %}">
+      <h3>{{ result.title }}</h3>
+      <p>{{ result.text }}</p>
+      {% if result.flag %}
+      <span class="small muted">{{ t.result_flag_h }}</span>
+      <span class="flag">{{ result.flag }}</span>
+      {% endif %}
+    </div>
+  </section>
+  {% endif %}
+
+  <section class="sect">
+    <div class="sect-head">
+      <div>
+        <h2>{{ t.reg_internal_h }}</h2>
+        <p class="muted small">{{ t.reg_internal_text }}</p>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>{{ t.col_pkg }}</th>
+            <th>{{ t.col_version }}</th>
+            <th>{{ t.col_kind }}</th>
+            <th>{{ t.col_size }}</th>
+            <th>{{ t.col_sum }}</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for pkg in internal %}
+          <tr>
+            <td class="mono">{{ pkg.name }}</td>
+            <td class="mono">{{ pkg.version }}</td>
+            <td>{{ pkg.kind }}</td>
+            <td>{{ pkg.size }}</td>
+            <td class="mono muted">{{ pkg.digest }}</td>
+            <td>{% if pkg.pinned %}<span class="tag">{{ t.badge_pinned }}</span>{% endif %}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="sect">
+    <div class="sect-head">
+      <div>
+        <h2>{{ t.reg_public_h }}</h2>
+        <p class="muted small">{{ t.reg_public_text }}</p>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>{{ t.col_pkg }}</th>
+            <th>{{ t.col_version }}</th>
+            <th>{{ t.col_kind }}</th>
+            <th>{{ t.col_size }}</th>
+            <th>{{ t.col_sum }}</th>
+            <th>{{ t.col_publisher }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for pkg in public %}
+          <tr {% if pkg.publisher.endswith('(unofficial)') %}class="hot"{% endif %}>
+            <td class="mono">{{ pkg.name }}</td>
+            <td class="mono">{{ pkg.version }}</td>
+            <td>{{ pkg.kind }}</td>
+            <td>{{ pkg.size }}</td>
+            <td class="mono muted">{{ pkg.digest }}</td>
+            <td>{{ pkg.publisher }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>
+
+{% endblock %}
