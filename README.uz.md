@@ -59,16 +59,16 @@ Holati: ✅ barcha oʻnta laboratoriya tayyor.
 Bash / Git Bash / WSL:
 
 ```bash
-git clone https://github.com/Anonimman01/OWASP_WEB_LABS.git
-cd OWASP_WEB_LABS/A01-broken-access-control
+git clone https://github.com/Anonimman01/my-labs.git
+cd my-labs/A01-broken-access-control
 docker compose up --build
 ```
 
 PowerShell:
 
 ```powershell
-git clone https://github.com/Anonimman01/OWASP_WEB_LABS.git
-cd OWASP_WEB_LABS\A01-broken-access-control
+git clone https://github.com/Anonimman01/my-labs.git
+cd my-labs\A01-broken-access-control
 docker compose up --build
 ```
 
@@ -81,7 +81,7 @@ Python 3.11+ kerak. Virtual muhitdan foydalangan maʼqul. Port `PORT` oʻzgaruvc
 Bash / Git Bash / WSL:
 
 ```bash
-cd OWASP_WEB_LABS/A09-logging-and-alerting-failures
+cd my-labs/A09-logging-and-alerting-failures
 python -m venv .venv && source .venv/bin/activate
 pip install -r vulnerable/requirements.txt
 PORT=8081 python vulnerable/app.py     # http://127.0.0.1:8081
@@ -90,7 +90,7 @@ PORT=8081 python vulnerable/app.py     # http://127.0.0.1:8081
 PowerShell:
 
 ```powershell
-cd OWASP_WEB_LABS\A09-logging-and-alerting-failures
+cd my-labs\A09-logging-and-alerting-failures
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 pip install -r vulnerable\requirements.txt
