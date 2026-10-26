@@ -169,7 +169,7 @@ register_ui(app, 'A02 Security Misconfiguration — fixed',
                 'presets': {'POST /login': [('notoʻgʻri parol',
                                              {'username': 'user',
                                               'password': 'test'})],
-                            'GET /menu/<item_id>': [('1-позиция', '/menu/1')]}},
+                            'GET /menu/<item_id>': [('1-pozitsiya', '/menu/1')]}},
             en={'notes': 'The cafe site opens at "/" (EN/RU/UZ switcher in the '
                          'header). This is the lab console: endpoints and '
                          'server responses.',
