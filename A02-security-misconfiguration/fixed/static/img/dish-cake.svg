@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" role="img" aria-label="Slice of cheesecake with berries">
+  <rect width="600" height="600" fill="#EDE7DB"/>
+  <circle cx="486" cy="120" r="110" fill="#E4DCCC"/>
+  <ellipse cx="300" cy="474" rx="236" ry="60" fill="#F8F5EE"/>
+  <ellipse cx="300" cy="474" rx="236" ry="60" fill="none" stroke="#14110D" stroke-width="6"/>
+
+  <!-- кусочек чизкейка -->
+  <path d="M170 452 300 214l130 238z" fill="#F1E3C8" stroke="#14110D" stroke-width="6" stroke-linejoin="round"/>
+  <path d="M170 452 300 214l24 44-106 194z" fill="#E9D3AE"/>
+  <path d="M182 424h236" stroke="#D9A566" stroke-width="16"/>
+  <path d="M170 452h260" stroke="#C89A63" stroke-width="26"/>
+
+  <!-- ягоды -->
+  <circle cx="272" cy="252" r="24" fill="#B4463A"/>
+  <circle cx="322" cy="272" r="20" fill="#8E3B49"/>
+  <circle cx="300" cy="308" r="16" fill="#B4463A"/>
+  <path d="M272 228c8-14 24-16 34-6-12 4-22 10-34 6z" fill="#5E7050"/>
+  <path d="M246 452c30-24 64-34 100-30" fill="none" stroke="#F6EEDF" stroke-width="14" stroke-linecap="round"/>
+</svg>

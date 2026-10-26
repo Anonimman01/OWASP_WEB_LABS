@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% set active = 'menu' %}
+{% block title %}{{ t.menu_title }} — Lumière Café{% endblock %}
+{% block content %}
+
+<div class="container">
+  <div class="page-head">
+    <p class="eyebrow">{{ t.menu_eyebrow }}</p>
+    <h1>{{ t.menu_title }}</h1>
+    <p class="lead">{{ t.menu_lead }}</p>
+  </div>
+
+  {% for cat in categories %}
+  <section class="menu-cat">
+    <h2>{{ cat.label }}</h2>
+    <div class="grid cats">
+      {% for item in cat.dishes %}
+      <a class="card" href="/menu/{{ item.id }}">
+        <div class="card-body">
+          <span class="tag">{{ item.tag }}</span>
+          <h3>{{ item.name }}</h3>
+          <p>{{ item.short }}</p>
+          <span class="price">{{ item.price }}</span>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+  </section>
+  {% endfor %}
+</div>
+
+{% endblock %}

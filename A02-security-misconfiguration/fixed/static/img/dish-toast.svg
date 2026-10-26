@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" role="img" aria-label="Avocado toast with poached egg">
+  <rect width="600" height="600" fill="#EDE7DB"/>
+  <circle cx="110" cy="120" r="110" fill="#E4DCCC"/>
+  <ellipse cx="300" cy="330" rx="244" ry="232" fill="#F8F5EE"/>
+  <ellipse cx="300" cy="330" rx="244" ry="232" fill="none" stroke="#14110D" stroke-width="6"/>
+  <rect x="150" y="220" width="300" height="220" rx="42" fill="#D9B27A" stroke="#14110D" stroke-width="6"/>
+  <rect x="172" y="242" width="256" height="176" rx="30" fill="#E7C896"/>
+  <path d="M186 396c34-46 74-58 118-34 40 22 78 14 110-24" fill="none" stroke="#7E8F6A" stroke-width="26" stroke-linecap="round"/>
+  <ellipse cx="248" cy="326" rx="64" ry="46" fill="#8FA071" transform="rotate(-14 248 326)"/>
+  <ellipse cx="352" cy="308" rx="64" ry="46" fill="#7E8F6A" transform="rotate(12 352 308)"/>
+  <ellipse cx="300" cy="266" rx="76" ry="62" fill="#FBF9F4" stroke="#14110D" stroke-width="5"/>
+  <circle cx="300" cy="266" r="34" fill="#E8A33D"/>
+  <path d="M212 424h176" stroke="#5E7050" stroke-width="12" stroke-linecap="round"/>
+</svg>

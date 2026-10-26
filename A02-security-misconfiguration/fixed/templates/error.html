@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}{{ title }} — Lumière Café{% endblock %}
+{% block content %}
+
+<div class="container">
+  <section class="state">
+    <p class="eyebrow">LUMIÈRE CAFÉ</p>
+    <h1>{{ title }}</h1>
+    <p class="lead">{{ message }}</p>
+
+    {% if traceback %}
+    <div class="debug">
+      <h2>{{ t.trace_h }}</h2>
+      <pre>{{ traceback|join("\n") }}</pre>
+      <h2>{{ t.config_h }}</h2>
+      <dl>
+        {% for key, value in config.items() %}
+        <dt>{{ key }}</dt><dd>{{ value }}</dd>
+        {% endfor %}
+      </dl>
+    </div>
+    {% endif %}
+
+    <div class="actions">
+      <a class="btn" href="/">{{ t.go_home }}</a>
+      <a class="btn ghost" href="/menu">{{ t.open_menu }}</a>
+    </div>
+  </section>
+</div>
+
+{% endblock %}

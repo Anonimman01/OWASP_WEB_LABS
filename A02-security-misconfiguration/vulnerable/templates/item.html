@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% set active = 'menu' %}
+{% block title %}{{ item.name }} — {{ t.menu_title }} · Lumière Café{% endblock %}
+{% block content %}
+
+<div class="container">
+  <nav class="crumbs" aria-label="Breadcrumb">
+    <a href="/">{{ t.crumb_home }}</a> / <a href="/menu">{{ t.menu_title }}</a> /
+    <span>{{ item.name }}</span>
+  </nav>
+
+  <section class="detail">
+    <div class="detail-media">
+      <img src="{{ url_for('static', filename='img/' + item.img) }}" alt="{{ item.name }}">
+    </div>
+    <div class="detail-main">
+      <span class="tag">{{ item.tag }}</span>
+      <h1>{{ item.name }}</h1>
+      <p class="lead">{{ item.short }}</p>
+      <p class="muted">{{ item.desc }}</p>
+
+      <div class="detail-side">
+        <div class="price-big">{{ item.price }}</div>
+        <h3>{{ t.ingredients }}</h3>
+        <p>{{ item.ingredients }}</p>
+        <h3>{{ t.allergens }}</h3>
+        <p>{{ item.allergens }}</p>
+        <p class="muted small">{{ t.allergens_note }}</p>
+      </div>
+
+      <div class="actions">
+        <a class="btn ghost" href="/menu">← {{ t.back_menu }}</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="menu-cat">
+    <div class="sect-head">
+      <h2>{{ t.related }}</h2>
+      <a class="link-arrow" href="/menu">{{ t.view_full }} <span class="arr">→</span></a>
+    </div>
+    <div class="grid dishes">
+      {% for other in related %}
+      <a class="card" href="/menu/{{ other.id }}">
+        <img src="{{ url_for('static', filename='img/' + other.img) }}" alt="{{ other.name }}">
+        <div class="card-body">
+          <span class="tag">{{ other.tag }}</span>
+          <h3>{{ other.name }}</h3>
+          <p>{{ other.short }}</p>
+          <span class="price">{{ other.price }}</span>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+  </section>
+</div>
+
+{% endblock %}

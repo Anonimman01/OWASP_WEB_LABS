@@ -33,7 +33,7 @@ Lab documentation (README and SOLUTION) is in English, Russian and Uzbek; the fo
 | №   | Lab | Category | What is inside | Ports |
 |-----|-----|----------|----------------|-------|
 | A01 | [broken-access-control](./A01-broken-access-control) | Broken Access Control | A corporate HR portal with roles: the server does not check who owns a resource or what role the user has | 8001 / 8002 |
-| A02 | [security-misconfiguration](./A02-security-misconfiguration) | Security Misconfiguration | A shop (API): default password, extra exposed files, verbose errors, no security headers | 8011 / 8012 |
+| A02 | [security-misconfiguration](./A02-security-misconfiguration) | Security Misconfiguration | A cafe website (Flask): default password, extra exposed files, verbose errors, no security headers | 8011 / 8012 |
 | A03 | [software-supply-chain-failures](./A03-software-supply-chain-failures) | Software Supply Chain Failures | A harmless app with outdated pinned dependencies; `fixed/` shows the `requirements.in` approach | 8021 / 8022 |
 | A04 | [cryptographic-failures](./A04-cryptographic-failures) | Cryptographic Failures | Accounts and bank cards: weak cryptography, taking over the administrator account | 8031 / 8032 |
 | A05 | [injection](./A05-injection) | Injection (SQLi, XSS, etc.) | A shop with login, search and a guestbook; input reaches SQL and HTML unprocessed | 8041 / 8042 |
@@ -102,7 +102,7 @@ To run the fixed version, replace `vulnerable` with `fixed` (and the port with `
 ## How to work through a lab
 
 1. Open the lab's `README.md` and read what it is about and which test accounts it has.
-2. Start the lab and open the `vulnerable` address. In a browser, `/` redirects to the `/ui` page with forms for all endpoints. The same requests can be sent with `curl` or Postman.
+2. Start the lab and open the `vulnerable` address. In a browser, `/` redirects to the `/ui` page with forms for all endpoints; A01 and A02 open their own application (a portal and a cafe site) instead, and the `/ui` console is linked from there. The same requests can be sent with `curl` or Postman.
 3. Complete the items in the "Task" section. If you get stuck, expand the hints in `<details>`.
 4. In `vulnerable/app.py` the flaws are marked with `# ДЕФЕКТ N` comments (Russian for "DEFECT N"). Find them and state the rule that was violated.
 5. Open `fixed/app.py`: the fixes are marked `# FIX N`, and the number matches the number of the flaw. Repeat the same requests against `fixed` and confirm that the attack no longer works while normal scenarios still do.
@@ -130,7 +130,7 @@ AXX-category-name/
     requirements.txt
 ```
 
-Some labs have extra files: for example `wordlist.txt` in A04, `backup.sql` in A02's `vulnerable/`, `requirements.in` in A03's `fixed/`.
+Some labs have extra files: for example `wordlist.txt` in A04, `backup.sql` in A02's `vulnerable/`, `requirements.in` in A03's `fixed/`. A02 also ships its site files: `templates/`, `static/` and `cafe.py` in each version.
 
 ## Common conventions
 

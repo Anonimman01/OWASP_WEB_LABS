@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 720" role="img" aria-label="Coffee, croissant and flowers on a café table">
+  <rect width="900" height="720" fill="#E7E1D6"/>
+  <circle cx="640" cy="170" r="210" fill="#EFEAE1"/>
+  <path d="M0 470h900v250H0z" fill="#DFD5C4"/>
+  <ellipse cx="450" cy="690" rx="560" ry="230" fill="#D8CDBA"/>
+
+  <!-- чайник света -->
+  <circle cx="742" cy="150" r="86" fill="#F3EFE7" opacity=".7"/>
+
+  <!-- кружка -->
+  <ellipse cx="368" cy="596" rx="164" ry="52" fill="#14110D"/>
+  <ellipse cx="368" cy="584" rx="164" ry="52" fill="#1D1913"/>
+  <path d="M508 560c56 6 74 60 30 84-26 14-52 8-66-6" fill="none" stroke="#14110D" stroke-width="20" stroke-linecap="round"/>
+  <rect x="242" y="452" width="252" height="132" rx="46" fill="#14110D"/>
+  <ellipse cx="368" cy="456" rx="126" ry="44" fill="#211C15"/>
+  <ellipse cx="368" cy="452" rx="108" ry="36" fill="#C89A63"/>
+  <ellipse cx="368" cy="450" rx="92" ry="29" fill="#EBD9BC"/>
+  <path d="M368 434c10 0 18 8 18 17 0 12-18 25-18 25s-18-13-18-25c0-9 8-17 18-17z" fill="#B98A56"/>
+
+  <!-- тарелка с круассаном -->
+  <ellipse cx="672" cy="606" rx="184" ry="58" fill="#F6F2EA"/>
+  <ellipse cx="672" cy="606" rx="184" ry="58" fill="none" stroke="#14110D" stroke-width="5"/>
+  <path d="M566 596c14-56 66-92 122-84 46 6 84 40 92 78-30-22-64-32-104-30-46 2-82 14-110 36z" fill="#CE9049"/>
+  <path d="M566 596c16-44 52-74 96-82M614 570c22-24 52-38 84-40M676 552c26-6 56 2 78 22" fill="none" stroke="#A9754B" stroke-width="6" stroke-linecap="round"/>
+
+  <!-- ваза с цветами -->
+  <rect x="772" y="356" width="76" height="130" rx="26" fill="#EDE8DF" stroke="#14110D" stroke-width="5"/>
+  <path d="M810 356c0-56-14-92-44-116M810 356c0-64 18-104 52-128M810 356c0-40 2-70-10-98" fill="none" stroke="#7E8F6A" stroke-width="6" stroke-linecap="round"/>
+  <circle cx="766" cy="238" r="16" fill="#FBF9F4" stroke="#14110D" stroke-width="3"/>
+  <circle cx="862" cy="226" r="14" fill="#FBF9F4" stroke="#14110D" stroke-width="3"/>
+  <circle cx="800" cy="256" r="12" fill="#FBF9F4" stroke="#14110D" stroke-width="3"/>
+  <circle cx="766" cy="238" r="5" fill="#CE9049"/>
+  <circle cx="862" cy="226" r="4" fill="#CE9049"/>
+</svg>

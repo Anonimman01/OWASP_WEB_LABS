@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" role="img" aria-label="Pot of tea with a cup">
+  <rect width="600" height="600" fill="#EDE7DB"/>
+  <circle cx="120" cy="480" r="120" fill="#E4DCCC"/>
+  <ellipse cx="300" cy="500" rx="230" ry="52" fill="#E1D9C9"/>
+
+  <!-- чайник -->
+  <path d="M186 232h196l-16 168a54 54 0 0 1-54 48h-56a54 54 0 0 1-54-48z" fill="#14110D"/>
+  <path d="M382 268c46 6 66 40 52 74-10 24-34 34-56 30" fill="none" stroke="#14110D" stroke-width="18" stroke-linecap="round"/>
+  <path d="M186 268h196" stroke="#C89A63" stroke-width="12"/>
+  <path d="M240 214c0-24 22-40 44-40s44 16 44 40" fill="none" stroke="#14110D" stroke-width="14" stroke-linecap="round"/>
+  <path d="M300 172v-34" stroke="#14110D" stroke-width="14" stroke-linecap="round"/>
+
+  <!-- чашка -->
+  <ellipse cx="452" cy="474" rx="104" ry="34" fill="#F8F5EE" stroke="#14110D" stroke-width="5"/>
+  <path d="M380 356h124v52a62 62 0 0 1-62 62 62 62 0 0 1-62-62z" fill="#FBF9F4" stroke="#14110D" stroke-width="6"/>
+  <ellipse cx="442" cy="356" rx="62" ry="22" fill="#C89A63"/>
+  <path d="M504 384c34 0 46 30 26 46-12 10-26 8-34 2" fill="none" stroke="#14110D" stroke-width="10" stroke-linecap="round"/>
+  <path d="M410 300c0-26 18-40 18-62M452 300c0-30 20-44 20-70" fill="none" stroke="#C8B79C" stroke-width="9" stroke-linecap="round"/>
+</svg>

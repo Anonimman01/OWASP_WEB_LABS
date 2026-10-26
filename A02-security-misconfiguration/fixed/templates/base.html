@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="{{ lang }}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Lumière Café — coffee, pastry and breakfast all day.">
+<title>{% block title %}Lumière Café{% endblock %}</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<header class="site-header">
+  <div class="container bar">
+    <a class="brand" href="/"><b>LUMIÈRE</b><span>CAFÉ</span></a>
+
+    <nav class="nav" aria-label="{{ t.nav_label }}">
+      <a href="/" {% if active == 'home' %}class="on"{% endif %}>{{ t.nav_home }}</a>
+      <a href="/menu" {% if active == 'menu' %}class="on"{% endif %}>{{ t.nav_menu }}</a>
+      <a href="/#about">{{ t.nav_about }}</a>
+      <a href="/#gallery">{{ t.nav_gallery }}</a>
+      <a href="/#contact">{{ t.nav_contact }}</a>
+    </nav>
+
+    <div class="head-right">
+      <div class="langs" aria-label="{{ t.lang_label }}">
+        {% for code in langs %}
+        <a href="{{ request.path }}?lang={{ code }}" hreflang="{{ code }}"
+           {% if code == lang %}class="on"{% endif %}>{{ code }}</a>
+        {% endfor %}
+      </div>
+      <a class="btn small" href="/#contact">{{ t.book }}</a>
+    </div>
+  </div>
+</header>
+
+<main>
+{% block content %}{% endblock %}
+</main>
+
+<section class="contact" id="contact">
+  <div class="container">
+    <p class="eyebrow">{{ t.contact_eyebrow }}</p>
+    <h2>{{ t.contact_title }}</h2>
+    <div class="contact-grid">
+      <div><p>{{ t.contact_text }}</p></div>
+      <div>
+        <h4>{{ t.c_address_h }}</h4>
+        <p>{{ t.c_address }}</p>
+      </div>
+      <div>
+        <h4>{{ t.c_hours_h }}</h4>
+        <p>{{ t.c_hours_wd }}<br>{{ t.c_hours_we }}</p>
+      </div>
+      <div>
+        <h4>{{ t.c_phone_h }}</h4>
+        <p><a href="tel:+79000000000">{{ t.c_phone }}</a><br>
+           <a href="mailto:hello@lumiere.test">{{ t.c_mail }}</a></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <b>LUMIÈRE</b>
+        <p>{{ t.foot_about }}</p>
+      </div>
+      <div>
+        <h4>{{ t.foot_explore }}</h4>
+        <ul>
+          <li><a href="/">{{ t.nav_home }}</a></li>
+          <li><a href="/menu">{{ t.nav_menu }}</a></li>
+          <li><a href="/#about">{{ t.nav_about }}</a></li>
+          <li><a href="/#gallery">{{ t.nav_gallery }}</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>{{ t.foot_hours }}</h4>
+        <ul>
+          <li>{{ t.c_hours_wd }}</li>
+          <li>{{ t.c_hours_we }}</li>
+          <li>{{ t.c_address }}</li>
+        </ul>
+      </div>
+      <div>
+        <h4>{{ t.foot_dev }}</h4>
+        <ul>
+          <li><a href="/ui">{{ t.foot_console }}</a></li>
+          <li><a href="/admin">{{ t.login_title }}</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot-note">
+      <span>{{ t.foot_note }}</span>
+      <span class="badge">{{ variant_label }}</span>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

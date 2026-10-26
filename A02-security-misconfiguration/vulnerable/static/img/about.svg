@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 640" role="img" aria-label="Café interior with a window, table and plants">
+  <rect width="900" height="640" fill="#EFEAE1"/>
+  <path d="M0 470h900v170H0z" fill="#E1D7C6"/>
+
+  <!-- окно -->
+  <rect x="70" y="64" width="380" height="330" rx="10" fill="#DCE1D6" stroke="#14110D" stroke-width="5"/>
+  <path d="M260 64v330M70 229h380" stroke="#14110D" stroke-width="5"/>
+  <circle cx="366" cy="140" r="46" fill="#F6F3EC" opacity=".85"/>
+  <path d="M96 340c34-40 74-46 110-10 30 30 66 30 96 6 30-24 70-20 108 24" fill="none" stroke="#C9D0C2" stroke-width="10" stroke-linecap="round"/>
+
+  <!-- подвесной светильник -->
+  <path d="M640 0v120" stroke="#14110D" stroke-width="5"/>
+  <path d="M596 176h88l-22-56h-44z" fill="#14110D"/>
+  <ellipse cx="640" cy="180" rx="44" ry="10" fill="#CE9049"/>
+
+  <!-- стол -->
+  <ellipse cx="612" cy="452" rx="230" ry="64" fill="#F6F2EA" stroke="#14110D" stroke-width="5"/>
+  <path d="M540 486v96M684 486v96" stroke="#14110D" stroke-width="10" stroke-linecap="round"/>
+
+  <!-- стулья -->
+  <path d="M330 300h96v112h-96z" fill="#14110D"/>
+  <path d="M344 412v74M412 412v74" stroke="#14110D" stroke-width="9" stroke-linecap="round"/>
+  <path d="M770 316h96v96h-96z" fill="#14110D"/>
+  <path d="M784 412v70M852 412v70" stroke="#14110D" stroke-width="9" stroke-linecap="round"/>
+
+  <!-- напитки на столе -->
+  <rect x="560" y="404" width="66" height="52" rx="16" fill="#14110D"/>
+  <ellipse cx="593" cy="406" rx="33" ry="12" fill="#C89A63"/>
+  <rect x="656" y="414" width="52" height="42" rx="14" fill="#FBF9F4" stroke="#14110D" stroke-width="4"/>
+  <path d="M666 430h32" stroke="#CE9049" stroke-width="7" stroke-linecap="round"/>
+
+  <!-- растение -->
+  <path d="M118 470h84l-12 118h-60z" fill="#C67B54" stroke="#14110D" stroke-width="5"/>
+  <path d="M160 470c0-70-34-108-74-124 12 66 34 104 74 124z" fill="#7E8F6A"/>
+  <path d="M160 470c0-78 34-118 78-134-14 72-36 112-78 134z" fill="#5E7050"/>
+  <path d="M160 470c-8-52-4-96 12-134 12 48 8 92-12 134z" fill="#8E9E78"/>
+</svg>

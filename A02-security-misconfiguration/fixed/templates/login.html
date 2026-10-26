@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}{{ t.login_title }} — Lumière Café{% endblock %}
+{% block content %}
+
+<div class="container">
+  <section class="auth">
+    <div class="auth-card">
+      <p class="eyebrow">{{ t.login_eyebrow }}</p>
+      <h1>{{ t.login_title }}</h1>
+      <p class="muted small">{{ t.login_sub }}</p>
+
+      {% if error %}
+      <p class="alert" role="alert">{{ error }}</p>
+      {% endif %}
+
+      <form method="post" action="/login">
+        <label for="username">{{ t.f_user }}</label>
+        <input id="username" name="username" type="text" autocomplete="username" required>
+        <label for="password">{{ t.f_pass }}</label>
+        <input id="password" name="password" type="password" autocomplete="current-password" required>
+        <button class="btn" type="submit">{{ t.sign_in }}</button>
+      </form>
+
+      <div class="auth-links">
+        <span class="muted">{{ t.forgot }}</span>
+        <a href="/">← {{ t.back_site }}</a>
+      </div>
+    </div>
+  </section>
+</div>
+
+{% endblock %}

@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% set active = 'home' %}
+{% block title %}Lumière Café — {{ t.hero_l1 }} {{ t.hero_l2 }}{% endblock %}
+{% block content %}
+
+<section class="container hero">
+  <div class="hero-text">
+    <h1>{{ t.hero_l1 }}<br>{{ t.hero_l2 }}</h1>
+    <p class="lead">{{ t.hero_text }}</p>
+    <div class="actions">
+      <a class="btn" href="/menu">{{ t.hero_btn }} <span class="arr">→</span></a>
+      <a class="btn ghost" href="/#about">{{ t.nav_about }}</a>
+    </div>
+  </div>
+  <div class="hero-media">
+    <img src="{{ url_for('static', filename='img/hero.svg') }}" alt="Coffee, croissant and flowers on a table">
+    <div class="hero-tags">
+      <span>{{ t.hero_li1 }}</span>
+      <span>{{ t.hero_li2 }}</span>
+      <span>{{ t.hero_li3 }}</span>
+    </div>
+  </div>
+</section>
+
+<div class="container">
+  <section class="band">
+    <div class="why">
+      <p class="eyebrow">{{ t.why_eyebrow }}</p>
+      <h2>{{ t.why_l1 }}<br>{{ t.why_l2 }}</h2>
+      <div class="why-list">
+        <div class="why-item">
+          <span class="why-ico"><svg viewBox="0 0 24 24"><path d="M4 8h12v6a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5V8z"/><path d="M16 9h2a3 3 0 0 1 0 6h-2"/><path d="M7 3v2M11 3v2"/></svg></span>
+          <div><b>{{ t.why1_t }}</b><p>{{ t.why1_d }}</p></div>
+        </div>
+        <div class="why-item">
+          <span class="why-ico"><svg viewBox="0 0 24 24"><path d="M12 21c5-4 8-7.6 8-11.5A8 8 0 0 0 4 9.5C4 13.4 7 17 12 21z"/><path d="M12 12c2.5 0 4-1.6 4-4-2.5 0-4 1.6-4 4z"/></svg></span>
+          <div><b>{{ t.why2_t }}</b><p>{{ t.why2_d }}</p></div>
+        </div>
+        <div class="why-item">
+          <span class="why-ico"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-9.4A3.9 3.9 0 0 1 12 8a3.9 3.9 0 0 1 7 2.6c0 5-7 9.4-7 9.4z"/></svg></span>
+          <div><b>{{ t.why3_t }}</b><p>{{ t.why3_d }}</p></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sect">
+      <p class="eyebrow">{{ t.menu_eyebrow }}</p>
+      <div class="sect-head">
+        <h2>{{ t.popular }}</h2>
+        <a class="link-arrow" href="/menu">{{ t.view_full }} <span class="arr">→</span></a>
+      </div>
+      <div class="grid dishes">
+        {% for item in featured %}
+        <a class="card" href="/menu/{{ item.id }}">
+          <img src="{{ url_for('static', filename='img/' + item.img) }}" alt="{{ item.name }}">
+          <div class="card-body">
+            <span class="tag">{{ item.tag }}</span>
+            <h3>{{ item.name }}</h3>
+            <p>{{ item.short }}</p>
+            <span class="price">{{ item.price }}</span>
+          </div>
+        </a>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <section class="band" id="about">
+    <div class="about-grid">
+      <div class="about-text">
+        <p class="eyebrow">{{ t.about_eyebrow }}</p>
+        <h2>{{ t.about_l1 }}<br>{{ t.about_l2 }}</h2>
+        <p>{{ t.about_p1 }}</p>
+        <p>{{ t.about_p2 }}</p>
+        <div class="facts">
+          <span class="fact">{{ t.about_f1 }}</span>
+          <span class="fact">{{ t.about_f2 }}</span>
+          <span class="fact">{{ t.about_f3 }}</span>
+        </div>
+      </div>
+      <div class="about-media">
+        <img src="{{ url_for('static', filename='img/about.svg') }}" alt="Inside the café">
+      </div>
+    </div>
+  </section>
+
+  <section class="band" id="gallery">
+    <div class="sect">
+      <div class="sect-head">
+        <div>
+          <p class="eyebrow">{{ t.gallery_eyebrow }}</p>
+          <h2>{{ t.gallery_title }}</h2>
+        </div>
+        <p class="muted small">{{ t.gallery_text }}</p>
+      </div>
+      <div class="gallery">
+        {% for img in gallery %}
+        <img src="{{ url_for('static', filename=img) }}" alt="Lumière Café">
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+</div>
+
+{% endblock %}

@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" role="img" aria-label="Latte with latte art">
+  <rect width="600" height="600" fill="#221D17"/>
+  <circle cx="470" cy="120" r="150" fill="#2B241C"/>
+  <circle cx="120" cy="500" r="130" fill="#2B241C"/>
+  <ellipse cx="300" cy="470" rx="220" ry="70" fill="#171310"/>
+  <circle cx="300" cy="300" r="205" fill="#14110D"/>
+  <circle cx="300" cy="300" r="176" fill="#C89A63"/>
+  <circle cx="300" cy="300" r="152" fill="#EFDFC2"/>
+  <path d="M300 236c30 0 54 24 54 52 0 40-54 84-54 84s-54-44-54-84c0-28 24-52 54-52z" fill="#B9854F"/>
+  <path d="M300 250c18 0 34 14 34 32 0 26-34 54-34 54s-34-28-34-54c0-18 16-32 34-32z" fill="#EFDFC2"/>
+</svg>

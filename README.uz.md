@@ -34,7 +34,7 @@ Havolalar laboratoriyalarning oʻzbekcha README fayllariga olib boradi.
 | №   | Laboratoriya | Toifa | Ichida nima | Portlar |
 |-----|--------------|-------|-------------|---------|
 | A01 | [broken-access-control](./A01-broken-access-control/README.uz.md) | Kirish nazoratining buzilishi | Rollari bor HR-portal: server resurs kimga tegishli ekanini va foydalanuvchi roli qanday ekanini tekshirmaydi | 8001 / 8002 |
-| A02 | [security-misconfiguration](./A02-security-misconfiguration/README.uz.md) | Xavfsiz boʻlmagan konfiguratsiya | Doʻkon (API): sukut boʻyicha parol, ortiqcha ochiq fayllar, batafsil xatolar, himoya sarlavhalari yoʻq | 8011 / 8012 |
+| A02 | [security-misconfiguration](./A02-security-misconfiguration/README.uz.md) | Xavfsiz boʻlmagan konfiguratsiya | Kafe sayti (Flask): sukut boʻyicha parol, ortiqcha ochiq fayllar, batafsil xatolar, himoya sarlavhalari yoʻq | 8011 / 8012 |
 | A03 | [software-supply-chain-failures](./A03-software-supply-chain-failures/README.uz.md) | Dasturiy taʼminot yetkazib berish zanjiridagi nosozliklar | Eskirgan qotirilgan bogʻliqliklarga ega zararsiz ilova; `fixed/` da `requirements.in` yondashuvi koʻrsatilgan | 8021 / 8022 |
 | A04 | [cryptographic-failures](./A04-cryptographic-failures/README.uz.md) | Kriptografik nosozliklar | Akkauntlar va bank kartalari: zaif kriptografiya, administrator akkauntini egallash | 8031 / 8032 |
 | A05 | [injection](./A05-injection/README.uz.md) | Inyeksiyalar (SQLi, XSS va boshq.) | Kirish, qidiruv va mehmonlar kitobi bor doʻkon; kiritilgan maʼlumot SQL va HTML ga ishlovsiz tushadi | 8041 / 8042 |
@@ -117,7 +117,7 @@ Har bir laboratoriyaning portlari yuqoridagi jadvalda. Masalan, A01 uchun: `http
 ## Laboratoriyani qanday bajarish
 
 1. Kerakli laboratoriyaning `README.uz.md` (yoki inglizcha `README.md`, ruscha `README.ru.md`) faylini oching va u nima haqida ekanini hamda test akkauntlarini oʻqing.
-2. Laboratoriyani ishga tushiring va `vulnerable` manzilini oching. Brauzerda `/` barcha endpointlar uchun shakllari bor `/ui` sahifasiga yoʻnaltiradi. Xuddi shu soʻrovlarni `curl` yoki Postman orqali ham yuborish mumkin.
+2. Laboratoriyani ishga tushiring va `vulnerable` manzilini oching. Brauzerda `/` barcha endpointlar uchun shakllari bor `/ui` sahifasiga yoʻnaltiradi; A01 va A02 da bunday oʻrniga ilovaning oʻzi ochiladi (portal va kafe sayti), `/ui` konsoliga esa uning sahifalarida havola bor. Xuddi shu soʻrovlarni `curl` yoki Postman orqali ham yuborish mumkin.
 3. «Topshiriq» boʻlimidagi bandlarni bajaring. Qiynalsangiz, maslahatlarni oching.
 4. `vulnerable/app.py` da nuqsonlar `# ДЕФЕКТ N` izohlari bilan belgilangan. Ularni toping va buzilgan qoidani shakllantiring.
 5. `fixed/app.py` ni oching: tuzatishlar `# FIX N` bilan belgilangan, raqam nuqson raqamiga mos keladi. Xuddi shu soʻrovlarni `fixed` da takrorlang va hujum endi ishlamasligiga, oddiy stsenariylar esa ishlashiga ishonch hosil qiling.
@@ -145,7 +145,7 @@ AXX-toifa-nomi/
     requirements.txt
 ```
 
-Ayrim laboratoriyalarda qoʻshimcha fayllar bor: masalan, A04 da `wordlist.txt`, A02 ning `vulnerable/` papkasida `backup.sql`, A03 ning `fixed/` papkasida `requirements.in`.
+Ayrim laboratoriyalarda qoʻshimcha fayllar bor: masalan, A04 da `wordlist.txt`, A02 ning `vulnerable/` papkasida `backup.sql`, A03 ning `fixed/` papkasida `requirements.in`. A02 da saytning oʻz fayllari ham bor: har bir versiyada `templates/`, `static/` va `cafe.py`.
 
 ## Umumiy kelishuvlar
 

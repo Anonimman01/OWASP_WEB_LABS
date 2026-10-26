@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" role="img" aria-label="Buddha bowl with vegetables and quinoa">
+  <rect width="600" height="600" fill="#EDE7DB"/>
+  <circle cx="500" cy="490" r="120" fill="#E4DCCC"/>
+  <ellipse cx="300" cy="330" rx="244" ry="232" fill="#F8F5EE"/>
+  <ellipse cx="300" cy="330" rx="244" ry="232" fill="none" stroke="#14110D" stroke-width="6"/>
+  <path d="M96 268h408c0 118-92 208-204 208S96 386 96 268z" fill="#14110D"/>
+  <path d="M124 292h352c-14 96-94 168-176 168S138 388 124 292z" fill="#2A241C"/>
+  <circle cx="212" cy="330" r="66" fill="#7E8F6A"/>
+  <circle cx="330" cy="312" r="58" fill="#5E7050"/>
+  <circle cx="404" cy="368" r="46" fill="#8FA071"/>
+  <circle cx="252" cy="418" r="44" fill="#C67B54"/>
+  <circle cx="160" cy="410" r="36" fill="#D9A566"/>
+  <circle cx="356" cy="424" r="30" fill="#C6543F"/>
+  <circle cx="300" cy="384" r="26" fill="#E8A33D"/>
+  <g fill="#EFE6D2">
+    <circle cx="196" cy="300" r="7"/><circle cx="246" cy="368" r="7"/>
+    <circle cx="332" cy="356" r="7"/><circle cx="392" cy="330" r="7"/>
+    <circle cx="292" cy="440" r="7"/><circle cx="150" cy="366" r="7"/>
+    <circle cx="416" cy="416" r="7"/><circle cx="352" cy="470" r="7"/>
+  </g>
+</svg>

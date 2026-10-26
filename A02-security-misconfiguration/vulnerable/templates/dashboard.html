@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}{{ t.dash_title }} — Lumière Café{% endblock %}
+{% block content %}
+
+<div class="container">
+  <section class="page-head">
+    <p class="eyebrow">{{ t.login_eyebrow }}</p>
+    <h1>{{ t.dash_title }}</h1>
+    <p class="lead">{{ t.dash_sub }}</p>
+  </section>
+
+  <div class="stats">
+    <div class="stat"><b>{{ stats.orders }}</b><span>{{ t.st_orders }}</span></div>
+    <div class="stat"><b>${{ stats.revenue }}</b><span>{{ t.st_revenue }}</span></div>
+    <div class="stat"><b>${{ stats.avg }}</b><span>{{ t.st_avg }}</span></div>
+    <div class="stat"><b>{{ stats.guests }}</b><span>{{ t.st_guests }}</span></div>
+  </div>
+
+  {% if flag %}
+  <div class="flagbox">
+    <h2>{{ t.flag_h }}</h2>
+    <p>{{ t.flag_p }}</p>
+    <code>{{ flag }}</code>
+  </div>
+  {% endif %}
+
+  <div class="sect-head">
+    <h2>{{ t.last_orders }}</h2>
+    <span class="muted small">{{ t.shift }}</span>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>{{ t.col_order }}</th><th>{{ t.col_items }}</th>
+          <th>{{ t.col_time }}</th><th>{{ t.col_total }}</th>
+          <th>{{ t.col_status }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for o in orders %}
+        <tr>
+          <td>#{{ o.no }}</td>
+          <td>{{ o.items }}</td>
+          <td>{{ o.time }}</td>
+          <td>${{ o.total }}</td>
+          <td><span class="pill {{ o.state }}">{{ o.status }}</span></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="actions">
+    <a class="btn ghost" href="/">← {{ t.back_site }}</a>
+  </div>
+</div>
+
+{% endblock %}

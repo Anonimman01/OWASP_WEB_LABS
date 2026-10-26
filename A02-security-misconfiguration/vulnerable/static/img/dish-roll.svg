@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" role="img" aria-label="Cinnamon roll on a plate">
+  <rect width="600" height="600" fill="#EDE7DB"/>
+  <circle cx="500" cy="110" r="120" fill="#E4DCCC"/>
+  <ellipse cx="300" cy="330" r="240" ry="230" fill="#F8F5EE"/>
+  <ellipse cx="300" cy="330" r="240" ry="230" fill="none" stroke="#14110D" stroke-width="6"/>
+  <circle cx="300" cy="330" r="176" fill="#D9A566"/>
+  <circle cx="300" cy="330" r="176" fill="none" stroke="#B9854F" stroke-width="6"/>
+  <path d="M300 330m0-24a24 24 0 1 1-24 24 48 48 0 1 1 48-48 76 76 0 1 1-76 76 106 106 0 1 1 106-106" fill="none" stroke="#A9754B" stroke-width="14" stroke-linecap="round"/>
+  <path d="M196 246c40-46 108-66 168-46M214 424c46 42 118 52 172 24" fill="none" stroke="#F6EEDF" stroke-width="16" stroke-linecap="round"/>
+</svg>
