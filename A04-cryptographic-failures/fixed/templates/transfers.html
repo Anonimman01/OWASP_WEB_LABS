@@ -1,0 +1,75 @@
+{% extends "app.html" %}
+{% set active = 'transfers' %}
+{% block title %}{{ t.tr_t }} — ATLAS Bank{% endblock %}
+{% block pagetitle %}{{ t.tr_t }}{% endblock %}
+{% block content %}
+
+<section class="hello">
+  <div>
+    <p class="eyebrow">{{ t.side_transfers }}</p>
+    <h1>{{ t.tr_t }}</h1>
+  </div>
+  <p class="muted">{{ t.tr_sub }}</p>
+</section>
+
+{% if message %}<div class="alert ok">{{ message }}</div>{% endif %}
+{% if error %}<div class="alert bad">{{ error }}</div>{% endif %}
+
+<section class="panel two-col">
+  <div>
+    <div class="panel-head"><h2>{{ t.btn_transfer }}</h2></div>
+    <form method="post" action="/transfers" class="form">
+      <label class="field">
+        <span>{{ t.f_from }}</span>
+        <select name="from_account">
+          {% for a in accounts %}
+          <option value="{{ a.id }}">{{ a.name }} · {{ a.balance }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      <label class="field">
+        <span>{{ t.f_to }}</span>
+        <select name="to_account">
+          {% for a in accounts %}
+          <option value="{{ a.id }}">{{ a.name }} · {{ a.balance }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      <div class="field-row">
+        <label class="field">
+          <span>{{ t.f_amount }}</span>
+          <input type="text" name="amount" inputmode="decimal" required placeholder="50.00">
+        </label>
+        <label class="field grow">
+          <span>{{ t.f_note }}</span>
+          <input type="text" name="note" maxlength="60" placeholder="">
+        </label>
+      </div>
+      <button class="btn block lg" type="submit">{{ t.btn_transfer }}</button>
+    </form>
+  </div>
+
+  <div>
+    <div class="panel-head"><h2>{{ t.history_h }}</h2></div>
+    {% if txns %}
+    <table class="table">
+      <tbody>
+        {% for x in txns %}
+        <tr>
+          <td class="mono dim">{{ x.date }}</td>
+          <td>
+            {{ x.desc }}
+            <span class="sub dim">{{ x.account }}</span>
+          </td>
+          <td class="num {{ 'pos' if x.in else 'neg' }}">{{ x.amount }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <p class="empty">{{ t.empty_txns }}</p>
+    {% endif %}
+  </div>
+</section>
+
+{% endblock %}

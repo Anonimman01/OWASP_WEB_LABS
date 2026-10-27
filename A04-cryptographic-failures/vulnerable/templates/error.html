@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}{{ title }} — ATLAS Bank{% endblock %}
+{% block content %}
+
+<section class="section error-section">
+  <div class="container error-box">
+    <p class="eyebrow">ATLAS Bank</p>
+    <h1>{{ title }}</h1>
+    <p class="lead">{{ message }}</p>
+    <div class="actions">
+      <a class="btn" href="/">{{ t.go_home }} <span class="arr">→</span></a>
+      <a class="btn ghost" href="/login">{{ t.signin }}</a>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

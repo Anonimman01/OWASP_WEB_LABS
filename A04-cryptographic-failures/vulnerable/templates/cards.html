@@ -1,0 +1,76 @@
+{% extends "app.html" %}
+{% set active = 'cards' %}
+{% block title %}{{ t.cards_t }} — ATLAS Bank{% endblock %}
+{% block pagetitle %}{{ t.cards_t }}{% endblock %}
+{% block content %}
+
+<section class="hello">
+  <div>
+    <p class="eyebrow">{{ t.nav_cards }}</p>
+    <h1>{{ t.cards_t }}</h1>
+  </div>
+  <p class="muted">{{ t.cards_sub }}</p>
+</section>
+
+{% if message %}<div class="alert ok">{{ message }}</div>{% endif %}
+{% if error %}<div class="alert bad">{{ error }}</div>{% endif %}
+
+{% if cards %}
+<section class="card-grid">
+  {% for c in cards %}
+  <article class="bank-card {{ c.tone }}">
+    <div class="bc-top">
+      <span class="bc-chip" aria-hidden="true"></span>
+      <span class="bc-brand">{{ c.brand }}</span>
+    </div>
+    <div class="bc-number">{{ c.number }}</div>
+    <div class="bc-bottom">
+      <span>
+        <i>{{ t.holder }}</i>
+        <b>{{ c.holder }}</b>
+      </span>
+      <span>
+        <i>{{ t.expires }}</i>
+        <b>{{ c.exp }}</b>
+      </span>
+      <span class="bc-status">{{ t.status_active }}</span>
+    </div>
+  </article>
+  {% endfor %}
+</section>
+{% else %}
+<p class="empty">{{ t.empty_cards }}</p>
+{% endif %}
+
+<section class="panel two-col">
+  <div>
+    <div class="panel-head"><h2>{{ t.add_h }}</h2></div>
+    <form method="post" action="/cards" class="form">
+      <label class="field">
+        <span>{{ t.f_number }}</span>
+        <input type="text" name="number" inputmode="numeric" required
+               placeholder="4111 1111 1111 1111" pattern="[0-9 ]{13,23}">
+      </label>
+      <div class="field-row">
+        <label class="field">
+          <span>{{ t.f_exp }}</span>
+          <input type="text" name="exp" required placeholder="09/29" pattern="[0-9]{2}/[0-9]{2}">
+        </label>
+        <label class="field grow">
+          <span>{{ t.f_holder }}</span>
+          <input type="text" name="holder" required value="{{ user.full_name }}">
+        </label>
+      </div>
+      <button class="btn block" type="submit">{{ t.btn_add_card }}</button>
+    </form>
+  </div>
+  <aside class="note-card">
+    <span class="note-ico" aria-hidden="true">
+      <svg viewBox="0 0 24 24"><path d="M12 3l7 3v6c0 4.2-2.9 7.6-7 9-4.1-1.4-7-4.8-7-9V6l7-3z"/><path d="M9.5 12.2l1.8 1.8 3.4-3.6"/></svg>
+    </span>
+    <b>{{ t.nav_security }}</b>
+    <p>{{ t.note_lost }}</p>
+  </aside>
+</section>
+
+{% endblock %}

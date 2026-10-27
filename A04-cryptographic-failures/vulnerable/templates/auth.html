@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="{{ lang }}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="ATLAS Bank — sign in, open an account, reset a password.">
+<title>{% block title %}ATLAS Bank{% endblock %}</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="auth-page">
+
+<section class="auth">
+  <div class="auth-aside">
+    <a class="brand light" href="/">
+      <span class="mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M4 20 12 4l8 16"/><path d="M7.5 14h9"/></svg>
+      </span>
+      <b>ATLAS</b><i>BANK</i>
+    </a>
+
+    <div class="auth-aside-text">
+      <p class="eyebrow">{{ t.hero_eyebrow }}</p>
+      <h2>{{ t.login_mock }}</h2>
+      <ul class="ticks">
+        <li>{{ t.p1_f1 }}</li>
+        <li>{{ t.p2_f1 }}</li>
+        <li>{{ t.sec_3 }}</li>
+      </ul>
+    </div>
+
+    <div class="auth-foot">
+      <div class="langs" aria-label="{{ t.lang_label }}">
+        {% for code in langs %}
+        <a href="{{ request.path }}?lang={{ code }}" hreflang="{{ code }}"
+           {% if code == lang %}class="on"{% endif %}>{{ code }}</a>
+        {% endfor %}
+      </div>
+      <span class="badge">{{ variant_label }}</span>
+    </div>
+  </div>
+
+  <div class="auth-main">
+    <div class="auth-card">
+      {% block content %}{% endblock %}
+    </div>
+  </div>
+</section>
+
+</body>
+</html>

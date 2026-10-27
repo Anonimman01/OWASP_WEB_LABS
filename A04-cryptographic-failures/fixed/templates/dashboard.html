@@ -1,0 +1,75 @@
+{% extends "app.html" %}
+{% set active = 'dashboard' %}
+{% block title %}{{ t.dash_t }} — ATLAS Bank{% endblock %}
+{% block pagetitle %}{{ t.dash_t }}{% endblock %}
+{% block content %}
+
+<section class="hello">
+  <div>
+    <p class="eyebrow">{{ t.welcome }}</p>
+    <h1>{{ user.full_name }}</h1>
+  </div>
+  <div class="quick">
+    <a class="btn ghost" href="/cards">{{ t.qa_cards }}</a>
+    <a class="btn" href="/transfers">{{ t.qa_transfer }} <span class="arr">→</span></a>
+  </div>
+</section>
+
+{% if message %}<div class="alert ok">{{ message }}</div>{% endif %}
+{% if error %}<div class="alert bad">{{ error }}</div>{% endif %}
+
+<section class="panel total-panel">
+  <div class="total-left">
+    <p class="label">{{ t.total_label }}</p>
+    <p class="total-value">{{ total }}</p>
+    <p class="muted small">{{ accounts|length }} · {{ t.accounts_h|lower }}</p>
+  </div>
+  <div class="total-right">
+    {% for a in accounts %}
+    <div class="acct-row">
+      <span class="acct-ico" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M3 10.5 12 4l9 6.5"/><path d="M5.5 10v9h13v-9"/><path d="M10 19v-5h4v5"/></svg>
+      </span>
+      <span class="acct-name">
+        <b>{{ a.name }}</b>
+        <i>{{ t.acct_no }} {{ a.number }}</i>
+      </span>
+      <span class="acct-sum">{{ a.balance }}</span>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+
+<section class="panel">
+  <div class="panel-head">
+    <h2>{{ t.txns_h }}</h2>
+    <a class="link-arrow" href="/transfers">{{ t.more }} <span class="arr">→</span></a>
+  </div>
+
+  {% if txns %}
+  <table class="table">
+    <thead>
+      <tr>
+        <th>{{ t.col_date }}</th>
+        <th>{{ t.col_desc }}</th>
+        <th class="hide-sm">{{ t.col_account }}</th>
+        <th class="num">{{ t.col_amount }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for x in txns %}
+      <tr>
+        <td class="mono dim">{{ x.date }}</td>
+        <td>{{ x.desc }}</td>
+        <td class="hide-sm dim">{{ x.account }}</td>
+        <td class="num {{ 'pos' if x.in else 'neg' }}">{{ x.amount }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p class="empty">{{ t.empty_txns }}</p>
+  {% endif %}
+</section>
+
+{% endblock %}

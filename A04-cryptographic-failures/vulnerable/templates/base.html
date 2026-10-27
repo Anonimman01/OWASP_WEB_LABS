@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="{{ lang }}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="ATLAS Bank — accounts, cards and savings. Training site for lab A04.">
+<title>{% block title %}ATLAS Bank{% endblock %}</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="site">
+
+<header class="topbar">
+  <div class="container bar">
+    <a class="brand" href="/">
+      <span class="mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M4 20 12 4l8 16"/><path d="M7.5 14h9"/></svg>
+      </span>
+      <b>ATLAS</b><i>BANK</i>
+    </a>
+
+    <nav class="nav" aria-label="{{ t.nav_label }}">
+      <a href="/#products" {% if active == 'products' %}class="on"{% endif %}>{{ t.nav_accounts }}</a>
+      <a href="/#rates" {% if active == 'rates' %}class="on"{% endif %}>{{ t.nav_rates }}</a>
+      <a href="/#security" {% if active == 'security' %}class="on"{% endif %}>{{ t.nav_security }}</a>
+      <a href="/#contact" {% if active == 'contact' %}class="on"{% endif %}>{{ t.nav_support }}</a>
+    </nav>
+
+    <div class="head-right">
+      <div class="langs" aria-label="{{ t.lang_label }}">
+        {% for code in langs %}
+        <a href="{{ request.path }}?lang={{ code }}" hreflang="{{ code }}"
+           {% if code == lang %}class="on"{% endif %}>{{ code }}</a>
+        {% endfor %}
+      </div>
+      <a class="btn ghost sm" href="/login">{{ t.signin }}</a>
+      <a class="btn sm" href="/register">{{ t.open_acct }}</a>
+    </div>
+  </div>
+</header>
+
+<main>
+{% block content %}{% endblock %}
+</main>
+
+<footer class="site-footer" id="contact">
+  <div class="container">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <a class="brand light" href="/">
+          <span class="mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M4 20 12 4l8 16"/><path d="M7.5 14h9"/></svg>
+          </span>
+          <b>ATLAS</b><i>BANK</i>
+        </a>
+        <p>{{ t.foot_about }}</p>
+      </div>
+      <div>
+        <h4>{{ t.foot_products }}</h4>
+        <ul>
+          <li><a href="/#products">{{ t.p1_t }}</a></li>
+          <li><a href="/#products">{{ t.p2_t }}</a></li>
+          <li><a href="/#products">{{ t.p3_t }}</a></li>
+          <li><a href="/#rates">{{ t.foot_rates }}</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>{{ t.foot_explore }}</h4>
+        <ul>
+          <li><a href="/login">{{ t.signin }}</a></li>
+          <li><a href="/register">{{ t.open_acct }}</a></li>
+          <li><a href="/forgot">{{ t.forgot_link }}</a></li>
+          <li><a href="/#security">{{ t.nav_security }}</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>{{ t.foot_support }}</h4>
+        <ul>
+          <li>{{ t.foot_help }}</li>
+          <li>+1 800 555 0100</li>
+          <li>help@atlas.test</li>
+          <li><a href="/ui">{{ t.foot_console }}</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot-note">
+      <span>{{ t.foot_legal }}</span>
+      <span class="badge">{{ variant_label }}</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

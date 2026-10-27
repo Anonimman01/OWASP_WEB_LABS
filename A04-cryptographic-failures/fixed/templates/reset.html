@@ -1,0 +1,34 @@
+{% extends "auth.html" %}
+{% block title %}{{ t.btn_save_pass }} — ATLAS Bank{% endblock %}
+{% block content %}
+
+<div class="auth-head">
+  <h1>{{ t.btn_save_pass }}</h1>
+  <p>{{ t.reset_sub }}</p>
+</div>
+
+{% if message %}<div class="alert ok">{{ message }}</div>{% endif %}
+{% if error %}<div class="alert bad">{{ error }}</div>{% endif %}
+
+{% if not error %}
+<form method="post" class="form" autocomplete="off">
+  <label class="field">
+    <span>{{ t.f_pass }}</span>
+    <input type="password" name="password" required minlength="8" autofocus
+           autocomplete="new-password">
+    <small>{{ t.pass_hint }}</small>
+  </label>
+  <label class="field">
+    <span>{{ t.f_pass2 }}</span>
+    <input type="password" name="password2" required minlength="8"
+           autocomplete="new-password">
+  </label>
+  <button class="btn block lg" type="submit">{{ t.btn_save_pass }}</button>
+</form>
+{% endif %}
+
+<div class="auth-links">
+  <a href="/login">← {{ t.back_login }}</a>
+</div>
+
+{% endblock %}

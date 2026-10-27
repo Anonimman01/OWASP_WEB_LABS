@@ -1,0 +1,40 @@
+{% extends "auth.html" %}
+{% block title %}{{ t.open_acct }} — ATLAS Bank{% endblock %}
+{% block content %}
+
+<div class="auth-head">
+  <h1>{{ t.open_acct }}</h1>
+  <p>{{ t.reg_sub }}</p>
+</div>
+
+{% if error %}<div class="alert bad">{{ error }}</div>{% endif %}
+
+<form method="post" action="/register" class="form" autocomplete="off">
+  <label class="field">
+    <span>{{ t.f_full }}</span>
+    <input type="text" name="full_name" required value="{{ request.form.get('full_name', '') }}">
+  </label>
+  <label class="field">
+    <span>{{ t.f_user }}</span>
+    <input type="text" name="username" required pattern="[A-Za-z0-9_]{3,32}"
+           value="{{ request.form.get('username', '') }}">
+  </label>
+  <label class="field">
+    <span>{{ t.f_pass }}</span>
+    <input type="password" name="password" autocomplete="new-password" required minlength="8">
+    <small>{{ t.pass_hint }}</small>
+  </label>
+  <label class="field">
+    <span>{{ t.f_pass2 }}</span>
+    <input type="password" name="password2" autocomplete="new-password" required minlength="8">
+  </label>
+  <button class="btn block lg" type="submit">{{ t.btn_register }}</button>
+</form>
+
+<div class="auth-links">
+  <span>{{ t.have_acct }} <a href="/login">{{ t.sign_in_link }}</a></span>
+</div>
+
+<a class="back-link" href="/">← {{ t.go_home }}</a>
+
+{% endblock %}

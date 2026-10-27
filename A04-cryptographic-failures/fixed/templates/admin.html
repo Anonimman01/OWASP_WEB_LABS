@@ -1,0 +1,60 @@
+{% extends "app.html" %}
+{% set active = 'admin' %}
+{% block title %}{{ t.admin_t }} — ATLAS Bank{% endblock %}
+{% block pagetitle %}{{ t.admin_t }}{% endblock %}
+{% block content %}
+
+<section class="hello">
+  <div>
+    <p class="eyebrow">{{ t.side_admin }}</p>
+    <h1>{{ t.admin_t }}</h1>
+  </div>
+  <p class="muted">{{ t.admin_sub }}</p>
+</section>
+
+{% if error %}<div class="alert bad">{{ error }}</div>{% endif %}
+
+{% if flag %}
+<section class="flag-panel">
+  <span class="flag-ico" aria-hidden="true">
+    <svg viewBox="0 0 24 24"><path d="M6 21V4"/><path d="M6 5h11l-2 3.5L17 12H6"/></svg>
+  </span>
+  <div>
+    <p class="label">{{ t.flag_h }}</p>
+    <p class="flag-text">{{ flag }}</p>
+    <p class="muted small">{{ t.flag_p }}</p>
+  </div>
+</section>
+{% endif %}
+
+<section class="panel">
+  <div class="panel-head"><h2>{{ t.users_h }}</h2></div>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>{{ t.col_username }}</th>
+        <th>{{ t.col_name }}</th>
+        <th>{{ t.col_role }}</th>
+        <th class="num">{{ t.col_accounts }}</th>
+        <th class="num">{{ t.col_balance }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for u in users %}
+      <tr>
+        <td class="mono">{{ u.username }}</td>
+        <td>{{ u.full_name }}</td>
+        <td>
+          <span class="tag {{ 'tag-admin' if u.role == 'admin' }}">
+            {{ t.role_admin if u.role == 'admin' else t.role_customer }}
+          </span>
+        </td>
+        <td class="num">{{ u.accounts }}</td>
+        <td class="num">{{ u.balance }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+
+{% endblock %}

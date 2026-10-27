@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+{% set active = 'home' %}
+{% block title %}ATLAS Bank — {{ t.hero_l1 }} {{ t.hero_l2 }}{% endblock %}
+{% block content %}
+
+<section class="hero">
+  <div class="container hero-grid">
+    <div class="hero-text">
+      <p class="eyebrow">{{ t.hero_eyebrow }}</p>
+      <h1>{{ t.hero_l1 }}<br><span class="accent">{{ t.hero_l2 }}</span></h1>
+      <p class="lead">{{ t.hero_text }}</p>
+      <div class="actions">
+        <a class="btn lg" href="/register">{{ t.hero_cta1 }} <span class="arr">→</span></a>
+        <a class="btn ghost lg" href="/login">{{ t.hero_cta2 }}</a>
+      </div>
+      <div class="stats">
+        <div class="stat"><b>{{ t.stat1_v }}</b><span>{{ t.stat1_l }}</span></div>
+        <div class="stat"><b>{{ t.stat2_v }}</b><span>{{ t.stat2_l }}</span></div>
+        <div class="stat"><b>{{ t.stat3_v }}</b><span>{{ t.stat3_l }}</span></div>
+      </div>
+    </div>
+
+    <div class="hero-visual" aria-hidden="true">
+      <div class="mock-card">
+        <div class="mock-card-top">
+          <span class="mock-chip"></span>
+          <span class="mock-logo">ATLAS</span>
+        </div>
+        <div class="mock-card-label">{{ t.hero_mock_label }}</div>
+        <div class="mock-card-balance">$12 540.90</div>
+        <div class="mock-card-no">4111&nbsp;1111&nbsp;1111&nbsp;1111</div>
+      </div>
+      <div class="mock-rows">
+        <div class="mock-row"><span>{{ t.hero_mock_row1 }}</span><b class="neg">-$500.00</b></div>
+        <div class="mock-row"><span>{{ t.hero_mock_row2 }}</span><b class="neg">-$4.60</b></div>
+        <div class="mock-row"><span>{{ t.hero_mock_row3 }}</span><b class="pos">+$12.40</b></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="products">
+  <div class="container">
+    <div class="sect-head">
+      <div>
+        <p class="eyebrow">{{ t.prod_eyebrow }}</p>
+        <h2>{{ t.prod_title }}</h2>
+      </div>
+    </div>
+    <div class="products">
+      <article class="product">
+        <span class="product-ico">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="5" width="19" height="14" rx="2.5"/><path d="M2.5 10h19"/><path d="M6 15h4"/></svg>
+        </span>
+        <h3>{{ t.p1_t }}</h3>
+        <p>{{ t.p1_d }}</p>
+        <ul class="ticks">
+          <li>{{ t.p1_f1 }}</li><li>{{ t.p1_f2 }}</li><li>{{ t.p1_f3 }}</li>
+        </ul>
+      </article>
+      <article class="product">
+        <span class="product-ico">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V9"/><path d="M10 19V5"/><path d="M16 19v-7"/><path d="M22 19H2"/></svg>
+        </span>
+        <h3>{{ t.p2_t }}</h3>
+        <p>{{ t.p2_d }}</p>
+        <ul class="ticks">
+          <li>{{ t.p2_f1 }}</li><li>{{ t.p2_f2 }}</li><li>{{ t.p2_f3 }}</li>
+        </ul>
+      </article>
+      <article class="product">
+        <span class="product-ico">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="2.5" width="14" height="19" rx="3"/><path d="M10 18.5h4"/></svg>
+        </span>
+        <h3>{{ t.p3_t }}</h3>
+        <p>{{ t.p3_d }}</p>
+        <ul class="ticks">
+          <li>{{ t.p3_f1 }}</li><li>{{ t.p3_f2 }}</li><li>{{ t.p3_f3 }}</li>
+        </ul>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="section alt" id="rates">
+  <div class="container rates-grid">
+    <div class="rates-table-wrap">
+      <p class="eyebrow">{{ t.rates_eyebrow }}</p>
+      <h2>{{ t.rates_title }}</h2>
+      <p class="muted">{{ t.rates_lead }}</p>
+      <table class="table rates">
+        <thead>
+          <tr><th>{{ t.r_h_pair }}</th><th class="num">{{ t.r_h_buy }}</th><th class="num">{{ t.r_h_sell }}</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><b>{{ t.r_eur }}</b> / USD</td><td class="num">{{ t.r_eur_b }}</td><td class="num">{{ t.r_eur_s }}</td></tr>
+          <tr><td><b>{{ t.r_gbp }}</b> / USD</td><td class="num">{{ t.r_gbp_b }}</td><td class="num">{{ t.r_gbp_s }}</td></tr>
+          <tr><td><b>{{ t.r_chf }}</b> / USD</td><td class="num">{{ t.r_chf_b }}</td><td class="num">{{ t.r_chf_s }}</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="rates-deposits">
+      <h3>{{ t.dep_h }}</h3>
+      <div class="dep"><span>{{ t.dep_1 }}</span><b>{{ t.dep_1_v }}</b></div>
+      <div class="dep"><span>{{ t.dep_2 }}</span><b>{{ t.dep_2_v }}</b></div>
+      <div class="dep"><span>{{ t.dep_3 }}</span><b>{{ t.dep_3_v }}</b></div>
+      <a class="btn ghost" href="/register">{{ t.open_acct }} <span class="arr">→</span></a>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container steps-wrap">
+    <div class="sect-head">
+      <div>
+        <p class="eyebrow">{{ t.steps_eyebrow }}</p>
+        <h2>{{ t.steps_title }}</h2>
+      </div>
+      <a class="btn" href="/register">{{ t.hero_cta1 }} <span class="arr">→</span></a>
+    </div>
+    <ol class="steps">
+      <li><span class="step-no">01</span><b>{{ t.s1_t }}</b><p>{{ t.s1_d }}</p></li>
+      <li><span class="step-no">02</span><b>{{ t.s2_t }}</b><p>{{ t.s2_d }}</p></li>
+      <li><span class="step-no">03</span><b>{{ t.s3_t }}</b><p>{{ t.s3_d }}</p></li>
+    </ol>
+  </div>
+</section>
+
+<section class="security" id="security">
+  <div class="container security-grid">
+    <div>
+      <p class="eyebrow light">{{ t.sec_eyebrow }}</p>
+      <h2>{{ t.sec_title }}</h2>
+      <p class="lead dim">{{ t.sec_p }}</p>
+    </div>
+    <ul class="sec-list">
+      <li><span class="dot"></span>{{ t.sec_1 }}</li>
+      <li><span class="dot"></span>{{ t.sec_2 }}</li>
+      <li><span class="dot"></span>{{ t.sec_3 }}</li>
+    </ul>
+  </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends "auth.html" %}
+{% block title %}{{ t.forgot_link }} — ATLAS Bank{% endblock %}
+{% block content %}
+
+<div class="auth-head">
+  <h1>{{ t.forgot_link }}</h1>
+  <p>{{ t.forgot_sub }}</p>
+</div>
+
+{% if message %}<div class="alert ok">{{ message }}</div>{% endif %}
+{% if error %}<div class="alert bad">{{ error }}</div>{% endif %}
+
+<form method="post" action="/forgot" class="form">
+  <label class="field">
+    <span>{{ t.f_user }}</span>
+    <input type="text" name="username" required autofocus
+           value="{{ request.form.get('username', '') }}">
+  </label>
+  <button class="btn block lg" type="submit">{{ t.btn_send_link }}</button>
+</form>
+
+<p class="lab-note">{{ t.lab_mail }}</p>
+
+<div class="auth-links">
+  <a href="/login">← {{ t.back_login }}</a>
+</div>
+
+{% endblock %}

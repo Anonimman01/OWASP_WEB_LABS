@@ -1,0 +1,33 @@
+{% extends "auth.html" %}
+{% block title %}{{ t.signin }} — ATLAS Bank{% endblock %}
+{% block content %}
+
+<div class="auth-head">
+  <h1>{{ t.login_t }}</h1>
+  <p>{{ t.login_sub }}</p>
+</div>
+
+{% if message %}<div class="alert ok">{{ message }}</div>{% endif %}
+{% if error %}<div class="alert bad">{{ error }}</div>{% endif %}
+
+<form method="post" action="/login" class="form" autocomplete="on">
+  <label class="field">
+    <span>{{ t.f_user }}</span>
+    <input type="text" name="username" autocomplete="username" required autofocus
+           value="{{ request.form.get('username', '') }}">
+  </label>
+  <label class="field">
+    <span>{{ t.f_pass }}</span>
+    <input type="password" name="password" autocomplete="current-password" required>
+  </label>
+  <button class="btn block lg" type="submit">{{ t.btn_signin }}</button>
+</form>
+
+<div class="auth-links">
+  <a href="/forgot">{{ t.forgot_link }}</a>
+  <span>{{ t.no_acct }} <a href="/register">{{ t.open_link }}</a></span>
+</div>
+
+<a class="back-link" href="/">← {{ t.go_home }}</a>
+
+{% endblock %}

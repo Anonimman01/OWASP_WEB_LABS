@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="{{ lang }}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="ATLAS Bank — your accounts, cards and transfers.">
+<title>{% block title %}ATLAS Bank{% endblock %}</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="app-page">
+
+<div class="shell">
+  <aside class="side">
+    <a class="brand light side-brand" href="/dashboard">
+      <span class="mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M4 20 12 4l8 16"/><path d="M7.5 14h9"/></svg>
+      </span>
+      <b>ATLAS</b><i>BANK</i>
+    </a>
+
+    <nav class="side-nav" aria-label="{{ t.nav_label }}">
+      <a href="/dashboard" {% if active == 'dashboard' %}class="on"{% endif %}>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="8" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="3" y="15" width="7" height="6" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/></svg>
+        <span>{{ t.side_overview }}</span>
+      </a>
+      <a href="/cards" {% if active == 'cards' %}class="on"{% endif %}>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="5" width="19" height="14" rx="2.5"/><path d="M2.5 10h19"/></svg>
+        <span>{{ t.side_cards }}</span>
+      </a>
+      <a href="/transfers" {% if active == 'transfers' %}class="on"{% endif %}>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h13l-3.5-3.5"/><path d="M20 16H7l3.5 3.5"/></svg>
+        <span>{{ t.side_transfers }}</span>
+      </a>
+      {% if user and user.role == 'admin' %}
+      <a href="/admin" {% if active == 'admin' %}class="on"{% endif %}>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l7 3v6c0 4.2-2.9 7.6-7 9-4.1-1.4-7-4.8-7-9V6l7-3z"/></svg>
+        <span>{{ t.side_admin }}</span>
+      </a>
+      {% endif %}
+    </nav>
+
+    <div class="side-foot">
+      <div class="side-user">
+        <span class="avatar" aria-hidden="true">{{ user.full_name[:1]|upper if user else '?' }}</span>
+        <span class="side-user-text">
+          <b>{{ user.full_name if user else '' }}</b>
+          <i>{{ user.username if user else '' }}</i>
+        </span>
+      </div>
+      <a class="side-link" href="/ui">{{ t.foot_console }}</a>
+      <a class="side-link" href="/logout">{{ t.sign_out }}</a>
+    </div>
+  </aside>
+
+  <div class="main-col">
+    <header class="app-top">
+      <div class="app-top-title">{% block pagetitle %}{% endblock %}</div>
+      <div class="head-right">
+        <div class="langs" aria-label="{{ t.app_lang }}">
+          {% for code in langs %}
+          <a href="{{ request.path }}?lang={{ code }}" hreflang="{{ code }}"
+             {% if code == lang %}class="on"{% endif %}>{{ code }}</a>
+          {% endfor %}
+        </div>
+        <span class="badge">{{ variant_label }}</span>
+      </div>
+    </header>
+
+    <main class="app-main">
+      {% block content %}{% endblock %}
+    </main>
+
+    <footer class="app-foot">
+      <span>{{ t.foot_legal }}</span>
+      <span>ATLAS Bank · +1 800 555 0100 · help@atlas.test</span>
+    </footer>
+  </div>
+</div>
+
+</body>
+</html>
