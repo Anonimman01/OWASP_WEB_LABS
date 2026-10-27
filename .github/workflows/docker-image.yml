@@ -18,6 +18,20 @@ jobs:
       - name: Shared files identical, Dockerfiles bind 0.0.0.0, code compiles
         run: python .github/scripts/check_repo.py
 
+  tests:
+    name: Exploit tests (vulnerable breaks, fixed holds)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+      - run: pip install -r requirements-dev.txt
+      - name: Run pytest
+        run: python -m pytest
+
   docker:
     name: Docker ${{ matrix.lab }} / ${{ matrix.variant }}
     runs-on: ubuntu-latest

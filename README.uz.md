@@ -24,6 +24,7 @@ Barcha laboratoriyalar (A01–A10) hujjatlari inglizcha, ruscha va oʻzbekcha (l
 - [Tillar](#tillar)
 - [Yechimlar va spoylerlar](#yechimlar-va-spoylerlar)
 - [Muammolarni hal qilish](#muammolarni-hal-qilish)
+- [Testlar va Makefile](#testlar-va-makefile)
 - [Foydali havolalar](#foydali-havolalar)
 
 ## Laboratoriyalar jadvali
@@ -175,6 +176,19 @@ Har bir laboratoriyadagi `SOLUTION.uz.md` (yoki `SOLUTION.md`) har bir nuqson uc
 - **PowerShell'da `curl` gʻalati ishlayapti.** `curl.exe`, Git Bash yoki WSL dan foydalaning.
 - **Docker ishga tushmayapti.** Docker Desktop ishlayotganini va `docker compose` buyrugʻi (faqat `docker-compose` emas) mavjudligini tekshiring.
 - **Sahifa oʻzbekcha ochilmayapti.** `git pull` qiling (laboratoriya papkasida `README.uz.md` boʻlishi kerak) va Docker obrazini `docker compose up --build` bilan qayta yigʻing.
+
+## Testlar va Makefile
+
+[#testlar-va-makefile](#testlar-va-makefile)
+
+`tests/` papkasida avtomatik eksploit-testlar bor: `SOLUTION.md` dagi har bir hujum **`vulnerable` da ishlashi** va **`fixed` da ishlamasligi** kerak, oddiy stsenariylar esa ikkala versiyada ham ishlashi kerak. Testlar CI da har bir push va pull request da ishga tushadi, shuning uchun laboratoriyani yoki uning tuzatishini buzadigan o‘zgarish darhol sezilib qoladi. Hozircha A05 qamrab olingan (qolganlarini namuna bo‘yicha qo‘shing: `tests/test_a05_injection.py` ni nusxalab moslashtiring).
+
+```
+pip install -r requirements-dev.txt
+make test          # yoki: python -m pytest
+```
+
+`make` buyruqlari (Linux, macOS, WSL, Git Bash): `make up LAB=A05` bitta laboratoriyani ishga tushiradi, `make down LAB=A05` to‘xtatadi, `make up-all` / `make down-all` barcha o‘nta laboratoriya bilan ishlaydi, `make check` repozitoriy tekshiruvlarini bajaradi. `make help` to‘liq ro‘yxatni ko‘rsatadi.
 
 ## Foydali havolalar
 

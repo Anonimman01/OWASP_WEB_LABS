@@ -23,6 +23,7 @@ The documentation of every lab is available in English, Russian and Uzbek (Latin
 - [Languages](#languages)
 - [Solutions and spoilers](#solutions-and-spoilers)
 - [Troubleshooting](#troubleshooting)
+- [Tests and Makefile](#tests-and-makefile)
 - [Useful links](#useful-links)
 
 ## Lab list
@@ -160,6 +161,19 @@ For every flaw, the `SOLUTION.md` of each lab gives the commands, the violated r
 - **Cookies "stick" between labs.** Open the page in a private window or clear the cookies for `127.0.0.1`.
 - **`curl` behaves strangely in PowerShell.** Use `curl.exe`, Git Bash or WSL.
 - **Docker does not start.** Check that Docker Desktop is running and that the `docker compose` command is available (not only `docker-compose`).
+
+## Tests and Makefile
+
+[#tests-and-makefile](#tests-and-makefile)
+
+The `tests/` folder holds automated exploit tests: every attack from `SOLUTION.md` must **work on `vulnerable`** and **fail on `fixed`**, while normal use keeps working on both. They run in CI on every push and pull request, so a change that breaks a lab or its fix is caught early. Currently covered: A05 (more labs to come: copy `tests/test_a05_injection.py` and adapt it).
+
+```
+pip install -r requirements-dev.txt
+make test          # or: python -m pytest
+```
+
+`make` shortcuts (Linux, macOS, WSL, Git Bash): `make up LAB=A05` starts one lab, `make down LAB=A05` stops it, `make up-all` / `make down-all` handle all ten, `make check` runs the repository checks. `make help` lists everything.
 
 ## Useful links
 
