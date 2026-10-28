@@ -25,11 +25,13 @@ def load_lab(lab: str, variant: str):
     module = importlib.util.module_from_spec(spec)
     sys.path.insert(0, str(folder))
     sys.modules.pop("labui", None)  # labui.py is copied into every lab
+    sys.modules.pop("sky", None)    # ...and so is A05's sky.py (translations)
     try:
         spec.loader.exec_module(module)
     finally:
         sys.path.remove(str(folder))
         sys.modules.pop("labui", None)
+        sys.modules.pop("sky", None)
     return module
 
 
