@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% set active = 'auth' %}
+{% block title %}{{ t.login_t }} — Skyline Air{% endblock %}
+{% block content %}
+
+<section class="auth-section">
+  <div class="auth-grid container">
+    <aside class="auth-aside">
+      <p class="eyebrow light">{{ t.hero_eyebrow }}</p>
+      <h2>{{ t.login_t }}<br><span class="accent">{{ t.login_sub }}</span></h2>
+      <ul class="ticks">
+        <li>{{ t.w1_t }}</li>
+        <li>{{ t.w2_t }}</li>
+        <li>{{ t.w3_t }}</li>
+      </ul>
+    </aside>
+
+    <div class="auth-main">
+      <div class="auth-card">
+        <h1>{{ t.login_t }}</h1>
+        <p class="muted">{{ t.login_sub }}</p>
+
+        {% if error %}<div class="alert bad">{{ error }}</div>{% endif %}
+        {% if message %}<div class="alert ok">{{ message }}</div>{% endif %}
+
+        <form method="post" action="/login" class="form">
+          <label class="field">
+            <span>{{ t.f_user }}</span>
+            <input name="username" maxlength="32" autocomplete="username">
+          </label>
+          <label class="field">
+            <span>{{ t.f_pass }}</span>
+            <input type="password" name="password" maxlength="128" autocomplete="current-password">
+          </label>
+          <button class="btn block" type="submit">{{ t.btn_signin }}</button>
+        </form>
+
+        <div class="auth-links">
+          <span>{{ t.no_acct }} <a href="/register">{{ t.open_link }}</a></span>
+        </div>
+        <a class="back-link" href="/">← {{ t.go_home }}</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% set active = 'routes' %}
+{% block title %}{{ flight.flight_no }} {{ flight.origin }} → {{ flight.destination }} — Skyline Air{% endblock %}
+{% block content %}
+
+<section class="page-head slim">
+  <div class="container">
+    <a class="back-link" href="/flights?from=">← {{ t.back_results }}</a>
+    <div class="flight-title">
+      <span class="f-no big mono">{{ flight.flight_no }}</span>
+      <h1>{{ flight.origin }} <span class="arrow" aria-hidden="true">→</span> {{ flight.destination }}</h1>
+      {% if flight.hidden %}<span class="tag charter">{{ t.tag_charter }}</span>{% endif %}
+    </div>
+    <p class="muted">{{ flight.origin_city }} — {{ flight.destination_city }} · {{ flight.dep_date_label }}</p>
+  </div>
+</section>
+
+<section class="section tight">
+  <div class="container detail-grid">
+    <div class="panel">
+      <div class="timeline">
+        <div class="tl-point">
+          <span class="tl-time mono">{{ flight.dep_time }}</span>
+          <b>{{ flight.origin }}</b>
+          <span class="muted">{{ flight.origin_city }}</span>
+          <span class="muted small">{{ flight.dep_date_label }}</span>
+        </div>
+        <div class="tl-mid">
+          <span class="tl-dur">{{ flight.duration }}</span>
+          <span class="tl-line" aria-hidden="true"></span>
+          <span class="muted small">{{ flight.stops_label }}</span>
+        </div>
+        <div class="tl-point right">
+          <span class="tl-time mono">{{ flight.arr_time }}</span>
+          <b>{{ flight.destination }}</b>
+          <span class="muted">{{ flight.destination_city }}</span>
+          <span class="muted small">{{ flight.dep_date_label }}</span>
+        </div>
+      </div>
+
+      {% if flight.note %}
+      <div class="lab-note"><b>{{ t.lbl_note }}:</b> {{ flight.note }}</div>
+      {% endif %}
+    </div>
+
+    <aside class="panel book-panel">
+      <div class="book-price">
+        <span class="muted">{{ t.lbl_price }}</span>
+        <b>{{ flight.price }}</b>
+      </div>
+      <ul class="facts">
+        <li><span>{{ t.lbl_seats }}</span><b>{{ flight.seats }}</b></li>
+        <li><span>{{ t.lbl_duration }}</span><b>{{ flight.duration }}</b></li>
+        <li><span>{{ t.col_date }}</span><b>{{ flight.dep_date_label }}</b></li>
+      </ul>
+
+      {% if user %}
+      <form method="post" action="/flight/{{ flight.id }}/book">
+        <label class="field">
+          <span>{{ t.passengers }}</span>
+          <select name="passengers">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+          </select>
+        </label>
+        <button class="btn block" type="submit" {% if flight.seats < 1 %}disabled{% endif %}>
+          {{ t.btn_book }}
+        </button>
+      </form>
+      {% else %}
+      <p class="muted small">{{ t.need_login }}</p>
+      <a class="btn block" href="/login">{{ t.signin }}</a>
+      {% endif %}
+    </aside>
+  </div>
+</section>
+
+{% endblock %}

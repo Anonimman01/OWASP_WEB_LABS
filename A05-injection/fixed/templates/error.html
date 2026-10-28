@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% set active = '' %}
+{% block title %}{{ title }} — Skyline Air{% endblock %}
+{% block content %}
+
+<section class="error-section">
+  <div class="container error-box">
+    <h1>{{ title }}</h1>
+    <p class="lead">{{ message }}</p>
+    <div class="actions">
+      <a class="btn" href="/">{{ t.go_home }}</a>
+      <a class="btn ghost" href="/flights?from=">{{ t.view_all }}</a>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

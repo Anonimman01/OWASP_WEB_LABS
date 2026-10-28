@@ -37,7 +37,7 @@ Lab documentation (README and SOLUTION) is in English, Russian and Uzbek; the fo
 | A02 | [security-misconfiguration](./A02-security-misconfiguration) | Security Misconfiguration | A cafe website (Flask): default password, extra exposed files, verbose errors, no security headers | 8011 / 8012 |
 | A03 | [software-supply-chain-failures](./A03-software-supply-chain-failures) | Software Supply Chain Failures | SaaS site "Kestrel CI" (Flask): digest and signature never verified, pickle in a build profile, unsigned webhook, dependency confusion | 8021 / 8022 |
 | A04 | [cryptographic-failures](./A04-cryptographic-failures) | Cryptographic Failures | Accounts and bank cards: weak cryptography, taking over the administrator account | 8031 / 8032 |
-| A05 | [injection](./A05-injection) | Injection (SQLi, XSS, etc.) | A shop with login, search and a guestbook; input reaches SQL and HTML unprocessed | 8041 / 8042 |
+| A05 | [injection](./A05-injection) | Injection (SQLi, command injection) | Skyline airline site: flight search, booking and an admin node check; input reaches SQL and the shell | 8041 / 8042 |
 | A06 | [insecure-design](./A06-insecure-design) | Insecure Design | A shop JSON API with clean code but broken business logic | 8051 / 8052 |
 | A07 | [authentication-failures](./A07-authentication-failures) | Authentication Failures | Registration, login, "remember me", password change | 8061 / 8062 |
 | A08 | [software-or-data-integrity-failures](./A08-software-or-data-integrity-failures) | Software or Data Integrity Failures | Unsigned cookie, license, mirror update and webhook | 8071 / 8072 |

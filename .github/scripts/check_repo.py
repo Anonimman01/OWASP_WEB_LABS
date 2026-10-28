@@ -24,6 +24,7 @@ same("A*/*/labui.py", "labui.py identical everywhere")
 # A01 portal and A02 site: logic differs only in app.py
 same("A01-*/*/portal.py", "A01 portal.py identical in vulnerable/fixed")
 same("A02-*/*/cafe.py", "A02 cafe.py identical in vulnerable/fixed")
+same("A05-*/*/sky.py", "A05 sky.py identical in vulnerable/fixed")
 
 # every Dockerfile must make the app reachable through the published port
 for df in sorted(glob.glob("A*/Dockerfile")):

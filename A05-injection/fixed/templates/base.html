@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="{{ lang }}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Skyline Air — flights across 7 destinations. Training site for lab A05.">
+<title>{% block title %}Skyline Air{% endblock %}</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body{% if active is defined and active == 'auth' %} class="auth-page"{% endif %}>
+
+<header class="topbar">
+  <div class="container bar">
+    <a class="brand" href="/">
+      <span class="mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M2 16l20-6-7 9-3-3-4 4-1-1 4-4-4-1z"/></svg>
+      </span>
+      <b>{{ brand.name }}</b><i>{{ brand.sub }}</i>
+    </a>
+
+    <nav class="nav" aria-label="{{ t.nav_label }}">
+      <a href="/#routes" {% if active == 'routes' %}class="on"{% endif %}>{{ t.nav_routes }}</a>
+      <a href="/#why" {% if active == 'why' %}class="on"{% endif %}>{{ t.nav_why }}</a>
+      <a href="/trips" {% if active == 'trips' %}class="on"{% endif %}>{{ t.nav_trips }}</a>
+      {% if user is defined and user and user.role == 'admin' %}
+      <a href="/admin" {% if active == 'admin' %}class="on"{% endif %}>{{ t.nav_admin }}</a>
+      {% endif %}
+    </nav>
+
+    <div class="head-right">
+      <div class="langs" aria-label="{{ t.lang_label }}">
+        {% for code in langs %}
+        <a href="{{ request.path }}?lang={{ code }}" hreflang="{{ code }}"
+           {% if code == lang %}class="on"{% endif %}>{{ code }}</a>
+        {% endfor %}
+      </div>
+      {% if user is defined and user %}
+        <a class="btn ghost sm" href="/logout">{{ t.sign_out }}</a>
+      {% else %}
+        <a class="btn ghost sm" href="/login">{{ t.signin }}</a>
+        <a class="btn sm" href="/register">{{ t.register }}</a>
+      {% endif %}
+    </div>
+  </div>
+</header>
+
+{% if flash_ok or flash_err %}
+<div class="container flash-wrap">
+  {% if flash_ok %}<div class="alert ok">{{ flash_ok }}</div>{% endif %}
+  {% if flash_err %}<div class="alert bad">{{ flash_err }}</div>{% endif %}
+</div>
+{% endif %}
+
+<main>
+{% block content %}{% endblock %}
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <a class="brand light" href="/">
+          <span class="mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M2 16l20-6-7 9-3-3-4 4-1-1 4-4-4-1z"/></svg>
+          </span>
+          <b>{{ brand.name }}</b><i>{{ brand.sub }}</i>
+        </a>
+        <p>{{ t.foot_about }}</p>
+      </div>
+      <div>
+        <h4>{{ t.foot_travel }}</h4>
+        <ul>
+          <li><a href="/#routes">{{ t.nav_routes }}</a></li>
+          <li><a href="/">{{ t.foot_search }}</a></li>
+          <li><a href="/trips">{{ t.nav_trips }}</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>{{ t.signin }}</h4>
+        <ul>
+          <li><a href="/login">{{ t.signin }}</a></li>
+          <li><a href="/register">{{ t.register }}</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>{{ t.foot_lab }}</h4>
+        <ul>
+          <li><a href="/ui">{{ t.foot_console }}</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot-note">
+      <span>{{ t.foot_legal }}</span>
+      <span class="badge">{{ variant_label }}</span>
+    </div>
+    <div class="foot-note solo"><span>{{ t.foot_note }}</span></div>
+  </div>
+</footer>
+
+</body>
+</html>

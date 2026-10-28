@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+{% set active = 'home' %}
+{% block title %}Skyline Air — {{ t.hero_l1 }} {{ t.hero_l2 }}{% endblock %}
+{% block content %}
+
+<section class="hero">
+  <div class="container hero-grid">
+    <div class="hero-text">
+      <p class="eyebrow">{{ t.hero_eyebrow }}</p>
+      <h1>{{ t.hero_l1 }}<br><span class="accent">{{ t.hero_l2 }}</span></h1>
+      <p class="lead">{{ t.hero_text }}</p>
+      <div class="stats">
+        <div class="stat"><b>{{ t.stat1_v }}</b><span>{{ t.stat1_l }}</span></div>
+        <div class="stat"><b>{{ t.stat2_v }}</b><span>{{ t.stat2_l }}</span></div>
+        <div class="stat"><b>{{ t.stat3_v }}</b><span>{{ t.stat3_l }}</span></div>
+      </div>
+    </div>
+
+    <form class="search-card" action="/flights" method="get">
+      <label class="field">
+        <span>{{ t.f_from }}</span>
+        <input name="from" value="{{ request.args.get('from', '') }}" placeholder="TAS" maxlength="40">
+      </label>
+      <label class="field">
+        <span>{{ t.f_to }}</span>
+        <input name="to" value="{{ request.args.get('to', '') }}" placeholder="IST" maxlength="40">
+      </label>
+      <label class="field">
+        <span>{{ t.f_date }}</span>
+        <input type="date" name="date" value="{{ request.args.get('date', '') }}">
+      </label>
+      <button class="btn block" type="submit">{{ t.btn_search }}</button>
+      <p class="search-hint">{{ t.f_any }}</p>
+    </form>
+  </div>
+</section>
+
+<section class="section" id="routes">
+  <div class="container">
+    <div class="sect-head">
+      <div>
+        <p class="eyebrow">{{ t.routes_eyebrow }}</p>
+        <h2>{{ t.routes_title }}</h2>
+        <p class="lead">{{ t.routes_lead }}</p>
+      </div>
+      <a class="link-arrow" href="/flights?from=">{{ t.view_all }} <span aria-hidden="true">→</span></a>
+    </div>
+
+    <div class="flight-list">
+      {% for f in popular %}
+      <a class="flight-row" href="/flight/{{ f.id }}">
+        <span class="f-no mono">{{ f.flight_no }}</span>
+        <span class="f-route">
+          <b>{{ f.origin }}</b>
+          <span class="f-line" aria-hidden="true"></span>
+          <b>{{ f.destination }}</b>
+        </span>
+        <span class="f-meta">
+          <span class="f-time mono">{{ f.dep_time }}</span>
+          <span class="f-date">{{ f.dep_date_label }}</span>
+        </span>
+        <span class="f-seats">{{ t.seats_left.format(n=f.seats) }}</span>
+        <span class="f-price">
+          <b>{{ f.price }}</b>
+          <span class="f-cta">{{ t.details }} →</span>
+        </span>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="section alt" id="why">
+  <div class="container">
+    <div class="sect-head">
+      <div>
+        <p class="eyebrow">{{ t.why_eyebrow }}</p>
+        <h2>{{ t.why_title }}</h2>
+      </div>
+    </div>
+    <div class="why-grid">
+      <div class="why-card">
+        <span class="why-ico" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M12 3v18M5 8l7-5 7 5"/></svg>
+        </span>
+        <h3>{{ t.w1_t }}</h3>
+        <p>{{ t.w1_d }}</p>
+      </div>
+      <div class="why-card">
+        <span class="why-ico" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+        </span>
+        <h3>{{ t.w2_t }}</h3>
+        <p>{{ t.w2_d }}</p>
+      </div>
+      <div class="why-card">
+        <span class="why-ico" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="14" rx="2"/><path d="M4 10h16"/></svg>
+        </span>
+        <h3>{{ t.w3_t }}</h3>
+        <p>{{ t.w3_d }}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

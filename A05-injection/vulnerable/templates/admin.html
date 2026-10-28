@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% set active = 'admin' %}
+{% block title %}{{ t.admin_t }} — Skyline Air{% endblock %}
+{% block content %}
+
+<section class="page-head slim">
+  <div class="container">
+    <p class="eyebrow">{{ t.admin_t }}</p>
+    <h1>{{ t.admin_t }}</h1>
+    <p class="muted">{{ t.admin_sub }}</p>
+  </div>
+</section>
+
+<section class="section tight">
+  <div class="container admin-grid">
+
+    <div class="panel">
+      <div class="panel-head"><h2>{{ t.tool_h }}</h2></div>
+      <p class="muted small">{{ t.tool_sub }}</p>
+      <form method="post" action="/admin/check" class="check-form">
+        <label class="field grow">
+          <span>{{ t.f_host }}</span>
+          <input name="host" value="{{ check_host or 'localhost' }}" maxlength="120">
+        </label>
+        <button class="btn" type="submit">{{ t.btn_check }}</button>
+      </form>
+      {% if check_out %}
+      <div class="out-box">
+        <span class="out-label">{{ t.out_h }}</span>
+        <pre>{{ check_out }}</pre>
+      </div>
+      {% endif %}
+    </div>
+
+    <div class="panel flag-panel">
+      <span class="flag-label">{{ t.flag_h }}</span>
+      <p>{{ t.flag_p }}</p>
+      <code class="flag-value">{{ flag }}</code>
+    </div>
+
+    <div class="panel span2">
+      <div class="panel-head"><h2>{{ t.users_h }}</h2></div>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>{{ t.col_username }}</th>
+            <th>{{ t.col_name }}</th>
+            <th>{{ t.col_role }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for u in users %}
+          <tr>
+            <td class="mono">{{ u.username }}</td>
+            <td>{{ u.full_name }}</td>
+            <td><span class="tag {{ 'charter' if u.role == 'admin' }}">
+              {{ t.role_admin if u.role == 'admin' else t.role_user }}</span></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="panel span2">
+      <div class="panel-head"><h2>{{ t.table_h }}</h2></div>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>{{ t.col_no }}</th>
+            <th>{{ t.col_from }}</th>
+            <th>{{ t.col_to }}</th>
+            <th>{{ t.col_date }}</th>
+            <th class="num">{{ t.col_price }}</th>
+            <th class="num">{{ t.col_seats }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for f in flights %}
+          <tr>
+            <td class="mono">{{ f.flight_no }}{% if f.hidden %}
+              <span class="tag charter">{{ t.tag_charter }}</span>{% endif %}</td>
+            <td>{{ f.origin }}</td>
+            <td>{{ f.destination }}</td>
+            <td>{{ f.dep_date_label }}</td>
+            <td class="num">{{ f.price }}</td>
+            <td class="num">{{ f.seats }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</section>
+
+{% endblock %}

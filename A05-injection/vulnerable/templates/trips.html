@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% set active = 'trips' %}
+{% block title %}{{ t.trips_t }} — Skyline Air{% endblock %}
+{% block content %}
+
+<section class="page-head slim">
+  <div class="container">
+    <p class="eyebrow">{{ t.nav_trips }}</p>
+    <h1>{{ t.trips_t }}</h1>
+    <p class="muted">{{ t.trips_sub }}</p>
+  </div>
+</section>
+
+<section class="section tight">
+  <div class="container">
+    {% if trips %}
+    <div class="flight-list">
+      {% for f in trips %}
+      <a class="flight-row" href="/flight/{{ f.id }}">
+        <span class="f-no mono">{{ f.flight_no }}</span>
+        <span class="f-route">
+          <b>{{ f.origin }}</b>
+          <span class="f-line" aria-hidden="true"></span>
+          <b>{{ f.destination }}</b>
+        </span>
+        <span class="f-meta">
+          <span class="f-time mono">{{ f.dep_time }}</span>
+          <span class="f-date">{{ f.dep_date_label }}</span>
+        </span>
+        <span class="f-status">{{ t.status_ok }} · {{ f.passengers }} {{ t.col_passengers|lower }}</span>
+        <span class="f-price">
+          <b>{{ f.price }}</b>
+          <span class="f-cta">{{ t.details }} →</span>
+        </span>
+      </a>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-box">
+      <p>{{ t.trips_empty }}</p>
+      <a class="btn" href="/">{{ t.foot_search }}</a>
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+{% endblock %}

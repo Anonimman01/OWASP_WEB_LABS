@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% set active = 'routes' %}
+{% block title %}{{ t.routes_title }} — Skyline Air{% endblock %}
+{% block content %}
+
+<section class="page-head">
+  <div class="container">
+    <p class="eyebrow">{{ t.routes_eyebrow }}</p>
+    <h1>{{ t.res_found.format(n=flights|length) if flights else t.res_none }}</h1>
+
+    <form class="filter-bar" action="/flights" method="get">
+      <label class="field">
+        <span>{{ t.f_from }}</span>
+        <input name="from" value="{{ q_origin }}" maxlength="40">
+      </label>
+      <label class="field">
+        <span>{{ t.f_to }}</span>
+        <input name="to" value="{{ q_dest }}" maxlength="40">
+      </label>
+      <label class="field">
+        <span>{{ t.f_date }}</span>
+        <input type="date" name="date" value="{{ q_date }}">
+      </label>
+      <label class="field narrow">
+        <span>{{ t.f_max }}</span>
+        <input name="max_price" value="{{ q_max }}" inputmode="numeric" maxlength="9">
+      </label>
+      <button class="btn" type="submit">{{ t.btn_filter }}</button>
+    </form>
+  </div>
+</section>
+
+<section class="section tight">
+  <div class="container">
+    {% if sql_error %}
+    <div class="alert bad">
+      <b>{{ t.err_query }}:</b> <code>{{ sql_error }}</code>
+    </div>
+    {% endif %}
+
+    {% if flights %}
+    <div class="flight-list">
+      {% for f in flights %}
+      <a class="flight-row" href="/flight/{{ f.id }}">
+        <span class="f-no mono">{{ f.flight_no }}</span>
+        <span class="f-route">
+          <b>{{ f.origin }}</b>
+          <span class="f-line" aria-hidden="true"></span>
+          <b>{{ f.destination }}</b>
+        </span>
+        <span class="f-meta">
+          <span class="f-time mono">{{ f.dep_time }}</span>
+          <span class="f-date">{{ f.dep_date_label }}</span>
+        </span>
+        <span class="f-price">
+          <b>{{ f.price }}</b>
+          <span class="f-cta">{{ t.details }} →</span>
+        </span>
+      </a>
+      {% endfor %}
+    </div>
+    {% elif not sql_error %}
+    <div class="empty-box">
+      <p>{{ t.res_none }}</p>
+      <p class="muted">{{ t.res_none_hint }}</p>
+      <a class="btn ghost" href="/flights?from=">{{ t.view_all }}</a>
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+{% endblock %}

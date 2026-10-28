@@ -37,7 +37,7 @@
 | A02 | [security-misconfiguration](./A02-security-misconfiguration) | Небезопасная конфигурация | Сайт кофейни (Flask): пароль по умолчанию, лишние открытые файлы, подробные ошибки, нет защитных заголовков | 8011 / 8012 |
 | A03 | [software-supply-chain-failures](./A03-software-supply-chain-failures) | Сбои в цепочке поставок ПО | Сайт SaaS «Kestrel CI» (Flask): хеш и подпись не проверяются, pickle в профиле сборки, неподписанный вебхук, подмена внутреннего пакета публичным | 8021 / 8022 |
 | A04 | [cryptographic-failures](./A04-cryptographic-failures) | Криптографические сбои | Аккаунты и банковские карты: слабая криптография, захват аккаунта администратора | 8031 / 8032 |
-| A05 | [injection](./A05-injection) | Инъекции (SQLi, XSS и др.) | Магазин с входом, поиском и гостевой книгой; ввод попадает в SQL и HTML без обработки | 8041 / 8042 |
+| A05 | [injection](./A05-injection) | Инъекции (SQLi, command injection) | Сайт авиакомпании Skyline: поиск рейсов, бронирование и проверка узла в админке; ввод попадает в SQL и в оболочку | 8041 / 8042 |
 | A06 | [insecure-design](./A06-insecure-design) | Небезопасная архитектура | JSON API магазина с аккуратным кодом, но сломанной бизнес-логикой | 8051 / 8052 |
 | A07 | [authentication-failures](./A07-authentication-failures) | Сбои аутентификации | Регистрация, вход, «запомнить меня», смена пароля | 8061 / 8062 |
 | A08 | [software-or-data-integrity-failures](./A08-software-or-data-integrity-failures) | Нарушения целостности ПО и данных | Неподписанные cookie, лицензия, обновление с зеркала и webhook | 8071 / 8072 |
