@@ -1,0 +1,55 @@
+name: labs-smoke-test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { lab: A01-broken-access-control,                 vuln: 8001, fixed: 8002 }
+          - { lab: A02-security-misconfiguration,             vuln: 8011, fixed: 8012 }
+          - { lab: A03-software-supply-chain-failures,        vuln: 8021, fixed: 8022 }
+          - { lab: A04-cryptographic-failures,                vuln: 8031, fixed: 8032 }
+          - { lab: A05-injection,                             vuln: 8041, fixed: 8042 }
+          - { lab: A06-insecure-design,                       vuln: 8051, fixed: 8052 }
+          - { lab: A07-authentication-failures,               vuln: 8061, fixed: 8062 }
+          - { lab: A08-software-or-data-integrity-failures,   vuln: 8071, fixed: 8072 }
+          - { lab: A09-logging-and-alerting-failures,         vuln: 8081, fixed: 8082 }
+          - { lab: A10-mishandling-of-exceptional-conditions, vuln: 8091, fixed: 8092 }
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build and start both versions
+        working-directory: ${{ matrix.lab }}
+        run: docker compose up --build -d
+
+      - name: Wait until both versions answer
+        run: |
+          for port in ${{ matrix.vuln }} ${{ matrix.fixed }}; do
+            ok=0
+            for i in $(seq 1 30); do
+              if curl -fsSL -o /dev/null "http://127.0.0.1:$port/"; then ok=1; break; fi
+              sleep 2
+            done
+            if [ "$ok" -ne 1 ]; then
+              echo "Port $port did not respond"; exit 1
+            fi
+            echo "Port $port is up"
+          done
+
+      - name: Show logs on failure
+        if: failure()
+        working-directory: ${{ matrix.lab }}
+        run: docker compose logs
+
+      - name: Stop
+        if: always()
+        working-directory: ${{ matrix.lab }}
+        run: docker compose down
